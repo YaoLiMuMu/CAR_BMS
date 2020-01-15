@@ -41,7 +41,7 @@ public:
     explicit Widget(QWidget *parent = nullptr);
     ~Widget();
     static QString Gmesg;
-    static unsigned Demand_Current;
+    static QByteArray Demand_CV;
     static bool CRM_00;
     static bool CRM_AA;
     static bool CML;

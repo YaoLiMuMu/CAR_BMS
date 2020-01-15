@@ -27,11 +27,15 @@ CONFIG += c++11
 SOURCES += \
         main.cpp \
         widget.cpp \
+    proceesframe.cpp \
+    sentframe.cpp
 
 HEADERS += \
         widget.h \
     controlcan.h \
-    controlcan.h
+    controlcan.h \
+    proceesframe.h \
+    sentframe.h
 
 FORMS += \
         widget.ui
