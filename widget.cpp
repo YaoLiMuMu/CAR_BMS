@@ -86,13 +86,45 @@ void Widget::on_pushButton1_1_clicked()
         return;
     }
     QString output = ui->lineEdit1_1->text();
-    QByteArray temp = processQString(output,10);
+    Demand_CV.data()[2] = processCurrent(output,10).at(1);
+    Demand_CV.data()[3] = processCurrent(output,10).at(0);
+    output = ui->lineEdit1_2->text();
+    Demand_CV.data()[0] = processVoltage(output,10).at(1);
+    Demand_CV.data()[1] = processVoltage(output,10).at(0);
+    qDebug() << "______________________________" << Demand_CV.toHex();
 }
 
-QByteArray Widget::processQString(QString item, int k) // or can try str.toLatin1()/str.toUtf8()
+QByteArray Widget::processVoltage(QString item, int k) // or can try str.toLatin1()/str.toUtf8()
 {
     QByteArray dat;
     int val = item.toInt() * k; // int < 2147483648
+    item = item.setNum(val, 16);    // or String str = Interger.toHexString(val) ; use String
+    if (item.length()%2 != 0)
+        item = '0' + item;
+    dat.resize(item.length()/2);    // can't use sizeof get Qstring size, because will get Qstring object point size
+    char ctempor = 0;
+    for (int i = 0; i < item.length()/2; i++)
+    {
+        if (item.toLocal8Bit().data()[2*i] >= '0' && item.toLocal8Bit().data()[2*i] <= '9')
+            ctempor = item.toLocal8Bit().data()[2*i] -48;
+        else {
+            ctempor = 0xa + (item.toLocal8Bit().data()[2*i] - 'a');
+        }
+        dat.data()[i] = ctempor;
+        if (item.toLocal8Bit().data()[2*i+1] >= '0' && item.toLocal8Bit().data()[2*i+1] <= '9')
+            ctempor = item.toLocal8Bit().data()[2*i+1] -48;
+        else {
+            ctempor = 0xa + (item.toLocal8Bit().data()[2*i+1] - 'a');
+        }
+        dat.data()[(i)] = char((dat.data()[i] << 4) | ctempor);
+    }
+    return dat;
+}
+
+QByteArray Widget::processCurrent(QString item, int k) // or can try str.toLatin1()/str.toUtf8()
+{
+    QByteArray dat;
+    int val = 4000 - item.toInt() * k; // int < 2147483648
     item = item.setNum(val, 16);    // or String str = Interger.toHexString(val) ; use String
     if (item.length()%2 != 0)
         item = '0' + item;

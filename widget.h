@@ -41,16 +41,18 @@ public:
     explicit Widget(QWidget *parent = nullptr);
     ~Widget();
     static QString Gmesg;
-    static unsigned Demand_Current;
+    static QByteArray Demand_CV;
     static bool CRM_00;
     static bool CRM_AA;
     static bool CML;
+    static short BCL2BCS;
 
 private slots:
     void CloseDev(unsigned Error);
 
     void on_pushButton1_1_clicked();
-    QByteArray processQString(QString, int);
+    QByteArray processVoltage(QString, int);
+    QByteArray processCurrent(QString, int);
 
 private:
     Ui::Widget *ui;

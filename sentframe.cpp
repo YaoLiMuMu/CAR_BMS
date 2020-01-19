@@ -9,19 +9,20 @@ sentframe::sentframe(QObject *parent) : QObject(parent)
 void sentframe::tx_thread()
 {
     qDebug() << "TXthread ID: " << QThread::currentThreadId();
-    FRAME BHM, BRM_init, BRM_con, BCP_init, BCP_con, BRO, BCL;
+    FRAME BHM, BRM_init, BRM_con, BCP_init, BCP_con, BRO, BCL, BCS_init, BCS_con, BSM_init, BSM_con_;
     // BCL
     BCL.car_frame = (VCI_CAN_OBJ * ) malloc(sizeof (VCI_CAN_OBJ));
     BCL.car_frame->SendType = gTxType;
     BCL.car_frame->RemoteFlag = 0;
     BCL.car_frame->DataLen = 5;
-    BCL.car_frame->Data[0] = 0x68;
-    BCL.car_frame->Data[1] = 0x10;
-    BCL.car_frame->Data[2] = 0xD8;
-    BCL.car_frame->Data[3] = 0x0E;
-    BCL.car_frame->Data[4] = 0x01;
+    BCL.car_frame->Data[0] = uchar(Widget::Demand_CV.at(0));
+    BCL.car_frame->Data[1] = uchar(Widget::Demand_CV.at(1));
+    BCL.car_frame->Data[2] = uchar(Widget::Demand_CV.at(2));
+    BCL.car_frame->Data[3] = uchar(Widget::Demand_CV.at(3));
+    BCL.car_frame->Data[4] = uchar(Widget::Demand_CV.at(4));
+    BCL.car_frame->ID = 0x181056F4;
     BCL.car_frame->ExternFlag = 1;
-    BCL.time_out = 5000;
+    BCL.time_out = 1000;
     BCL.cycle_time = 50;
     BCL.len = 1;
     // BRO
@@ -215,8 +216,74 @@ void sentframe::tx_thread()
     BCP_con.time_out = 5000;
     BCP_con.cycle_time = 5;
     BCP_con.len = 2;
-    //
-
+    //BCS 长消息起始帧
+    BCS_init.car_frame = (VCI_CAN_OBJ *) malloc(sizeof (VCI_CAN_OBJ));
+    BCS_init.car_frame[0].SendType = gTxType;
+    BCS_init.car_frame[0].RemoteFlag = 0;
+    BCS_init.car_frame->DataLen = 8;
+    BCS_init.car_frame->Data[0] = 0x10;
+    BCS_init.car_frame->Data[1] = 0x09;
+    BCS_init.car_frame->Data[2] = 0x00;
+    BCS_init.car_frame->Data[3] = 0x02;
+    BCS_init.car_frame->Data[4] = 0xFF;
+    BCS_init.car_frame->Data[5] = 0x00;
+    BCS_init.car_frame->Data[6] = 0x11;
+    BCS_init.car_frame->Data[7] = 0x00;
+    BCS_init.car_frame->ID = 0x1CEC56F4;
+    BCS_init.car_frame->ExternFlag = 1;
+    BCS_init.time_out = 5000;
+    BCS_init.cycle_time = 250;
+    BCS_init.len = 1;
+    // BCS 长消息
+    BCS_con.car_frame = (VCI_CAN_OBJ *) malloc(sizeof (VCI_CAN_OBJ)*2);
+//    memset(&BCP_con.car_frame[0], 0, sizeof(VCI_CAN_OBJ)*7);
+    BCS_con.car_frame[0].SendType = gTxType;
+    BCS_con.car_frame[0].RemoteFlag = 0;
+    BCS_con.car_frame[0].DataLen = 8;
+    BCS_con.car_frame[0].Data[0] = 0x01;
+    BCS_con.car_frame[0].Data[1] = 0xA0;
+    BCS_con.car_frame[0].Data[2] = 0x0F;
+    BCS_con.car_frame[0].Data[3] = 0xD8;
+    BCS_con.car_frame[0].Data[4] = 0x0E;
+    BCS_con.car_frame[0].Data[5] = 0x98;
+    BCS_con.car_frame[0].Data[6] = 0x08;
+    BCS_con.car_frame[0].Data[7] = 0x32;
+    BCS_con.car_frame[0].ID = 0x1CEB56F4;
+    BCS_con.car_frame[0].ExternFlag = 1;
+    BCS_con.car_frame[1].SendType = gTxType;
+    BCS_con.car_frame[1].RemoteFlag = 0;
+    BCS_con.car_frame[1].DataLen = 8;
+    BCS_con.car_frame[1].Data[0] = 0x02;
+    BCS_con.car_frame[1].Data[1] = 0x2C;
+    BCS_con.car_frame[1].Data[2] = 0xFF;
+    BCS_con.car_frame[1].Data[3] = 0xFF;
+    BCS_con.car_frame[1].Data[4] = 0xFF;
+    BCS_con.car_frame[1].Data[5] = 0xFF;
+    BCS_con.car_frame[1].Data[6] = 0xFF;
+    BCS_con.car_frame[1].Data[7] = 0xFF;
+    BCS_con.car_frame[1].ID = 0x1CEB56F4;
+    BCS_con.car_frame[1].ExternFlag = 1;
+    BCS_con.time_out = 5000;
+    BCS_con.cycle_time = 5;
+    BCS_con.len = 2;
+    //  BSM长消息起始帧
+    BSM_init.car_frame = (VCI_CAN_OBJ *) malloc(sizeof (VCI_CAN_OBJ));
+    BSM_init.car_frame[0].SendType = gTxType;
+    BSM_init.car_frame[0].RemoteFlag = 0;
+    BSM_init.car_frame->DataLen = 8;
+    BSM_init.car_frame->Data[0] = 0x10;
+    BSM_init.car_frame->Data[1] = 0x09;
+    BSM_init.car_frame->Data[2] = 0x00;
+    BSM_init.car_frame->Data[3] = 0x02;
+    BSM_init.car_frame->Data[4] = 0xFF;
+    BSM_init.car_frame->Data[5] = 0x00;
+    BSM_init.car_frame->Data[6] = 0x12;
+    BSM_init.car_frame->Data[7] = 0x00;
+    BSM_init.car_frame->ID = 0x1CEC56F4;
+    BSM_init.car_frame->ExternFlag = 1;
+    BSM_init.time_out = 5000;
+    BSM_init.cycle_time = 250;
+    BSM_init.len = 1;
     //
     translist.insert("CHM", BHM);
     translist.insert("CRM_00", BRM_init);
@@ -225,6 +292,8 @@ void sentframe::tx_thread()
     translist.insert("BCP_re", BCP_con);
     translist.insert("BRO_aa", BRO);
     translist.insert("BCL", BCL);
+    translist.insert("BCS_re", BCS_con);
+    translist.insert("BCS_in", BCS_init);
     VCI_CAN_OBJ *buff = (VCI_CAN_OBJ *)malloc(sizeof(VCI_CAN_OBJ) * gTxFrames);
     time_t tm1, tm2;
     time(&tm1);
@@ -246,6 +315,10 @@ void sentframe::tx_thread()
                 {
                     QDateTime nowtime = QDateTime::currentDateTime();
                     QString timeblock = nowtime.toString("yyyy-MM-dd hh:mm:ss.zzz");
+                    switch (VCI_Transmit(gDevType, gDevIdx, i, &translist.value(Widget::Gmesg).car_frame[j],  gTxFrames)) {
+
+
+                    }
                     int dwel = VCI_Transmit(gDevType, gDevIdx, i, &translist.value(Widget::Gmesg).car_frame[j],  gTxFrames);
                     qDebug() << timeblock << "+++++++++++++++++++++++++++++++++++++++++++++++++++" << dwel;
                     qDebug() << Widget::Gmesg << QString::asprintf("dddddddddddddddID:%08x, buff.Data:%02x", translist.value(Widget::Gmesg).car_frame[j].ID,translist.value(Widget::Gmesg).car_frame[j].Data[0]);
@@ -259,6 +332,20 @@ void sentframe::tx_thread()
                     {
                         Widget::Gmesg = "CRM_aa";
 //                        msleep(245);
+                    }
+                    if (Widget::Gmesg == "BCL")
+                    {
+                        BCL.car_frame->Data[0] = uchar(Widget::Demand_CV.at(0));
+                        BCL.car_frame->Data[1] = uchar(Widget::Demand_CV.at(1));
+                        BCL.car_frame->Data[2] = uchar(Widget::Demand_CV.at(2));
+                        BCL.car_frame->Data[3] = uchar(Widget::Demand_CV.at(3));
+                        BCL.car_frame->Data[4] = uchar(Widget::Demand_CV.at(4));
+                        Widget::BCL2BCS++;
+                        if (Widget::BCL2BCS == 6)
+                        {
+                            Widget::Gmesg = "BCS_in";
+                            Widget::BCL2BCS = 0;
+                        }
                     }
 
         //                err = 1;

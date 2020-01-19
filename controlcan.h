@@ -142,9 +142,9 @@ EXTERN_C ULONG VCI_Receive(DWORD DeviceType,DWORD DeviceInd,DWORD CANInd,PVCI_CA
 
 static const unsigned gDevType = 0x04;
 static const unsigned gDevIdx = 0x00;
-static const unsigned gChMask = 0x02; // channel 2 normal
-static const unsigned gBaud = 0x1C01; // 250kb/s
-static const unsigned gTxType = 0x00;
+static const unsigned gChMask = 0x02;   // channel 2 normal
+static const unsigned gBaud = 0x1C01;   // 250kb/s
+static const unsigned gTxType = 0x00;   // 0x00
 static const unsigned gTxSleep = 0x01;
 static const unsigned gTxFrames = 0x01;
 static const unsigned gTxCount = 0x01;

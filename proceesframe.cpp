@@ -5,6 +5,8 @@ QString Widget::Gmesg = "CHM";
 bool Widget::CRM_00 = 0;
 bool Widget::CRM_AA = 0;
 bool Widget::CML = 0;
+short Widget::BCL2BCS = 0;
+QByteArray Widget::Demand_CV = QByteArray::fromHex("6810D80E01");
 
 proceesframe::proceesframe(QObject *parent) : QObject(parent)
 {
@@ -23,7 +25,7 @@ void proceesframe::rx_thread()
     ctx->total = 0; // reset counter
     VCI_CAN_OBJ can[RX_BUFF_SIZE]; // buffer
     int cnt; // current received
-    int i;
+    int i,j;
     unsigned check_point = 0;
     while (!ctx->stop && !ctx->error)
     {
@@ -36,7 +38,12 @@ void proceesframe::rx_thread()
         for (i = 0; i < cnt; i++) {
             if (verify_frame(&can[i]))
             {
-                printf("CAN RX successed: ID=%08x, Data=%02x%02x\n", can[i].ID, can[i].Data[0],can[i].Data[1]);
+                QString Redata = QString::asprintf("CAN RX successed: ID=0x%08x, Data=0x", can[i].ID);
+                for (j = 0; j < can[i].DataLen; j++)
+                {
+                    Redata = Redata + QString::asprintf("%02x", can[i].Data[j]);
+                }
+                qDebug() << Redata;
                 switch (can[i].ID) {
                 case 0x1826F456:
                     Widget::Gmesg = "CHM";
@@ -80,6 +87,15 @@ void proceesframe::rx_thread()
                             else {
                                 Widget::Gmesg = "BCP_re";
                             }
+                        }
+                        break;
+                    case 0x11:
+                        switch (can[i].Data[0]) {
+                        case 0x11:
+                            Widget::Gmesg = "BCS_re";
+                            break;
+                        case 0x13:
+                            Widget::Gmesg = "BCL";
                         }
                     }
                     break;
