@@ -268,7 +268,7 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
     Widget w;
-    w.show();
+//    w.show();
     //***
 //    gDevType = 0x04;
 //    gDevIdx = 0x00;

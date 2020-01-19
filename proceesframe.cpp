@@ -112,7 +112,7 @@ void proceesframe::rx_thread()
                         Widget::Gmesg = "BCL";
                     }
                 }
-                qDebug() << "**************************" << Widget::Gmesg ;
+                qDebug() << "****************************************" << Widget::Gmesg ;
                 emit Sendcan(can[i]);
                 continue;
             }

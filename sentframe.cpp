@@ -9,8 +9,8 @@ sentframe::sentframe(QObject *parent) : QObject(parent)
 void sentframe::tx_thread()
 {
     qDebug() << "TXthread ID: " << QThread::currentThreadId();
-    FRAME BHM, BRM_init, BRM_con, BCP_init, BCP_con, BRO, BCL, BCS_init, BCS_con, BSM_init, BSM_con_;
-    // BCL
+    FRAME BHM, BRM_init, BRM_con, BCP_init, BCP_con, BRO, BCL, BCS_init, BCS_con, BSM;
+    // BCL frame
     BCL.car_frame = (VCI_CAN_OBJ * ) malloc(sizeof (VCI_CAN_OBJ));
     BCL.car_frame->SendType = gTxType;
     BCL.car_frame->RemoteFlag = 0;
@@ -25,7 +25,7 @@ void sentframe::tx_thread()
     BCL.time_out = 1000;
     BCL.cycle_time = 50;
     BCL.len = 1;
-    // BRO
+    // BRO frame
     BRO.car_frame = (VCI_CAN_OBJ * ) malloc(sizeof (VCI_CAN_OBJ));
     BRO.car_frame->SendType = gTxType;
     BRO.car_frame->RemoteFlag = 0;
@@ -36,9 +36,8 @@ void sentframe::tx_thread()
     BRO.time_out = 5000;
     BRO.cycle_time = 250;
     BRO.len = 1;
-    // BHM init
+    // BHM init frame
     BHM.car_frame = (VCI_CAN_OBJ *) malloc(sizeof (VCI_CAN_OBJ));
-//    memset(BHM.car_frame, 0, sizeof(VCI_CAN_OBJ));
     BHM.car_frame->SendType = gTxType;
     BHM.car_frame->RemoteFlag = 0;
     BHM.car_frame->DataLen = 2;
@@ -167,7 +166,6 @@ void sentframe::tx_thread()
     BRM_con.len = 7;
     // BCP 长消息起始帧
     BCP_init.car_frame = (VCI_CAN_OBJ *) malloc(sizeof (VCI_CAN_OBJ));
-//    memset(BCP_init.car_frame, 0, sizeof(VCI_CAN_OBJ));
     BCP_init.car_frame->SendType = gTxType;
     BCP_init.car_frame->RemoteFlag = 0;
     BCP_init.car_frame->DataLen = 8;
@@ -236,7 +234,6 @@ void sentframe::tx_thread()
     BCS_init.len = 1;
     // BCS 长消息
     BCS_con.car_frame = (VCI_CAN_OBJ *) malloc(sizeof (VCI_CAN_OBJ)*2);
-//    memset(&BCP_con.car_frame[0], 0, sizeof(VCI_CAN_OBJ)*7);
     BCS_con.car_frame[0].SendType = gTxType;
     BCS_con.car_frame[0].RemoteFlag = 0;
     BCS_con.car_frame[0].DataLen = 8;
@@ -266,25 +263,24 @@ void sentframe::tx_thread()
     BCS_con.time_out = 5000;
     BCS_con.cycle_time = 5;
     BCS_con.len = 2;
-    //  BSM长消息起始帧
-    BSM_init.car_frame = (VCI_CAN_OBJ *) malloc(sizeof (VCI_CAN_OBJ));
-    BSM_init.car_frame[0].SendType = gTxType;
-    BSM_init.car_frame[0].RemoteFlag = 0;
-    BSM_init.car_frame->DataLen = 8;
-    BSM_init.car_frame->Data[0] = 0x10;
-    BSM_init.car_frame->Data[1] = 0x09;
-    BSM_init.car_frame->Data[2] = 0x00;
-    BSM_init.car_frame->Data[3] = 0x02;
-    BSM_init.car_frame->Data[4] = 0xFF;
-    BSM_init.car_frame->Data[5] = 0x00;
-    BSM_init.car_frame->Data[6] = 0x12;
-    BSM_init.car_frame->Data[7] = 0x00;
-    BSM_init.car_frame->ID = 0x1CEC56F4;
-    BSM_init.car_frame->ExternFlag = 1;
-    BSM_init.time_out = 5000;
-    BSM_init.cycle_time = 250;
-    BSM_init.len = 1;
-    //
+    //  BSM frame
+    BSM.car_frame = (VCI_CAN_OBJ *) malloc(sizeof (VCI_CAN_OBJ));
+    BSM.car_frame[0].SendType = gTxType;
+    BSM.car_frame[0].RemoteFlag = 0;
+    BSM.car_frame->DataLen = 7;
+    BSM.car_frame->Data[0] = 0x01;
+    BSM.car_frame->Data[1] = 0x82;
+    BSM.car_frame->Data[2] = 0x01;
+    BSM.car_frame->Data[3] = 0x6E;
+    BSM.car_frame->Data[4] = 0x02;
+    BSM.car_frame->Data[5] = 0x00;
+    BSM.car_frame->Data[6] = 0xD0;
+    BSM.car_frame->ID = 0x181356F4;
+    BSM.car_frame->ExternFlag = 1;
+    BSM.time_out = 5000;
+    BSM.cycle_time = 250;
+    BSM.len = 1;
+    // Qmap insert list
     translist.insert("CHM", BHM);
     translist.insert("CRM_00", BRM_init);
     translist.insert("CRM_re", BRM_con);
@@ -295,8 +291,8 @@ void sentframe::tx_thread()
     translist.insert("BCS_re", BCS_con);
     translist.insert("BCS_in", BCS_init);
     VCI_CAN_OBJ *buff = (VCI_CAN_OBJ *)malloc(sizeof(VCI_CAN_OBJ) * gTxFrames);
-    time_t tm1, tm2;
-    time(&tm1);
+//    time_t tm1, tm2;
+//    time(&tm1);
     int err = 0;
     unsigned tx;
     for (tx = 0; !err && tx < gTxCount; tx++)
@@ -314,15 +310,19 @@ void sentframe::tx_thread()
                 for (int j = 0; j < translist.value(Widget::Gmesg).len; j++)
                 {
                     QDateTime nowtime = QDateTime::currentDateTime();
-                    QString timeblock = nowtime.toString("yyyy-MM-dd hh:mm:ss.zzz");
-                    switch (VCI_Transmit(gDevType, gDevIdx, i, &translist.value(Widget::Gmesg).car_frame[j],  gTxFrames)) {
-
-
+                    QString timeblock = nowtime.toString("hh:mm:ss.zzz   ") + QString::asprintf("CAN TX successed: ID=0x%08x, Data=0x", translist.value(Widget::Gmesg).car_frame[j].ID);
+                    if( gTxFrames == VCI_Transmit(gDevType, gDevIdx, i, &translist.value(Widget::Gmesg).car_frame[j],  gTxFrames))
+                    {
+                        for (int ii = 0; ii < translist.value(Widget::Gmesg).car_frame[j].DataLen; ii++) {
+                            timeblock = timeblock + QString::asprintf("%02x", translist.value(Widget::Gmesg).car_frame[j].Data[ii]);
+                        }
+                        qDebug() << timeblock;
+                        msleep(translist.value(Widget::Gmesg).cycle_time);
                     }
-                    int dwel = VCI_Transmit(gDevType, gDevIdx, i, &translist.value(Widget::Gmesg).car_frame[j],  gTxFrames);
-                    qDebug() << timeblock << "+++++++++++++++++++++++++++++++++++++++++++++++++++" << dwel;
-                    qDebug() << Widget::Gmesg << QString::asprintf("dddddddddddddddID:%08x, buff.Data:%02x", translist.value(Widget::Gmesg).car_frame[j].ID,translist.value(Widget::Gmesg).car_frame[j].Data[0]);
-                    msleep(translist.value(Widget::Gmesg).cycle_time);
+                    else {
+                        j--;
+                        continue;
+                    }
                     if (Widget::Gmesg == "CRM_re" && j == 6 && Widget::CRM_AA == 0)
                     {
                         Widget::Gmesg = "CRM_00";
@@ -356,7 +356,7 @@ void sentframe::tx_thread()
         }
         msleep(250);
     }
-    time(&tm2);
+//    time(&tm2);
     free(buff);
 }
 
