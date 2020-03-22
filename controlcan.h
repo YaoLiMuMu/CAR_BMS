@@ -140,14 +140,82 @@ EXTERN_C ULONG VCI_Receive(DWORD DeviceType,DWORD DeviceInd,DWORD CANInd,PVCI_CA
 #define RX_WAIT_TIME  100
 #define RX_BUFF_SIZE  1000
 
-static const unsigned gDevType = 0x04;
+static const unsigned gDevType = 0x04;  // USBCAN-II/II+
 static const unsigned gDevIdx = 0x00;
 static const unsigned gChMask = 0x02;   // channel 2 normal
-static const unsigned gBaud = 0x1C01;   // 250kb/s
-static const unsigned gTxType = 0x00;   // 0x00
+static const unsigned gBaud = 0x1C01;   // 250kb/s:1C01, 125kb/s:1C03
+static const unsigned gTxType = 0x01;   // normal send
 static const unsigned gTxSleep = 0x01;
 static const unsigned gTxFrames = 0x01;
 static const unsigned gTxCount = 0x01;
+
+typedef enum {
+    H1=1,      // H1 Handshake start state
+    H2=2,        // H2 Handshake recognition state
+    C1=3,
+    R1=4,
+    P1=5,
+    P2=6,
+    T1=7,
+    W1
+} State;
+
+typedef enum{
+    Null_1=1,  // not receive CHM from system start stamp timeout=5s
+    CRM_00=2,    // receive CRM(0x00)
+    CRM_AA=3,    // receive CRM(0xAA)
+    CHM=4,       // receive CHM
+    Null_2=5,    // receive CRM from system start stamp timeout=60s
+    Null_3=6,     // not receive CRM from CHM stamp timeout=30s
+    K5_K6=7,
+    B_BHM=8,
+    B_BRO_00=9,
+    B_BCL=10,
+    B_BCS_INIT=11,
+    CTS=12,
+    CML=13,
+    CRO_00=14,
+    CRO_AA=15,
+    CCS=16,
+    CST=17,
+    CSD=18,
+    CEM=19,
+    BRM_ACK=20,
+    BRM_CONF=21,
+    BCP_ACK=22,
+    BCP_CONF=23,
+    BCS_ST=24,
+    BCS_ACK=25,
+    BCS_CONF
+} EventID;
+
+typedef enum{
+    BRM_INIT =1,
+    BRM=2,
+    BHM=3,
+    BEM=4,
+    BCP=5,
+    BCP_INIT=6,
+    BRO_00=7,
+    BRO_AA=8,
+    BCL=9,
+    BCS_INIT=10,
+    BCS=11,
+    BSM=12,
+    BMV=13,
+    BMT=14,
+    BSP=15,
+    BST=16,
+    BSD=17,
+    Bus_sleep
+} Action;
+
+typedef struct {
+    State curState;//当前状态
+    EventID eventId;//事件ID
+    State nextState;//下个状态
+    Action action;//具体表现
+} StateTransform;
 
 #endif
 

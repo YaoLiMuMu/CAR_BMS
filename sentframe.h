@@ -14,7 +14,7 @@ typedef struct {
     unsigned len;
     unsigned cycle_time;
     unsigned time_out;
-} FRAME;
+} CAN_Messages;
 
 class sentframe : public QObject
 {
@@ -23,12 +23,19 @@ public:
     explicit sentframe(QObject *parent = nullptr);
 
 signals:
+    void Shoot_Error(unsigned);
+    void FeedBack(EventID);
+    void BCS_TimeStamp();
 
 public slots:
-    void generate_frame(VCI_CAN_OBJ *can);
-    void tx_thread();
+    void generate_frame(VCI_CAN_OBJ *);
+    void tx_thread(Action);
+    void tx_frame(CAN_Messages);
+    void Auto_transmit(VCI_CAN_OBJ *);
 private:
-    QMap<QString, FRAME> translist;
+    QMap<QString, CAN_Messages> translist;
+    uint err = 0;
+    CAN_Messages MSG_BHM, MSG_BRM_init, MSG_BRM, MSG_BCP_init, MSG_BCP, MSG_BRO_00, MSG_BRO_AA, MSG_BCL, MSG_BCS_init, MSG_BCS, MSG_BSM;
 };
 
 #endif // SENTFRAME_H

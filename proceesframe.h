@@ -15,6 +15,13 @@ typedef struct {
     unsigned error; // error(s) detected
 } RX_CTX;
 
+typedef struct{
+    uint32_t Rece_CAN_ID;
+    EventID Send_event;
+    uint Bit_num;
+    BYTE * Data;
+} ReceTab;
+
 class proceesframe : public QObject
 {
     Q_OBJECT
@@ -23,10 +30,11 @@ public:
 
 signals:
     void Send2UI(unsigned);
+    void Send2Main(EventID);
     void Sendcan(VCI_CAN_OBJ can);
 
 public slots:
-    int verify_frame(VCI_CAN_OBJ *can);
+    int Verify_Frame(VCI_CAN_OBJ, uint, BYTE *);
     void rx_thread();
 
 private:
