@@ -29,15 +29,18 @@ typedef HANDLE pthread_t;
 #   include <fcntl.h>
 #endif
 //***
+
+typedef void (*func)(EventID, QByteArray);
 typedef struct{
     State state;
     int transNum;
     StateTransform * transform;
 } StateMachine;
+typedef struct{
+    void (*func)(QByteArray);
+} TransFrame;
 
-extern StateMachine * pSM;
-extern StateMachine stateMachine;
-extern StateTransform stateTran[];
+extern StateTransform stateTran[]; // 柔性数组必须使用extern
 
 namespace Ui {
 class Widget;
@@ -56,7 +59,10 @@ public:
     static bool CRM_AA;                         // CRM(0xAA) history
     static bool CML;                            // CML history
     static short BCL2BCS;                       // BCL connect to BCS
-
+    static VCI_CAN_OBJ _BCL[1];                 // BCL Frame Data
+    static VCI_CAN_OBJ _BCS[2];                 // BCS Frame Data
+    static VCI_CAN_OBJ _BCP[2];                 // BCP Frame Data
+    static void Parser(EventID, QByteArray);
 signals:
     void EXE_Action(Action);
 
@@ -67,12 +73,18 @@ private slots:
     QByteArray processVoltage(QString, int);    // transfer Voltages String to BMS Demand Voltage
     QByteArray processCurrent(QString, int);    // transfer Current String to BMS Demand Current
     void BCS_BSM_Gen();
+    void BCL_Gen();
+    void Changer_Vision(QByteArray);
 
 private:
     Ui::Widget *ui;
     QThread * Tthread;
     QThread * Rthread;
     QTimer *myTimer;
+    QTimer *byTimer;
+    StateMachine stateMachine;
+    StateMachine * pSM;
+    TransFrame transframe[2];
 };
 
 #endif // WIDGET_H

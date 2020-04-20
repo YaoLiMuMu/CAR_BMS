@@ -7,7 +7,8 @@
 #include <unistd.h>
 #include <QThread>
 #include <QDateTime>
-#define msleep(ms)  usleep((ms)*1000)
+#include <QTimer>
+#include <QEventLoop>
 
 typedef struct {
     VCI_CAN_OBJ * car_frame;
@@ -36,6 +37,7 @@ private:
     QMap<QString, CAN_Messages> translist;
     uint err = 0;
     CAN_Messages MSG_BHM, MSG_BRM_init, MSG_BRM, MSG_BCP_init, MSG_BCP, MSG_BRO_00, MSG_BRO_AA, MSG_BCL, MSG_BCS_init, MSG_BCS, MSG_BSM;
+    QTimer _threadIdleTimer;
 };
 
 #endif // SENTFRAME_H

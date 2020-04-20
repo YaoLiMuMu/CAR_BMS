@@ -1,8 +1,8 @@
 #include "widget.h"
 #include "ui_widget.h"
 
-StateMachine * pSM;
 StateMachine stateMachine;
+TransFrame transframe[2];
 StateTransform stateTran[] = {
         {H1, Null_1, H2, BRM_INIT},
         {H1, CRM_00, H2, BRM_INIT},
@@ -30,8 +30,13 @@ StateTransform stateTran[] = {
         {R1, B_BRO_00, R1, BRO_AA},
         {P1, B_BCL, P1, BCL},
         {P2, B_BCS_INIT, P1, BCL},
-        {P2, BCS_ST, P2, BCS_INIT}
-    };// 该数组不能在被调函数中声明赋值, 要不被调函数结束后会被回收, 则指向该数组的指针变为空指针
+        {P2, BCS_ST, P2, BCS_INIT},
+        {P1, BCL_ST, P1, BCL}
+        //{P2, BCL_ST, P2, BCL}
+    };// 该柔性数组不能在被调函数中声明赋值, 要不被调函数结束后会被回收, 则指向该数组的指针变为空指针
+VCI_CAN_OBJ Widget::_BCL[1];
+VCI_CAN_OBJ Widget::_BCS[2];
+VCI_CAN_OBJ Widget::_BCP[2];
 
 Widget::Widget(QWidget *parent) :
     QWidget(parent),
@@ -44,14 +49,91 @@ Widget::Widget(QWidget *parent) :
     sentframe * sframe = new sentframe;
     QThread * Tthread = new QThread;
     QThread * Rthread = new QThread;
-    myTimer = new QTimer(this);
-    myTimer->setInterval(250);
     pframe->moveToThread(Rthread);
     sframe->moveToThread(Tthread);
+    myTimer = new QTimer(this);
+    myTimer->setInterval(250);
+    byTimer = new QTimer(this);
+    byTimer->setInterval(50);
+    // Initial pSM;
+    pSM = new StateMachine;
     stateMachine.state = H1;
     stateMachine.transNum = 27;
     stateMachine.transform = stateTran;
     pSM = & stateMachine;
+    // _BCL Frame Data
+    _BCL->SendType = gTxType;
+    _BCL->RemoteFlag = 0;
+    _BCL->ExternFlag = 1;
+    _BCL->DataLen = 5;
+//    _BCL->Data[0] = 0x68;
+//    _BCL->Data[1] = 0x10;
+//    _BCL->Data[2] = 0x96;
+//    _BCL->Data[3] = 0x0F;
+//    _BCL->Data[4] = 0x01;
+    _BCL->Data[0] = 0x4C;//4C1D600901
+    _BCL->Data[1] = 0x1D;
+    _BCL->Data[2] = 0x60;
+    _BCL->Data[3] = 0x09;
+    _BCL->Data[4] = 0x01;
+    _BCL->ID= 0x181056F4;
+    // _BCS Frame Data
+    _BCS[0].SendType = gTxType;
+    _BCS[0].RemoteFlag = 0;
+    _BCS[0].ExternFlag = 1;
+    _BCS[0].DataLen = 8;
+    _BCS[0].Data[0] = 0x01;
+    _BCS[0].Data[1] = 0x0F;
+    _BCS[0].Data[2] = 0x0F;
+    _BCS[0].Data[3] = 0x96;
+    _BCS[0].Data[4] = 0x0F;
+    _BCS[0].Data[5] = 0x98;
+    _BCS[0].Data[6] = 0x08;
+    _BCS[0].Data[7] = 0x32;
+    _BCS[0].ID = 0x1CEB56F4;
+    _BCS[1].SendType = gTxType;
+    _BCS[1].RemoteFlag = 0;
+    _BCS[1].ExternFlag = 1;
+    _BCS[1].DataLen = 8;
+    _BCS[1].Data[0] = 0x02;
+    _BCS[1].Data[1] = 0x2C;
+    _BCS[1].Data[2] = 0x01;
+    _BCS[1].Data[3] = 0xFF;
+    _BCS[1].Data[4] = 0xFF;
+    _BCS[1].Data[5] = 0xFF;
+    _BCS[1].Data[6] = 0xFF;
+    _BCS[1].Data[7] = 0xFF;
+    _BCS[1].ID = 0x1CEB56F4;
+    // _BCP Frame Data
+    _BCP[0].SendType = gTxType;
+    _BCP[0].RemoteFlag = 0;
+    _BCP[0].ExternFlag = 1;
+    _BCP[0].DataLen = 8;
+    _BCP[0].Data[0] = 0x01;
+    _BCP[0].Data[1] = 0x60;
+    _BCP[0].Data[2] = 0x09;
+    _BCP[0].Data[3] = 0xDC;
+    _BCP[0].Data[4] = 0x05;
+    _BCP[0].Data[5] = 0x10;
+    _BCP[0].Data[6] = 0x27;
+    _BCP[0].Data[7] = 0x4C;
+    _BCP[0].ID = 0x1CEB56F4;
+    _BCP[1].SendType = gTxType;
+    _BCP[1].RemoteFlag = 0;
+    _BCP[1].ExternFlag = 1;
+    _BCP[1].DataLen = 8;
+    _BCP[1].Data[0] = 0x02;
+    _BCP[1].Data[1] = 0x1D;
+    _BCP[1].Data[2] = 0xFA;
+    _BCP[1].Data[3] = 0xF4;
+    _BCP[1].Data[4] = 0x01;
+    _BCP[1].Data[5] = 0x4C;
+    _BCP[1].Data[6] = 0x1D;
+    _BCP[1].Data[7] = 0xFF;
+    _BCP[1].ID = 0x1CEB56F4;
+    //
+//    transframe[1].func = Parser;
+//    transframe[2].func = Parser;
     qDebug() << "Mainthread ID: " << QThread::currentThreadId();
 
     if (!VCI_OpenDevice(gDevType, gDevIdx, 0)) {
@@ -93,13 +175,16 @@ Widget::Widget(QWidget *parent) :
 
     connect(sframe,SIGNAL(BCS_TimeStamp()), myTimer, SLOT(start()));
     connect(myTimer, SIGNAL(timeout()), this, SLOT(BCS_BSM_Gen()));
+    connect(byTimer, SIGNAL(timeout()), this, SLOT(BCL_Gen()));
     Tthread->start();
     Rthread->start();
-    runStateMachine(CHM);
+//    runStateMachine(CHM);
     msleep(1000);
     myTimer->start();
-    //connect(pframe,SIGNAL(Send2UI(unsigned)),this,SLOT(CloseDev(unsigned))); // CLOSE device for receive error
-    //connect(sframe,SIGNAL(Shoot_Error(unsigned)),this,SLOT(CloseDev(unsigned))); // ClOSE device for transmit error
+    byTimer->start();
+    connect(pframe,SIGNAL(Sendcan(EventID, QByteArray)),this,SLOT(Parser(EventID, QByteArray)));
+    connect(pframe,SIGNAL(Send2UI(unsigned)),this,SLOT(CloseDev(unsigned))); // CLOSE device for receive error
+    connect(sframe,SIGNAL(Shoot_Error(unsigned)),this,SLOT(CloseDev(unsigned))); // ClOSE device for transmit error
 }
 
 Widget::~Widget() // 析构函数
@@ -107,9 +192,24 @@ Widget::~Widget() // 析构函数
     delete ui;
 }
 
+void Widget::Parser(EventID Event, QByteArray CAN_Array)
+{
+
+}
+
+void Widget::Changer_Vision(QByteArray CHM_Array)
+{
+    ui->label1_6->setText(QString("%1.%2").arg(CHM_Array.at(0)).arg(CHM_Array.at(1)));
+}
+
 void Widget::BCS_BSM_Gen()
 {
     runStateMachine(BCS_ST);
+}
+
+void Widget::BCL_Gen()
+{
+    runStateMachine(BCL_ST);
 }
 
 void Widget::runStateMachine(EventID evt)
@@ -117,7 +217,7 @@ void Widget::runStateMachine(EventID evt)
     int i;
     StateTransform * pTrans = nullptr; // initialize point
     for (i = 0; i < stateMachine.transNum; i++) {
- //       qDebug() << "______________________________" << pSM->state << pSM->transform[i].curState << pSM->transform[i].eventId << evt;
+//        qDebug() << "______________________________" << pSM->state << pSM->transform[i].curState << pSM->transform[i].eventId << evt;
         if ((pSM->transform[i].curState == pSM->state) && (pSM->transform[i].eventId == evt)) {
         pTrans = &pSM->transform[i];
         break;
@@ -154,12 +254,17 @@ void Widget::on_pushButton1_1_clicked()
         return;
     }
     QString output = ui->lineEdit1_1->text();
-    Demand_CV.data()[2] = processCurrent(output,10).at(1);
-    Demand_CV.data()[3] = processCurrent(output,10).at(0);
+//    Demand_CV.data()[2] = processCurrent(output,10).at(1);
+//    Demand_CV.data()[3] = processCurrent(output,10).at(0);
+    _BCL->Data[2] = uchar(processCurrent(output,10).at(1));
+    _BCL->Data[3] = uchar(processCurrent(output,10).at(0));
     output = ui->lineEdit1_2->text();
-    Demand_CV.data()[0] = processVoltage(output,10).at(1);
-    Demand_CV.data()[1] = processVoltage(output,10).at(0);
-    qDebug() << "______________________________" << Demand_CV.toHex();
+//    Demand_CV.data()[0] = processVoltage(output,10).at(1);
+//    Demand_CV.data()[1] = processVoltage(output,10).at(0);
+    _BCL->Data[0] = uchar(processVoltage(output,10).at(1));
+    _BCL->Data[1] = uchar(processVoltage(output,10).at(0));
+    qDebug() << "BMS Demand Voltage and Current Frame set to: 0x" << _BCL->Data[0]
+             << _BCL->Data[1] << _BCL->Data[2] << _BCL->Data[3] << _BCL->Data[4];
 }
 
 QByteArray Widget::processVoltage(QString item, int k) // or can try str.toLatin1()/str.toUtf8()

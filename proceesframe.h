@@ -20,6 +20,7 @@ typedef struct{
     EventID Send_event;
     uint Bit_num;
     BYTE * Data;
+    bool Trans_flag;
 } ReceTab;
 
 class proceesframe : public QObject
@@ -31,7 +32,7 @@ public:
 signals:
     void Send2UI(unsigned);
     void Send2Main(EventID);
-    void Sendcan(VCI_CAN_OBJ can);
+    void Sendcan(EventID, QByteArray);
 
 public slots:
     int Verify_Frame(VCI_CAN_OBJ, uint, BYTE *);

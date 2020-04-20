@@ -3,33 +3,30 @@
 
 sentframe::sentframe(QObject *parent) : QObject(parent)
 {
+    // BCL frame
+//    MSG_BCL.car_frame = (VCI_CAN_OBJ * ) malloc(sizeof (VCI_CAN_OBJ));
+//    MSG_BCL.car_frame->SendType = gTxType;
+//    MSG_BCL.car_frame->RemoteFlag = 0;
+//    MSG_BCL.car_frame->DataLen = 5;
+//    MSG_BCL.car_frame->Data = Widget::_BCL;
+//    MSG_BCL.car_frame->ID = 0x181056F4;
+//    MSG_BCL.car_frame->ExternFlag = 1;
+    MSG_BCL.car_frame = & Widget::_BCL[0];
+    MSG_BCL.time_out = 1000;
+    MSG_BCL.cycle_time = 50;
+    MSG_BCL.len = 1;
     // BHM init frame
     MSG_BHM.car_frame = (VCI_CAN_OBJ *) malloc(sizeof (VCI_CAN_OBJ));
     MSG_BHM.car_frame->SendType = gTxType;
     MSG_BHM.car_frame->RemoteFlag = 0;
     MSG_BHM.car_frame->DataLen = 2;
-    MSG_BHM.car_frame->Data[0] = 0x88;
-    MSG_BHM.car_frame->Data[1] = 0x13;
+    MSG_BHM.car_frame->Data[0] = 0x4C;
+    MSG_BHM.car_frame->Data[1] = 0x1D;
     MSG_BHM.car_frame->ID = 0x182756F4;
     MSG_BHM.car_frame->ExternFlag = 1;
     MSG_BHM.time_out = 5000;
     MSG_BHM.cycle_time = 250;
     MSG_BHM.len = 1;
-    // BCL frame
-    MSG_BCL.car_frame = (VCI_CAN_OBJ * ) malloc(sizeof (VCI_CAN_OBJ));
-    MSG_BCL.car_frame->SendType = gTxType;
-    MSG_BCL.car_frame->RemoteFlag = 0;
-    MSG_BCL.car_frame->DataLen = 5;
-    MSG_BCL.car_frame->Data[0] = uchar(Widget::Demand_CV.at(0));
-    MSG_BCL.car_frame->Data[1] = uchar(Widget::Demand_CV.at(1));
-    MSG_BCL.car_frame->Data[2] = uchar(Widget::Demand_CV.at(2));
-    MSG_BCL.car_frame->Data[3] = uchar(Widget::Demand_CV.at(3));
-    MSG_BCL.car_frame->Data[4] = uchar(Widget::Demand_CV.at(4));
-    MSG_BCL.car_frame->ID = 0x181056F4;
-    MSG_BCL.car_frame->ExternFlag = 1;
-    MSG_BCL.time_out = 1000;
-    MSG_BCL.cycle_time = 50;
-    MSG_BCL.len = 1;
     // BRO_00 frame
     MSG_BRO_00.car_frame = (VCI_CAN_OBJ * ) malloc(sizeof (VCI_CAN_OBJ));
     MSG_BRO_00.car_frame->SendType = gTxType;
@@ -69,7 +66,7 @@ sentframe::sentframe(QObject *parent) : QObject(parent)
     MSG_BRM_init.car_frame->ID = 0x1CEC56F4;
     MSG_BRM_init.car_frame->ExternFlag = 1;
     MSG_BRM_init.time_out = 5000;
-    MSG_BRM_init.cycle_time = 250;
+    MSG_BRM_init.cycle_time = 0;
     MSG_BRM_init.len = 1;
     // BRM 长消息
     MSG_BRM.car_frame = (VCI_CAN_OBJ *) malloc(sizeof (VCI_CAN_OBJ)*7);
@@ -84,14 +81,14 @@ sentframe::sentframe(QObject *parent) : QObject(parent)
     MSG_BRM.car_frame[0].Data[4] = 0x01;
     MSG_BRM.car_frame[0].Data[5] = 0x88;
     MSG_BRM.car_frame[0].Data[6] = 0x13;
-    MSG_BRM.car_frame[0].Data[7] = 0x88;
+    MSG_BRM.car_frame[0].Data[7] = 0x4C;
     MSG_BRM.car_frame[0].ID = 0x1CEB56F4;
     MSG_BRM.car_frame[0].ExternFlag = 1;
     MSG_BRM.car_frame[1].SendType = gTxType;
     MSG_BRM.car_frame[1].RemoteFlag = 0;
     MSG_BRM.car_frame[1].DataLen = 8;
     MSG_BRM.car_frame[1].Data[0] = 0x02;
-    MSG_BRM.car_frame[1].Data[1] = 0x13;
+    MSG_BRM.car_frame[1].Data[1] = 0x1D;
     MSG_BRM.car_frame[1].Data[2] = 0x4E;
     MSG_BRM.car_frame[1].Data[3] = 0x53;
     MSG_BRM.car_frame[1].Data[4] = 0x49;
@@ -120,35 +117,35 @@ sentframe::sentframe(QObject *parent) : QObject(parent)
     MSG_BRM.car_frame[3].Data[1] = 0x00;
     MSG_BRM.car_frame[3].Data[2] = 0x01;
     MSG_BRM.car_frame[3].Data[3] = 0xFF;
-    MSG_BRM.car_frame[3].Data[4] = 0xFF;
-    MSG_BRM.car_frame[3].Data[5] = 0xFF;
-    MSG_BRM.car_frame[3].Data[6] = 0xFF;
-    MSG_BRM.car_frame[3].Data[7] = 0xFF;
+    MSG_BRM.car_frame[3].Data[4] = 'N';
+    MSG_BRM.car_frame[3].Data[5] = 'Z';
+    MSG_BRM.car_frame[3].Data[6] = '0';
+    MSG_BRM.car_frame[3].Data[7] = '9';
     MSG_BRM.car_frame[3].ID = 0x1CEB56F4;
     MSG_BRM.car_frame[3].ExternFlag = 1;
     MSG_BRM.car_frame[4].SendType = gTxType;
     MSG_BRM.car_frame[4].RemoteFlag = 0;
     MSG_BRM.car_frame[4].DataLen = 8;
     MSG_BRM.car_frame[4].Data[0] = 0x05;
-    MSG_BRM.car_frame[4].Data[1] = 0xFF;
-    MSG_BRM.car_frame[4].Data[2] = 0xFF;
-    MSG_BRM.car_frame[4].Data[3] = 0xFF;
-    MSG_BRM.car_frame[4].Data[4] = 0xFF;
-    MSG_BRM.car_frame[4].Data[5] = 0xFF;
-    MSG_BRM.car_frame[4].Data[6] = 0xFF;
-    MSG_BRM.car_frame[4].Data[7] = 0xFF;
+    MSG_BRM.car_frame[4].Data[1] = '4';
+    MSG_BRM.car_frame[4].Data[2] = '3';
+    MSG_BRM.car_frame[4].Data[3] = 0x00;
+    MSG_BRM.car_frame[4].Data[4] = 0x00;
+    MSG_BRM.car_frame[4].Data[5] = 0x00;
+    MSG_BRM.car_frame[4].Data[6] = 0x00;
+    MSG_BRM.car_frame[4].Data[7] = 0x00;
     MSG_BRM.car_frame[4].ID = 0x1CEB56F4;
     MSG_BRM.car_frame[4].ExternFlag = 1;
     MSG_BRM.car_frame[5].SendType = gTxType;
     MSG_BRM.car_frame[5].RemoteFlag = 0;
     MSG_BRM.car_frame[5].DataLen = 8;
     MSG_BRM.car_frame[5].Data[0] = 0x06;
-    MSG_BRM.car_frame[5].Data[1] = 0xFF;
-    MSG_BRM.car_frame[5].Data[2] = 0xFF;
-    MSG_BRM.car_frame[5].Data[3] = 0xFF;
-    MSG_BRM.car_frame[5].Data[4] = 0xFF;
-    MSG_BRM.car_frame[5].Data[5] = 0xFF;
-    MSG_BRM.car_frame[5].Data[6] = 0xFF;
+    MSG_BRM.car_frame[5].Data[1] = 0x00;
+    MSG_BRM.car_frame[5].Data[2] = 0x00;
+    MSG_BRM.car_frame[5].Data[3] = 0x00;
+    MSG_BRM.car_frame[5].Data[4] = 0x00;
+    MSG_BRM.car_frame[5].Data[5] = 0x00;
+    MSG_BRM.car_frame[5].Data[6] = 0x00;
     MSG_BRM.car_frame[5].Data[7] = 0xFF;
     MSG_BRM.car_frame[5].ID = 0x1CEB56F4;
     MSG_BRM.car_frame[5].ExternFlag = 1;
@@ -184,7 +181,7 @@ sentframe::sentframe(QObject *parent) : QObject(parent)
     MSG_BCP_init.car_frame->ID = 0x1CEC56F4;
     MSG_BCP_init.car_frame->ExternFlag = 1;
     MSG_BCP_init.time_out = 5000;
-    MSG_BCP_init.cycle_time = 250;
+    MSG_BCP_init.cycle_time = 1;
     MSG_BCP_init.len = 1;
     // BCP 长消息
     MSG_BCP.car_frame = (VCI_CAN_OBJ *) malloc(sizeof (VCI_CAN_OBJ)*2);
@@ -195,23 +192,23 @@ sentframe::sentframe(QObject *parent) : QObject(parent)
     MSG_BCP.car_frame[0].Data[0] = 0x01;
     MSG_BCP.car_frame[0].Data[1] = 0x60;
     MSG_BCP.car_frame[0].Data[2] = 0x09;
-    MSG_BCP.car_frame[0].Data[3] = 0xB8;
-    MSG_BCP.car_frame[0].Data[4] = 0x0B;
+    MSG_BCP.car_frame[0].Data[3] = 0xDC;
+    MSG_BCP.car_frame[0].Data[4] = 0x05;
     MSG_BCP.car_frame[0].Data[5] = 0x10;
     MSG_BCP.car_frame[0].Data[6] = 0x27;
-    MSG_BCP.car_frame[0].Data[7] = 0x88;
+    MSG_BCP.car_frame[0].Data[7] = 0x4C;
     MSG_BCP.car_frame[0].ID = 0x1CEB56F4;
     MSG_BCP.car_frame[0].ExternFlag = 1;
     MSG_BCP.car_frame[1].SendType = gTxType;
     MSG_BCP.car_frame[1].RemoteFlag = 0;
     MSG_BCP.car_frame[1].DataLen = 8;
     MSG_BCP.car_frame[1].Data[0] = 0x02;
-    MSG_BCP.car_frame[1].Data[1] = 0x13;
+    MSG_BCP.car_frame[1].Data[1] = 0x1D;
     MSG_BCP.car_frame[1].Data[2] = 0xFA;
     MSG_BCP.car_frame[1].Data[3] = 0xF4;
     MSG_BCP.car_frame[1].Data[4] = 0x01;
-    MSG_BCP.car_frame[1].Data[5] = 0xA0;
-    MSG_BCP.car_frame[1].Data[6] = 0x0F;
+    MSG_BCP.car_frame[1].Data[5] = 0x4C;
+    MSG_BCP.car_frame[1].Data[6] = 0x1D;
     MSG_BCP.car_frame[1].Data[7] = 0xFF;
     MSG_BCP.car_frame[1].ID = 0x1CEB56F4;
     MSG_BCP.car_frame[1].ExternFlag = 1;
@@ -234,38 +231,39 @@ sentframe::sentframe(QObject *parent) : QObject(parent)
     MSG_BCS_init.car_frame->ID = 0x1CEC56F4;
     MSG_BCS_init.car_frame->ExternFlag = 1;
     MSG_BCS_init.time_out = 5000;
-    MSG_BCS_init.cycle_time = 250;
+    MSG_BCS_init.cycle_time = 1;
     MSG_BCS_init.len = 1;
     // BCS 长消息
-    MSG_BCS.car_frame = (VCI_CAN_OBJ *) malloc(sizeof (VCI_CAN_OBJ)*2);
-    MSG_BCS.car_frame[0].SendType = gTxType;
-    MSG_BCS.car_frame[0].RemoteFlag = 0;
-    MSG_BCS.car_frame[0].DataLen = 8;
-    MSG_BCS.car_frame[0].Data[0] = 0xA0;
-    MSG_BCS.car_frame[0].Data[1] = 0x0F;
-    MSG_BCS.car_frame[0].Data[2] = 0x0F;
-    MSG_BCS.car_frame[0].Data[3] = 0xD8;
-    MSG_BCS.car_frame[0].Data[4] = 0x0E;
-    MSG_BCS.car_frame[0].Data[5] = 0x98;
-    MSG_BCS.car_frame[0].Data[6] = 0x08;
-    MSG_BCS.car_frame[0].Data[7] = 0x32;
-    MSG_BCS.car_frame[0].ID = 0x1CEB56F4;
-    MSG_BCS.car_frame[0].ExternFlag = 1;
-    MSG_BCS.car_frame[1].SendType = gTxType;
-    MSG_BCS.car_frame[1].RemoteFlag = 0;
-    MSG_BCS.car_frame[1].DataLen = 8;
-    MSG_BCS.car_frame[1].Data[0] = 0x02;
-    MSG_BCS.car_frame[1].Data[1] = 0x2C;
-    MSG_BCS.car_frame[1].Data[2] = 0xFF;
-    MSG_BCS.car_frame[1].Data[3] = 0xFF;
-    MSG_BCS.car_frame[1].Data[4] = 0xFF;
-    MSG_BCS.car_frame[1].Data[5] = 0xFF;
-    MSG_BCS.car_frame[1].Data[6] = 0xFF;
-    MSG_BCS.car_frame[1].Data[7] = 0xFF;
-    MSG_BCS.car_frame[1].ID = 0x1CEB56F4;
-    MSG_BCS.car_frame[1].ExternFlag = 1;
+//    MSG_BCS.car_frame = (VCI_CAN_OBJ *) malloc(sizeof (VCI_CAN_OBJ)*2);
+//    MSG_BCS.car_frame[0].SendType = gTxType;
+//    MSG_BCS.car_frame[0].RemoteFlag = 0;
+//    MSG_BCS.car_frame[0].DataLen = 8;
+//    MSG_BCS.car_frame[0].Data[0] = 0x01;
+//    MSG_BCS.car_frame[0].Data[1] = 0x0F;
+//    MSG_BCS.car_frame[0].Data[2] = 0x0F;
+//    MSG_BCS.car_frame[0].Data[3] = 0x8E;
+//    MSG_BCS.car_frame[0].Data[4] = 0x01;
+//    MSG_BCS.car_frame[0].Data[5] = 0x98;
+//    MSG_BCS.car_frame[0].Data[6] = 0x08;
+//    MSG_BCS.car_frame[0].Data[7] = 0x32;
+//    MSG_BCS.car_frame[0].ID = 0x1CEB56F4;
+//    MSG_BCS.car_frame[0].ExternFlag = 1;
+//    MSG_BCS.car_frame[1].SendType = gTxType;
+//    MSG_BCS.car_frame[1].RemoteFlag = 0;
+//    MSG_BCS.car_frame[1].DataLen = 8;
+//    MSG_BCS.car_frame[1].Data[0] = 0x02;
+//    MSG_BCS.car_frame[1].Data[1] = 0x2C;
+//    MSG_BCS.car_frame[1].Data[2] = 0x01;
+//    MSG_BCS.car_frame[1].Data[3] = 0xFF;
+//    MSG_BCS.car_frame[1].Data[4] = 0xFF;
+//    MSG_BCS.car_frame[1].Data[5] = 0xFF;
+//    MSG_BCS.car_frame[1].Data[6] = 0xFF;
+//    MSG_BCS.car_frame[1].Data[7] = 0xFF;
+//    MSG_BCS.car_frame[1].ID = 0x1CEB56F4;
+//    MSG_BCS.car_frame[1].ExternFlag = 1;
+    MSG_BCS.car_frame = & Widget::_BCS[0];
     MSG_BCS.time_out = 5000;
-    MSG_BCS.cycle_time = 5;
+    MSG_BCS.cycle_time = 10;
     MSG_BCS.len = 2;
     //  BSM frame
     MSG_BSM.car_frame = (VCI_CAN_OBJ *) malloc(sizeof (VCI_CAN_OBJ));
@@ -291,6 +289,21 @@ sentframe::sentframe(QObject *parent) : QObject(parent)
 void sentframe::tx_thread(Action eve_act)
 {
     qDebug() << "TX_thread ID: " << QThread::currentThreadId() << "execute action code is " << eve_act;
+    // BCL frame
+//    MSG_BCL.car_frame = (VCI_CAN_OBJ * ) malloc(sizeof (VCI_CAN_OBJ));
+//    MSG_BCL.car_frame->SendType = gTxType;
+//    MSG_BCL.car_frame->RemoteFlag = 0;
+//    MSG_BCL.car_frame->DataLen = 5;
+//    MSG_BCL.car_frame->Data[0] = uchar(Widget::Demand_CV.at(0));
+//    MSG_BCL.car_frame->Data[1] = uchar(Widget::Demand_CV.at(1));
+//    MSG_BCL.car_frame->Data[2] = uchar(Widget::Demand_CV.at(2));
+//    MSG_BCL.car_frame->Data[3] = uchar(Widget::Demand_CV.at(3));
+//    MSG_BCL.car_frame->Data[4] = uchar(Widget::Demand_CV.at(4));
+//    MSG_BCL.car_frame->ID = 0x181056F4;
+//    MSG_BCL.car_frame->ExternFlag = 1;
+//    MSG_BCL.time_out = 1000;
+//    MSG_BCL.cycle_time = 50;
+//    MSG_BCL.len = 1;
 //    // Qmap insert list
 //    translist.insert("CHM", BHM);
 //    translist.insert("CRM_00", BRM_init);
@@ -376,6 +389,7 @@ void sentframe::tx_thread(Action eve_act)
         break;
     case BRO_00:
         tx_frame(MSG_BRO_00);
+        msleep(40000);
         emit FeedBack(B_BRO_00);
         break;
     case BRO_AA:
@@ -383,7 +397,7 @@ void sentframe::tx_thread(Action eve_act)
         break;
     case BCL:
         tx_frame(MSG_BCL);
-        emit FeedBack(B_BCL);
+        //emit FeedBack(B_BCL);
         //emit BCS_TimeStamp();
         break;
     case BCS_INIT:
@@ -412,7 +426,9 @@ void sentframe::tx_frame(CAN_Messages Msg)
     QTime startime = QTime::currentTime();
     for (uint j = 0; j < Msg.len; j++) {
         Auto_transmit(&Msg.car_frame[j]);
-        msleep(Msg.cycle_time);
+        QEventLoop loop;
+        QTimer::singleShot(Msg.cycle_time, &loop, SLOT(quit()));
+        loop.exec();
     }
     QTime endtime = QTime::currentTime();
     qDebug() << "This CAN frames spend time is " << startime.msecsTo(endtime) << "ms";

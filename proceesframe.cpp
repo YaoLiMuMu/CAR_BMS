@@ -6,7 +6,8 @@ bool Widget::CRM_00 = 0;
 bool Widget::CRM_AA = 0;
 bool Widget::CML = 0;
 short Widget::BCL2BCS = 0;
-QByteArray Widget::Demand_CV = QByteArray::fromHex("A00F8F0101");//6810D80E01
+QByteArray Widget::Demand_CV = QByteArray::fromHex("6810D80E01");//6810D80E01 420V Voltage and 1A Current
+                                                                 //4C1D600901 750V Voltage and 160A Curren
 
 proceesframe::proceesframe(QObject *parent) : QObject(parent)
 {
@@ -24,18 +25,23 @@ void proceesframe::rx_thread()
     BYTE bcs_ack[] = {0x11, 0x02, 0x01, 0xFF, 0xFF, 0x00, 0x11, 0x00};
     BYTE bcs_conf[] = {0x13, 0x09, 0x00, 0x02, 0xFF, 0x00, 0x11, 0x00};
     ReceTab rece_Tab[] = {
-        {0x1826F456, CHM, 0xff, nullptr},
-        {0x1801F456, CRM_00, 0x01, readiness_00},
-        {0x1801F456, CRM_AA, 0x01, readiness_AA},
-        {0x1CECF456, BRM_ACK, 0x8, brm_ack},
-        {0x1CECF456, BRM_CONF, 0x08, brm_conf},
-        {0x1CECF456, BCP_ACK, 0x08, bcp_ack},
-        {0x1CECF456, BCP_CONF, 0x08, bcp_conf},
-        {0x1CECF456, BCS_ACK, 0x08, bcs_ack},
-        {0x1CECF456, BCS_CONF, 0x08, bcs_conf},
-        {0x1808F456, CML, 0xff, nullptr},
-        {0x100AF456, CRO_00, 0x01, readiness_00},
-        {0x100AF456, CRO_AA, 0x01, readiness_AA}
+        {0x1826F456, CHM, 0xff, nullptr, 1},
+        {0x1801F456, CRM_00, 0x01, readiness_00, 1},
+        {0x1801F456, CRM_AA, 0x01, readiness_AA, 1},
+        {0x1CECF456, BRM_ACK, 0x8, brm_ack, 0},
+        {0x1CECF456, BRM_CONF, 0x08, brm_conf, 0},
+        {0x1CECF456, BCP_ACK, 0x08, bcp_ack, 0},
+        {0x1CECF456, BCP_CONF, 0x08, bcp_conf, 0},
+        {0x1CECF456, BCS_ACK, 0x08, bcs_ack, 0},
+        {0x1CECF456, BCS_CONF, 0x08, bcs_conf, 0},
+        {0x1808F456, CML, 0xff, nullptr, 0},
+        {0x100AF456, CRO_00, 0x01, readiness_00, 1},
+        {0x100AF456, CRO_AA, 0x01, readiness_AA, 1},
+        {0x1807F456, CTS, 0xff, nullptr, 1},
+        {0x1812F456, CCS, 0xff, nullptr, 1},
+        {0x101AF456, CST, 0xff, nullptr, 1},
+        {0x181DF456, CSD, 0xff, nullptr, 1},
+        {0x011FF456, CEM, 0xff, nullptr, 1}
     };
     qDebug() << "RX_thread ID: " << QThread::currentThreadId();
     VCI_ClearBuffer(gDevType, gDevIdx, 0);
@@ -63,17 +69,20 @@ void proceesframe::rx_thread()
             continue;
         }
         for (i = 0; i < cnt; i++) {
-
+                QByteArray CAN_Array;
                 QString Redata = QString::asprintf("CAN RX successed: ID=0x%08x, Data=0x", can[i].ID);
                 for (j = 0; j < can[i].DataLen; j++)
                 {
+                    CAN_Array.data()[j] = can[i].Data[j];
                     Redata = Redata + QString::asprintf("%02x", can[i].Data[j]);
                 }
                 qDebug() << Redata;
-                for (int j = 0; j < 12; j++) {
+                for (int j = 0; j < 17; j++) {
                     if(can[i].ID == rece_Tab[j].Rece_CAN_ID && Verify_Frame(can[i], rece_Tab[j].Bit_num, rece_Tab[j].Data))
                     {
                         emit Send2Main(rece_Tab[j].Send_event);
+                        if (rece_Tab[j].Trans_flag)
+                            emit Sendcan(rece_Tab[j].Send_event, CAN_Array);
                         qDebug() << "*******Event code is : " << rece_Tab[j].Send_event;
                         break;
                     }
@@ -147,7 +156,7 @@ void proceesframe::rx_thread()
 //                    }
 //                }
 //                qDebug() << "****************************************" << Widget::Gmesg ;
-                emit Sendcan(can[i]);
+
                 continue;
 
             printf("CAN%d: verify_frame() failed\n", ctx->channel);

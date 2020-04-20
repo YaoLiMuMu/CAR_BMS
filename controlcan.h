@@ -151,7 +151,7 @@ static const unsigned gTxCount = 0x01;
 
 typedef enum {
     H1=1,      // H1 Handshake start state
-    H2=2,        // H2 Handshake recognition state
+    H2=2,      // H2 Handshake recognition state
     C1=3,
     R1=4,
     P1=5,
@@ -186,7 +186,8 @@ typedef enum{
     BCP_CONF=23,
     BCS_ST=24,
     BCS_ACK=25,
-    BCS_CONF
+    BCS_CONF,
+    BCL_ST
 } EventID;
 
 typedef enum{
