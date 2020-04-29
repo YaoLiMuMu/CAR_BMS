@@ -1,4 +1,4 @@
-#include "widget.h"
+﻿#include "widget.h"
 #include "ui_widget.h"
 
 StateMachine stateMachine;
@@ -31,12 +31,16 @@ StateTransform stateTran[] = {
         {P1, B_BCL, P1, BCL},
         {P2, B_BCS_INIT, P1, BCL},
         {P2, BCS_ST, P2, BCS_INIT},
-        {P1, BCL_ST, P1, BCL}
-        //{P2, BCL_ST, P2, BCL}
+        {P1, BCL_ST, P1, BCL},
+        {P1, BSM_ST, P1, BSM},
+        {P2, BCL_ST, P2, BCL},
     };// 该柔性数组不能在被调函数中声明赋值, 要不被调函数结束后会被回收, 则指向该数组的指针变为空指针
+QMutex m_mutex;
 VCI_CAN_OBJ Widget::_BCL[1];
 VCI_CAN_OBJ Widget::_BCS[2];
 VCI_CAN_OBJ Widget::_BCP[2];
+VCI_CAN_OBJ Widget::_BSM[1];
+bool Widget::Free_work;
 
 Widget::Widget(QWidget *parent) :
     QWidget(parent),
@@ -61,77 +65,93 @@ Widget::Widget(QWidget *parent) :
     stateMachine.transNum = 27;
     stateMachine.transform = stateTran;
     pSM = & stateMachine;
+    Free_work = false;
+    QMutexLocker m_lock(&m_mutex);
     // _BCL Frame Data
-    _BCL->SendType = gTxType;
-    _BCL->RemoteFlag = 0;
-    _BCL->ExternFlag = 1;
-    _BCL->DataLen = 5;
-//    _BCL->Data[0] = 0x68;
-//    _BCL->Data[1] = 0x10;
-//    _BCL->Data[2] = 0x96;
-//    _BCL->Data[3] = 0x0F;
-//    _BCL->Data[4] = 0x01;
-    _BCL->Data[0] = 0x4C;//4C1D600901
-    _BCL->Data[1] = 0x1D;
-    _BCL->Data[2] = 0x60;
-    _BCL->Data[3] = 0x09;
-    _BCL->Data[4] = 0x01;
-    _BCL->ID= 0x181056F4;
-    // _BCS Frame Data
-    _BCS[0].SendType = gTxType;
-    _BCS[0].RemoteFlag = 0;
-    _BCS[0].ExternFlag = 1;
-    _BCS[0].DataLen = 8;
-    _BCS[0].Data[0] = 0x01;
-    _BCS[0].Data[1] = 0x0F;
-    _BCS[0].Data[2] = 0x0F;
-    _BCS[0].Data[3] = 0x96;
-    _BCS[0].Data[4] = 0x0F;
-    _BCS[0].Data[5] = 0x98;
-    _BCS[0].Data[6] = 0x08;
-    _BCS[0].Data[7] = 0x32;
-    _BCS[0].ID = 0x1CEB56F4;
-    _BCS[1].SendType = gTxType;
-    _BCS[1].RemoteFlag = 0;
-    _BCS[1].ExternFlag = 1;
-    _BCS[1].DataLen = 8;
-    _BCS[1].Data[0] = 0x02;
-    _BCS[1].Data[1] = 0x2C;
-    _BCS[1].Data[2] = 0x01;
-    _BCS[1].Data[3] = 0xFF;
-    _BCS[1].Data[4] = 0xFF;
-    _BCS[1].Data[5] = 0xFF;
-    _BCS[1].Data[6] = 0xFF;
-    _BCS[1].Data[7] = 0xFF;
-    _BCS[1].ID = 0x1CEB56F4;
-    // _BCP Frame Data
-    _BCP[0].SendType = gTxType;
-    _BCP[0].RemoteFlag = 0;
-    _BCP[0].ExternFlag = 1;
-    _BCP[0].DataLen = 8;
-    _BCP[0].Data[0] = 0x01;
-    _BCP[0].Data[1] = 0x60;
-    _BCP[0].Data[2] = 0x09;
-    _BCP[0].Data[3] = 0xDC;
-    _BCP[0].Data[4] = 0x05;
-    _BCP[0].Data[5] = 0x10;
-    _BCP[0].Data[6] = 0x27;
-    _BCP[0].Data[7] = 0x4C;
-    _BCP[0].ID = 0x1CEB56F4;
-    _BCP[1].SendType = gTxType;
-    _BCP[1].RemoteFlag = 0;
-    _BCP[1].ExternFlag = 1;
-    _BCP[1].DataLen = 8;
-    _BCP[1].Data[0] = 0x02;
-    _BCP[1].Data[1] = 0x1D;
-    _BCP[1].Data[2] = 0xFA;
-    _BCP[1].Data[3] = 0xF4;
-    _BCP[1].Data[4] = 0x01;
-    _BCP[1].Data[5] = 0x4C;
-    _BCP[1].Data[6] = 0x1D;
-    _BCP[1].Data[7] = 0xFF;
-    _BCP[1].ID = 0x1CEB56F4;
-    //
+    {
+        _BCL->SendType = gTxType;
+        _BCL->RemoteFlag = 0;
+        _BCL->ExternFlag = 1;
+        _BCL->DataLen = 5;
+    //    _BCL->Data[0] = 0x68;
+    //    _BCL->Data[1] = 0x10;
+    //    _BCL->Data[2] = 0x96;
+    //    _BCL->Data[3] = 0x0F;
+    //    _BCL->Data[4] = 0x01;
+        _BCL->Data[0] = 0x4C;//4C1D600901
+        _BCL->Data[1] = 0x1D;
+        _BCL->Data[2] = 0x60;
+        _BCL->Data[3] = 0x09;
+        _BCL->Data[4] = 0x01;
+        _BCL->ID= 0x181056F4;
+        // _BCS Frame Data
+        _BCS[0].SendType = gTxType;
+        _BCS[0].RemoteFlag = 0;
+        _BCS[0].ExternFlag = 1;
+        _BCS[0].DataLen = 8;
+        _BCS[0].Data[0] = 0x01;
+        _BCS[0].Data[1] = 0x0F;
+        _BCS[0].Data[2] = 0x0F;
+        _BCS[0].Data[3] = 0x96;
+        _BCS[0].Data[4] = 0x0F;
+        _BCS[0].Data[5] = 0x98;
+        _BCS[0].Data[6] = 0x08;
+        _BCS[0].Data[7] = 0x32;
+        _BCS[0].ID = 0x1CEB56F4;
+        _BCS[1].SendType = gTxType;
+        _BCS[1].RemoteFlag = 0;
+        _BCS[1].ExternFlag = 1;
+        _BCS[1].DataLen = 8;
+        _BCS[1].Data[0] = 0x02;
+        _BCS[1].Data[1] = 0x2C;
+        _BCS[1].Data[2] = 0x01;
+        _BCS[1].Data[3] = 0xFF;
+        _BCS[1].Data[4] = 0xFF;
+        _BCS[1].Data[5] = 0xFF;
+        _BCS[1].Data[6] = 0xFF;
+        _BCS[1].Data[7] = 0xFF;
+        _BCS[1].ID = 0x1CEB56F4;
+        // _BCP Frame Data
+        _BCP[0].SendType = gTxType;
+        _BCP[0].RemoteFlag = 0;
+        _BCP[0].ExternFlag = 1;
+        _BCP[0].DataLen = 8;
+        _BCP[0].Data[0] = 0x01;
+        _BCP[0].Data[1] = 0x60;
+        _BCP[0].Data[2] = 0x09;
+        _BCP[0].Data[3] = 0xDC;
+        _BCP[0].Data[4] = 0x05;
+        _BCP[0].Data[5] = 0x10;
+        _BCP[0].Data[6] = 0x27;
+        _BCP[0].Data[7] = 0x4C;
+        _BCP[0].ID = 0x1CEB56F4;
+        _BCP[1].SendType = gTxType;
+        _BCP[1].RemoteFlag = 0;
+        _BCP[1].ExternFlag = 1;
+        _BCP[1].DataLen = 8;
+        _BCP[1].Data[0] = 0x02;
+        _BCP[1].Data[1] = 0x1D;
+        _BCP[1].Data[2] = 0xFA;
+        _BCP[1].Data[3] = 0xF4;
+        _BCP[1].Data[4] = 0x01;
+        _BCP[1].Data[5] = 0x4C;
+        _BCP[1].Data[6] = 0x1D;
+        _BCP[1].Data[7] = 0xFF;
+        _BCP[1].ID = 0x1CEB56F4;
+        // _BSM Frame Fata
+        _BSM->SendType = gTxType;
+        _BSM->RemoteFlag = 0;
+        _BSM->ExternFlag = 1;
+        _BSM->DataLen = 7;
+        _BSM->Data[0] = 0x19;//01 82 01 6E 02 20 D0
+        _BSM->Data[1] = 0x50;//3C;
+        _BSM->Data[2] = 0x0F;
+        _BSM->Data[3] = 0x3A;
+        _BSM->Data[4] = 0x01;
+        _BSM->Data[5] = 0x00;
+        _BSM->Data[6] = 0xD0;
+        _BSM->ID= 0x181356F4;
+    }
 //    transframe[1].func = Parser;
 //    transframe[2].func = Parser;
     qDebug() << "Mainthread ID: " << QThread::currentThreadId();
@@ -204,6 +224,8 @@ void Widget::Changer_Vision(QByteArray CHM_Array)
 
 void Widget::BCS_BSM_Gen()
 {
+    runStateMachine(BSM_ST);
+    msleep(10);
     runStateMachine(BCS_ST);
 }
 
@@ -265,6 +287,8 @@ void Widget::on_pushButton1_1_clicked()
     _BCL->Data[1] = uchar(processVoltage(output,10).at(0));
     qDebug() << "BMS Demand Voltage and Current Frame set to: 0x" << _BCL->Data[0]
              << _BCL->Data[1] << _BCL->Data[2] << _BCL->Data[3] << _BCL->Data[4];
+    output = ui->lineEdit1_3->text();
+    _BSM->Data[1] = uchar(processTemprature(output).at(0));
 }
 
 QByteArray Widget::processVoltage(QString item, int k) // or can try str.toLatin1()/str.toUtf8()
@@ -317,6 +341,33 @@ QByteArray Widget::processCurrent(QString item, int k) // or can try str.toLatin
             ctempor = 0xa + (item.toLocal8Bit().data()[2*i+1] - 'a');
         }
         dat.data()[i] = char((dat.data()[i] << 4) | ctempor);
+    }
+    return dat;
+}
+
+QByteArray Widget::processTemprature(QString item)
+{
+    QByteArray dat;
+    int val = item.toInt() + 50; // int < 2147483648
+    item = item.setNum(val, 16);    // or String str = Interger.toHexString(val) ; use String
+    if (item.length()%2 != 0)
+        item = '0' + item;
+    dat.resize(item.length()/2);    // can't use sizeof get Qstring size, because will get Qstring object point size
+    char ctempor = 0;
+    for (int i = 0; i < item.length()/2; i++)
+    {
+        if (item.toLocal8Bit().data()[2*i] >= '0' && item.toLocal8Bit().data()[2*i] <= '9')
+            ctempor = item.toLocal8Bit().data()[2*i] -48;
+        else {
+            ctempor = 0xa + (item.toLocal8Bit().data()[2*i] - 'a');
+        }
+        dat.data()[i] = ctempor;
+        if (item.toLocal8Bit().data()[2*i+1] >= '0' && item.toLocal8Bit().data()[2*i+1] <= '9')
+            ctempor = item.toLocal8Bit().data()[2*i+1] -48;
+        else {
+            ctempor = 0xa + (item.toLocal8Bit().data()[2*i+1] - 'a');
+        }
+        dat.data()[(i)] = char((dat.data()[i] << 4) | ctempor);
     }
     return dat;
 }

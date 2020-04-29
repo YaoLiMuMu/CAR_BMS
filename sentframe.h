@@ -8,6 +8,8 @@
 #include <QThread>
 #include <QDateTime>
 #include <QTimer>
+#include <QMutex>
+#include <QMutexLocker>
 #include <QEventLoop>
 
 typedef struct {
@@ -35,6 +37,7 @@ public slots:
     void Auto_transmit(VCI_CAN_OBJ *);
 private:
     QMap<QString, CAN_Messages> translist;
+    QMutex m_mutex;
     uint err = 0;
     CAN_Messages MSG_BHM, MSG_BRM_init, MSG_BRM, MSG_BCP_init, MSG_BCP, MSG_BRO_00, MSG_BRO_AA, MSG_BCL, MSG_BCS_init, MSG_BCS, MSG_BSM;
     QTimer _threadIdleTimer;

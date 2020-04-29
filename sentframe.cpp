@@ -1,5 +1,6 @@
 #include "sentframe.h"
 #include "widget.h"
+QMutex q_mutex;
 
 sentframe::sentframe(QObject *parent) : QObject(parent)
 {
@@ -196,19 +197,19 @@ sentframe::sentframe(QObject *parent) : QObject(parent)
     MSG_BCP.car_frame[0].Data[4] = 0x05;
     MSG_BCP.car_frame[0].Data[5] = 0x10;
     MSG_BCP.car_frame[0].Data[6] = 0x27;
-    MSG_BCP.car_frame[0].Data[7] = 0x4C;
+    MSG_BCP.car_frame[0].Data[7] = 0x68;
     MSG_BCP.car_frame[0].ID = 0x1CEB56F4;
     MSG_BCP.car_frame[0].ExternFlag = 1;
     MSG_BCP.car_frame[1].SendType = gTxType;
     MSG_BCP.car_frame[1].RemoteFlag = 0;
     MSG_BCP.car_frame[1].DataLen = 8;
     MSG_BCP.car_frame[1].Data[0] = 0x02;
-    MSG_BCP.car_frame[1].Data[1] = 0x1D;
+    MSG_BCP.car_frame[1].Data[1] = 0x10;
     MSG_BCP.car_frame[1].Data[2] = 0xFA;
     MSG_BCP.car_frame[1].Data[3] = 0xF4;
     MSG_BCP.car_frame[1].Data[4] = 0x01;
-    MSG_BCP.car_frame[1].Data[5] = 0x4C;
-    MSG_BCP.car_frame[1].Data[6] = 0x1D;
+    MSG_BCP.car_frame[1].Data[5] = 0xA0;
+    MSG_BCP.car_frame[1].Data[6] = 0x0F;
     MSG_BCP.car_frame[1].Data[7] = 0xFF;
     MSG_BCP.car_frame[1].ID = 0x1CEB56F4;
     MSG_BCP.car_frame[1].ExternFlag = 1;
@@ -266,19 +267,20 @@ sentframe::sentframe(QObject *parent) : QObject(parent)
     MSG_BCS.cycle_time = 10;
     MSG_BCS.len = 2;
     //  BSM frame
-    MSG_BSM.car_frame = (VCI_CAN_OBJ *) malloc(sizeof (VCI_CAN_OBJ));
-    MSG_BSM.car_frame[0].SendType = gTxType;
-    MSG_BSM.car_frame[0].RemoteFlag = 0;
-    MSG_BSM.car_frame->DataLen = 7;
-    MSG_BSM.car_frame->Data[0] = 0x01;
-    MSG_BSM.car_frame->Data[1] = 0x82;
-    MSG_BSM.car_frame->Data[2] = 0x01;
-    MSG_BSM.car_frame->Data[3] = 0x6E;
-    MSG_BSM.car_frame->Data[4] = 0x02;
-    MSG_BSM.car_frame->Data[5] = 0x00;
-    MSG_BSM.car_frame->Data[6] = 0xD0;
-    MSG_BSM.car_frame->ID = 0x181356F4;
-    MSG_BSM.car_frame->ExternFlag = 1;
+//    MSG_BSM.car_frame = (VCI_CAN_OBJ *) malloc(sizeof (VCI_CAN_OBJ));
+//    MSG_BSM.car_frame[0].SendType = gTxType;
+//    MSG_BSM.car_frame[0].RemoteFlag = 0;
+//    MSG_BSM.car_frame->DataLen = 7;
+//    MSG_BSM.car_frame->Data[0] = 0x01;
+//    MSG_BSM.car_frame->Data[1] = 0x82;
+//    MSG_BSM.car_frame->Data[2] = 0x01;
+//    MSG_BSM.car_frame->Data[3] = 0x6E;
+//    MSG_BSM.car_frame->Data[4] = 0x02;
+//    MSG_BSM.car_frame->Data[5] = 0x00;
+//    MSG_BSM.car_frame->Data[6] = 0xD0;
+//    MSG_BSM.car_frame->ID = 0x181356F4;
+//    MSG_BSM.car_frame->ExternFlag = 1;
+    MSG_BSM.car_frame = & Widget::_BSM[0];
     MSG_BSM.time_out = 5000;
     MSG_BSM.cycle_time = 250;
     MSG_BSM.len = 1;
@@ -288,6 +290,7 @@ sentframe::sentframe(QObject *parent) : QObject(parent)
 
 void sentframe::tx_thread(Action eve_act)
 {
+//    QMutexLocker locker(&q_mutex);
     qDebug() << "TX_thread ID: " << QThread::currentThreadId() << "execute action code is " << eve_act;
     // BCL frame
 //    MSG_BCL.car_frame = (VCI_CAN_OBJ * ) malloc(sizeof (VCI_CAN_OBJ));
@@ -368,6 +371,11 @@ void sentframe::tx_thread(Action eve_act)
 //        }
 //    }
 //    free(buff);
+    if (Widget::Free_work)
+        return;
+    else {
+        Widget::Free_work = true;
+    }
     switch (eve_act) {
     case BHM:
         tx_frame(MSG_BHM);
@@ -389,7 +397,7 @@ void sentframe::tx_thread(Action eve_act)
         break;
     case BRO_00:
         tx_frame(MSG_BRO_00);
-        msleep(40000);
+        msleep(30000);
         emit FeedBack(B_BRO_00);
         break;
     case BRO_AA:
@@ -406,7 +414,11 @@ void sentframe::tx_thread(Action eve_act)
     case BCS:
         tx_frame(MSG_BCS);
         break;
+    case BSM:
+        tx_frame(MSG_BSM);
+        break;
     }
+    Widget::Free_work = false;
 }
 
 void sentframe::generate_frame(VCI_CAN_OBJ * can)
@@ -423,6 +435,7 @@ void sentframe::generate_frame(VCI_CAN_OBJ * can)
 
 void sentframe::tx_frame(CAN_Messages Msg)
 {
+//    QMutexLocker locker(&q_mutex);
     QTime startime = QTime::currentTime();
     for (uint j = 0; j < Msg.len; j++) {
         Auto_transmit(&Msg.car_frame[j]);
@@ -432,6 +445,7 @@ void sentframe::tx_frame(CAN_Messages Msg)
     }
     QTime endtime = QTime::currentTime();
     qDebug() << "This CAN frames spend time is " << startime.msecsTo(endtime) << "ms";
+//    q_mutex.unlock();
 }
 
 void sentframe::Auto_transmit(VCI_CAN_OBJ * vco)

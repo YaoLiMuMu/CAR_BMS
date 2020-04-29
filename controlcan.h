@@ -187,7 +187,8 @@ typedef enum{
     BCS_ST=24,
     BCS_ACK=25,
     BCS_CONF,
-    BCL_ST
+    BCL_ST,
+    BSM_ST
 } EventID;
 
 typedef enum{

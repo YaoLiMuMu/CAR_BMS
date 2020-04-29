@@ -41,6 +41,8 @@ typedef struct{
 } TransFrame;
 
 extern StateTransform stateTran[]; // 柔性数组必须使用extern
+extern QMutex m_mutex;
+extern QMutex q_mutex;
 
 namespace Ui {
 class Widget;
@@ -62,7 +64,9 @@ public:
     static VCI_CAN_OBJ _BCL[1];                 // BCL Frame Data
     static VCI_CAN_OBJ _BCS[2];                 // BCS Frame Data
     static VCI_CAN_OBJ _BCP[2];                 // BCP Frame Data
+    static VCI_CAN_OBJ _BSM[1];                 // BSM Frame Data
     static void Parser(EventID, QByteArray);
+    static bool Free_work;
 signals:
     void EXE_Action(Action);
 
@@ -72,6 +76,7 @@ private slots:
     void on_pushButton1_1_clicked();            // function for loading Demand Voltage/Current setting
     QByteArray processVoltage(QString, int);    // transfer Voltages String to BMS Demand Voltage
     QByteArray processCurrent(QString, int);    // transfer Current String to BMS Demand Current
+    QByteArray processTemprature(QString);      // trnasfer Temprature String to BMS Tcell
     void BCS_BSM_Gen();
     void BCL_Gen();
     void Changer_Vision(QByteArray);

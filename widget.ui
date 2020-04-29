@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>413</width>
-    <height>310</height>
+    <width>581</width>
+    <height>370</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -133,6 +133,38 @@
    </property>
    <property name="text">
     <string>F</string>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="lineEdit1_3">
+   <property name="geometry">
+    <rect>
+     <x>120</x>
+     <y>150</y>
+     <width>113</width>
+     <height>25</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label2_9">
+   <property name="geometry">
+    <rect>
+     <x>40</x>
+     <y>150</y>
+     <width>75</width>
+     <height>25</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="text">
+    <string>Celcius/℃</string>
+   </property>
+   <property name="buddy">
+    <cstring>lineEdit2_1</cstring>
    </property>
   </widget>
  </widget>
