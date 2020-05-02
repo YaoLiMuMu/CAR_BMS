@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>581</width>
-    <height>370</height>
+    <width>817</width>
+    <height>467</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -162,6 +162,73 @@
    </property>
    <property name="text">
     <string>Celcius/℃</string>
+   </property>
+   <property name="buddy">
+    <cstring>lineEdit2_1</cstring>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="lineEdit1_4">
+   <property name="geometry">
+    <rect>
+     <x>530</x>
+     <y>70</y>
+     <width>113</width>
+     <height>25</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label2_10">
+   <property name="geometry">
+    <rect>
+     <x>364</x>
+     <y>74</y>
+     <width>161</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="text">
+    <string>BHM绝缘检测电压/V</string>
+   </property>
+   <property name="buddy">
+    <cstring>lineEdit2_1</cstring>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="lineEdit1_5">
+   <property name="geometry">
+    <rect>
+     <x>530</x>
+     <y>110</y>
+     <width>113</width>
+     <height>25</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label2_11">
+   <property name="geometry">
+    <rect>
+     <x>370</x>
+     <y>110</y>
+     <width>141</width>
+     <height>25</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="text">
+    <string>BCP电池起始电压/V</string>
    </property>
    <property name="buddy">
     <cstring>lineEdit2_1</cstring>

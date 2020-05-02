@@ -34,12 +34,16 @@ StateTransform stateTran[] = {
         {P1, BCL_ST, P1, BCL},
         {P1, BSM_ST, P1, BSM},
         {P2, BCL_ST, P2, BCL},
+    {P2, CHM, H1, Free_50ms},
+    {P1, CHM, H1, Free_50ms},
+    {R1, CHM, H1, Free_50ms},
     };// 该柔性数组不能在被调函数中声明赋值, 要不被调函数结束后会被回收, 则指向该数组的指针变为空指针
 QMutex m_mutex;
 VCI_CAN_OBJ Widget::_BCL[1];
 VCI_CAN_OBJ Widget::_BCS[2];
 VCI_CAN_OBJ Widget::_BCP[2];
 VCI_CAN_OBJ Widget::_BSM[1];
+VCI_CAN_OBJ Widget::_BHM[1];
 bool Widget::Free_work;
 
 Widget::Widget(QWidget *parent) :
@@ -62,7 +66,7 @@ Widget::Widget(QWidget *parent) :
     // Initial pSM;
     pSM = new StateMachine;
     stateMachine.state = H1;
-    stateMachine.transNum = 27;
+    stateMachine.transNum = 31;
     stateMachine.transform = stateTran;
     pSM = & stateMachine;
     Free_work = false;
@@ -123,22 +127,22 @@ Widget::Widget(QWidget *parent) :
         _BCP[0].Data[4] = 0x05;
         _BCP[0].Data[5] = 0x10;
         _BCP[0].Data[6] = 0x27;
-        _BCP[0].Data[7] = 0x4C;
+        _BCP[0].Data[7] = 0x68;
         _BCP[0].ID = 0x1CEB56F4;
         _BCP[1].SendType = gTxType;
         _BCP[1].RemoteFlag = 0;
         _BCP[1].ExternFlag = 1;
         _BCP[1].DataLen = 8;
         _BCP[1].Data[0] = 0x02;
-        _BCP[1].Data[1] = 0x1D;
+        _BCP[1].Data[1] = 0x10;
         _BCP[1].Data[2] = 0xFA;
         _BCP[1].Data[3] = 0xF4;
         _BCP[1].Data[4] = 0x01;
-        _BCP[1].Data[5] = 0x4C;
-        _BCP[1].Data[6] = 0x1D;
+        _BCP[1].Data[5] = 0xA0;
+        _BCP[1].Data[6] = 0x0F;
         _BCP[1].Data[7] = 0xFF;
         _BCP[1].ID = 0x1CEB56F4;
-        // _BSM Frame Fata
+        // _BSM Frame Data
         _BSM->SendType = gTxType;
         _BSM->RemoteFlag = 0;
         _BSM->ExternFlag = 1;
@@ -151,6 +155,14 @@ Widget::Widget(QWidget *parent) :
         _BSM->Data[5] = 0x00;
         _BSM->Data[6] = 0xD0;
         _BSM->ID= 0x181356F4;
+        // _BHM Frame Data
+        _BHM->SendType = gTxType;
+        _BHM->RemoteFlag = 0;
+        _BHM->ExternFlag = 1;
+        _BHM->DataLen = 7;
+        _BHM->Data[0] = 0x4C;
+        _BHM->Data[1] = 0x1D;
+        _BHM->ID = 0x182756F4;
     }
 //    transframe[1].func = Parser;
 //    transframe[2].func = Parser;
@@ -289,6 +301,18 @@ void Widget::on_pushButton1_1_clicked()
              << _BCL->Data[1] << _BCL->Data[2] << _BCL->Data[3] << _BCL->Data[4];
     output = ui->lineEdit1_3->text();
     _BSM->Data[1] = uchar(processTemprature(output).at(0));
+    if (ui->lineEdit1_4->text().isEmpty())
+        return;
+    output = ui->lineEdit1_4->text();
+    _BHM->Data[0] = uchar(processVoltage(output,10).at(1));
+    _BHM->Data[1] = uchar(processVoltage(output,10).at(0));
+    _BCP[0].Data[7] = uchar(processVoltage(output,10).at(1));
+    _BCP[1].Data[1] = uchar(processVoltage(output,10).at(0));
+    if (ui->lineEdit1_5->text().isEmpty())
+        return;
+    output = ui->lineEdit1_5->text();
+    _BCP[1].Data[5] = uchar(processVoltage(output,10).at(1));
+    _BCP[1].Data[6] = uchar(processVoltage(output,10).at(0));
 }
 
 QByteArray Widget::processVoltage(QString item, int k) // or can try str.toLatin1()/str.toUtf8()

@@ -65,6 +65,7 @@ public:
     static VCI_CAN_OBJ _BCS[2];                 // BCS Frame Data
     static VCI_CAN_OBJ _BCP[2];                 // BCP Frame Data
     static VCI_CAN_OBJ _BSM[1];                 // BSM Frame Data
+    static VCI_CAN_OBJ _BHM[1];                 // BHM Frame Data
     static void Parser(EventID, QByteArray);
     static bool Free_work;
 signals:

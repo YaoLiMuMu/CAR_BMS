@@ -14,7 +14,7 @@ sentframe::sentframe(QObject *parent) : QObject(parent)
 //    MSG_BCL.car_frame->ExternFlag = 1;
     MSG_BCL.car_frame = & Widget::_BCL[0];
     MSG_BCL.time_out = 1000;
-    MSG_BCL.cycle_time = 50;
+    MSG_BCL.cycle_time = 1;
     MSG_BCL.len = 1;
     // BHM init frame
 //    MSG_BHM.car_frame = (VCI_CAN_OBJ *) malloc(sizeof (VCI_CAN_OBJ));

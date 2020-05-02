@@ -209,7 +209,8 @@ typedef enum{
     BSP=15,
     BST=16,
     BSD=17,
-    Bus_sleep
+    Bus_sleep,
+    Free_50ms
 } Action;
 
 typedef struct {
