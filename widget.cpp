@@ -44,6 +44,8 @@ VCI_CAN_OBJ Widget::_BCS[2];
 VCI_CAN_OBJ Widget::_BCP[2];
 VCI_CAN_OBJ Widget::_BSM[1];
 VCI_CAN_OBJ Widget::_BHM[1];
+VCI_CAN_OBJ Widget::_BRM[7];
+QByteArray Widget::Vin_Code_Array;
 bool Widget::Free_work;
 
 Widget::Widget(QWidget *parent) :
@@ -71,6 +73,8 @@ Widget::Widget(QWidget *parent) :
     pSM = & stateMachine;
     Free_work = false;
     QMutexLocker m_lock(&m_mutex);
+    Vin_code_num = 17;
+//    Vin_Code_Array.resize(Vin_code_num);
     // _BCL Frame Data
     {
         _BCL->SendType = gTxType;
@@ -163,6 +167,98 @@ Widget::Widget(QWidget *parent) :
         _BHM->Data[0] = 0x4C;
         _BHM->Data[1] = 0x1D;
         _BHM->ID = 0x182756F4;
+        // _BRM Frame Data
+        _BRM[0].SendType = gTxType;
+        _BRM[0].RemoteFlag = 0;
+        _BRM[0].DataLen = 8;
+        _BRM[0].Data[0] = 0x01;
+        _BRM[0].Data[1] = 0x01;
+        _BRM[0].Data[2] = 0x01;
+        _BRM[0].Data[3] = 0x00;
+        _BRM[0].Data[4] = 0x01;
+        _BRM[0].Data[5] = 0x88;
+        _BRM[0].Data[6] = 0x13;
+        _BRM[0].Data[7] = 0x4C;
+        _BRM[0].ID = 0x1CEB56F4;
+        _BRM[0].ExternFlag = 1;
+        _BRM[1].SendType = gTxType;
+        _BRM[1].RemoteFlag = 0;
+        _BRM[1].DataLen = 8;
+        _BRM[1].Data[0] = 0x02;
+        _BRM[1].Data[1] = 0x1D;
+        _BRM[1].Data[2] = 0x4E;
+        _BRM[1].Data[3] = 0x53;
+        _BRM[1].Data[4] = 0x49;
+        _BRM[1].Data[5] = 0x56;
+        _BRM[1].Data[6] = 0x01;
+        _BRM[1].Data[7] = 0x00;
+        _BRM[1].ID = 0x1CEB56F4;
+        _BRM[1].ExternFlag = 1;
+        _BRM[2].SendType = gTxType;
+        _BRM[2].RemoteFlag = 0;
+        _BRM[2].DataLen = 8;
+        _BRM[2].Data[0] = 0x03;
+        _BRM[2].Data[1] = 0x00;
+        _BRM[2].Data[2] = 0x00;
+        _BRM[2].Data[3] = 0x06;
+        _BRM[2].Data[4] = 0x08;
+        _BRM[2].Data[5] = 0x01;
+        _BRM[2].Data[6] = 0x01;
+        _BRM[2].Data[7] = 0x00;
+        _BRM[2].ID = 0x1CEB56F4;
+        _BRM[2].ExternFlag = 1;
+        _BRM[3].SendType = gTxType;
+        _BRM[3].RemoteFlag = 0;
+        _BRM[3].DataLen = 8;
+        _BRM[3].Data[0] = 0x04;
+        _BRM[3].Data[1] = 0x00;
+        _BRM[3].Data[2] = 0x01;
+        _BRM[3].Data[3] = 0xFF;
+        _BRM[3].Data[4] = 'N';
+        _BRM[3].Data[5] = 'Z';
+        _BRM[3].Data[6] = '0';
+        _BRM[3].Data[7] = '9';
+        _BRM[3].ID = 0x1CEB56F4;
+        _BRM[3].ExternFlag = 1;
+        _BRM[4].SendType = gTxType;
+        _BRM[4].RemoteFlag = 0;
+        _BRM[4].DataLen = 8;
+        _BRM[4].Data[0] = 0x05;
+        _BRM[4].Data[1] = '4';
+        _BRM[4].Data[2] = '3';
+        _BRM[4].Data[3] = 0x06;
+        _BRM[4].Data[4] = 0x07;
+        _BRM[4].Data[5] = 0x08;
+        _BRM[4].Data[6] = 0x09;
+        _BRM[4].Data[7] = 0x0A;
+        _BRM[4].ID = 0x1CEB56F4;
+        _BRM[4].ExternFlag = 1;
+        _BRM[5].SendType = gTxType;
+        _BRM[5].RemoteFlag = 0;
+        _BRM[5].DataLen = 8;
+        _BRM[5].Data[0] = 0x06;
+        _BRM[5].Data[1] = 0x00;
+        _BRM[5].Data[2] = 0x00;
+        _BRM[5].Data[3] = 0x00;
+        _BRM[5].Data[4] = 0x00;
+        _BRM[5].Data[5] = 0x00;
+        _BRM[5].Data[6] = 0x00;
+        _BRM[5].Data[7] = 0xFF;
+        _BRM[5].ID = 0x1CEB56F4;
+        _BRM[5].ExternFlag = 1;
+        _BRM[6].SendType = gTxType;
+        _BRM[6].RemoteFlag = 0;
+        _BRM[6].DataLen = 8;
+        _BRM[6].Data[0] = 0x07;
+        _BRM[6].Data[1] = 0x0A;
+        _BRM[6].Data[2] = 0x0B;
+        _BRM[6].Data[3] = 0xDF;
+        _BRM[6].Data[4] = 0x07;
+        _BRM[6].Data[5] = 0xFF;
+        _BRM[6].Data[6] = 0xFF;
+        _BRM[6].Data[7] = 0xFF;
+        _BRM[6].ID = 0x1CEB56F4;
+        _BRM[6].ExternFlag = 1;
     }
 //    transframe[1].func = Parser;
 //    transframe[2].func = Parser;
@@ -301,18 +397,58 @@ void Widget::on_pushButton1_1_clicked()
              << _BCL->Data[1] << _BCL->Data[2] << _BCL->Data[3] << _BCL->Data[4];
     output = ui->lineEdit1_3->text();
     _BSM->Data[1] = uchar(processTemprature(output).at(0));
-    if (ui->lineEdit1_4->text().isEmpty())
-        return;
-    output = ui->lineEdit1_4->text();
-    _BHM->Data[0] = uchar(processVoltage(output,10).at(1));
-    _BHM->Data[1] = uchar(processVoltage(output,10).at(0));
-    _BCP[0].Data[7] = uchar(processVoltage(output,10).at(1));
-    _BCP[1].Data[1] = uchar(processVoltage(output,10).at(0));
-    if (ui->lineEdit1_5->text().isEmpty())
-        return;
-    output = ui->lineEdit1_5->text();
-    _BCP[1].Data[5] = uchar(processVoltage(output,10).at(1));
-    _BCP[1].Data[6] = uchar(processVoltage(output,10).at(0));
+    if (!ui->lineEdit1_4->text().isEmpty())
+    {
+        output = ui->lineEdit1_4->text();
+        _BHM->Data[0] = uchar(processVoltage(output,10).at(1));
+        _BHM->Data[1] = uchar(processVoltage(output,10).at(0));
+        _BCP[0].Data[7] = uchar(processVoltage(output,10).at(1));
+        _BCP[1].Data[1] = uchar(processVoltage(output,10).at(0));
+    }
+    if (!ui->lineEdit1_5->text().isEmpty())
+    {
+        output = ui->lineEdit1_5->text();
+        _BCP[1].Data[5] = uchar(processVoltage(output,10).at(1));
+        _BCP[1].Data[6] = uchar(processVoltage(output,10).at(0));
+    }
+    if(ui->checkBox1_1->isChecked())
+        _BSM->Data[6] = 0xC0; // 暂停
+    else {
+        _BSM->Data[6] = 0xD0; // 允许充电
+    }
+    if(ui->label2_13->text() == "17/17")
+    {
+        QString texttemp = ui->lineEdit1_6->text();
+        std::string tempstring = texttemp.toStdString();
+        std::string::iterator it;
+        for (it = tempstring.begin(); it < tempstring.end(); it++) {
+            if(*it == ' '){
+                tempstring.erase(it);
+                it--;
+            }
+        }
+        Vin_Code_Array = QByteArray::fromHex(QString::fromStdString(tempstring).toLocal8Bit());
+        // VIN code update
+        {
+        _BRM[3].Data[4] = uchar(Vin_Code_Array.at(0));
+        _BRM[3].Data[5] = uchar(Vin_Code_Array.at(1));
+        _BRM[3].Data[6] = uchar(Vin_Code_Array.at(2));
+        _BRM[3].Data[7] = uchar(Vin_Code_Array.at(3));
+        _BRM[4].Data[1] = uchar(Vin_Code_Array.at(4));
+        _BRM[4].Data[2] = uchar(Vin_Code_Array.at(5));
+        _BRM[4].Data[3] = uchar(Vin_Code_Array.at(6));
+        _BRM[4].Data[4] = uchar(Vin_Code_Array.at(7));
+        _BRM[4].Data[5] = uchar(Vin_Code_Array.at(8));
+        _BRM[4].Data[6] = uchar(Vin_Code_Array.at(9));
+        _BRM[4].Data[7] = uchar(Vin_Code_Array.at(10));
+        _BRM[5].Data[1] = uchar(Vin_Code_Array.at(11));
+        _BRM[5].Data[2] = uchar(Vin_Code_Array.at(12));
+        _BRM[5].Data[3] = uchar(Vin_Code_Array.at(13));
+        _BRM[5].Data[4] = uchar(Vin_Code_Array.at(14));
+        _BRM[5].Data[5] = uchar(Vin_Code_Array.at(15));
+        _BRM[5].Data[6] = uchar(Vin_Code_Array.at(16));
+        }
+    }
 }
 
 QByteArray Widget::processVoltage(QString item, int k) // or can try str.toLatin1()/str.toUtf8()
@@ -394,4 +530,54 @@ QByteArray Widget::processTemprature(QString item)
         dat.data()[(i)] = char((dat.data()[i] << 4) | ctempor);
     }
     return dat;
+}
+
+void Widget::on_lineEdit1_6_textChanged(const QString &arg1)
+{
+    if(ui->lineEdit1_6->text().isEmpty())
+        return;
+    QString hexbuff="0123456789ABCDEFabcdef";
+    bool flag = 0;
+    for (int j=0; j<hexbuff.length(); j++) {
+        if (arg1[arg1.length()-1] == hexbuff[j])
+            flag = 1;
+    }
+    if(flag)
+    {
+        flag = 0;
+        if(arg1.length()<2){
+            ui->lineEdit1_6->setText(arg1.toUpper());
+            ui->label2_13->setText(QString::number(0)+QString::fromUtf8("/")+QString::number(Vin_code_num));
+            return;
+        }
+        QString texttemp = arg1.toUpper();
+        std::string tempstring = texttemp.toStdString();
+        std::string::iterator it;
+        for (it = tempstring.begin(); it < tempstring.end(); it++) {
+            if(*it == ' '){
+                tempstring.erase(it);
+                it--;
+            }
+        }
+        ui->label2_13->setText(QString::number(tempstring.length()/2)+QString::fromUtf8("/")+QString::number(Vin_code_num));
+        texttemp = QString::fromStdString(tempstring);
+        short mod = (texttemp.length()/2);
+        short res = (texttemp.length()%2);
+        if(res)
+        {
+            for (short i=1; i <= mod; i++) {
+                texttemp.insert((3*i-1), " ");
+            }
+        }
+        else {
+            QString Buff_Temp = arg1.toUpper();
+            ui->lineEdit1_6->setText(Buff_Temp);
+            return;
+        }
+        ui->lineEdit1_6->setText(texttemp);
+    }
+    else {
+        QString Delete_End_String = arg1.left(arg1.length()-1);
+        ui->lineEdit1_6->setText(Delete_End_String);
+    }
 }

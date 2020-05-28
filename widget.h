@@ -66,6 +66,8 @@ public:
     static VCI_CAN_OBJ _BCP[2];                 // BCP Frame Data
     static VCI_CAN_OBJ _BSM[1];                 // BSM Frame Data
     static VCI_CAN_OBJ _BHM[1];                 // BHM Frame Data
+    static VCI_CAN_OBJ _BRM[7];                 // BRM Frame Data
+    static QByteArray Vin_Code_Array;
     static void Parser(EventID, QByteArray);
     static bool Free_work;
 signals:
@@ -81,6 +83,7 @@ private slots:
     void BCS_BSM_Gen();
     void BCL_Gen();
     void Changer_Vision(QByteArray);
+    void on_lineEdit1_6_textChanged(const QString &arg1);
 
 private:
     Ui::Widget *ui;
@@ -91,6 +94,7 @@ private:
     StateMachine stateMachine;
     StateMachine * pSM;
     TransFrame transframe[2];
+    int Vin_code_num;
 };
 
 #endif // WIDGET_H
