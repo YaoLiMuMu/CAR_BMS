@@ -1,14 +1,6 @@
 #include "proceesframe.h"
 #include "widget.h"
 
-QString Widget::Gmesg = "CHM";
-bool Widget::CRM_00 = 0;
-bool Widget::CRM_AA = 0;
-bool Widget::CML = 0;
-short Widget::BCL2BCS = 0;
-QByteArray Widget::Demand_CV = QByteArray::fromHex("6810D80E01");//6810D80E01 420V Voltage and 1A Current
-                                                                 //4C1D600901 750V Voltage and 160A Curren
-
 proceesframe::proceesframe(QObject *parent) : QObject(parent)
 {
 
@@ -24,11 +16,22 @@ void proceesframe::rx_thread()
     BYTE bcp_conf[] = {0x13, 0x0D, 0x00, 0x02, 0xFF, 0x00, 0x06, 0x00};
     BYTE bcs_ack[] = {0x11, 0x02, 0x01, 0xFF, 0xFF, 0x00, 0x11, 0x00};
     BYTE bcs_conf[] = {0x13, 0x09, 0x00, 0x02, 0xFF, 0x00, 0x11, 0x00};
+    BYTE bdc_ack[] = {0x11, 0x04, 0x01, 0xFF, 0xFF, 0x00, 0x29, 0x00};
+    BYTE bdc_conf[] = {0x13, 0x1C, 0x00, 0x04, 0xFF, 0x00, 0x29, 0x00};
+    BYTE ccd_00[] = {0x00};
+    BYTE ccd_01[] = {0x01};
     ReceTab rece_Tab[] = {
+        {0x1833F456, CSDP, 0xff, nullptr, 0},
+        {0x1832F456, CCD_00, 0xff, ccd_00, 1},
+        {0x1832F456, CCD_01, 0xff, ccd_01, 1},
+        {0x1831F456, CMLP, 0xff, nullptr, 1},
+        {0x1828F456, CDC, 0xff, nullptr, 0},
+        {0x1CECF456, BDC_ACK, 0x08, bdc_ack, 0},
+        {0x1CECF456, BDC_CONF, 0x08, bdc_conf, 0},
         {0x1826F456, CHM, 0xff, nullptr, 1},
         {0x1801F456, CRM_00, 0x01, readiness_00, 1},
         {0x1801F456, CRM_AA, 0x01, readiness_AA, 1},
-        {0x1CECF456, BRM_ACK, 0x8, brm_ack, 0},
+        {0x1CECF456, BRM_ACK, 0x08, brm_ack, 0},
         {0x1CECF456, BRM_CONF, 0x08, brm_conf, 0},
         {0x1CECF456, BCP_ACK, 0x08, bcp_ack, 0},
         {0x1CECF456, BCP_CONF, 0x08, bcp_conf, 0},
@@ -43,13 +46,14 @@ void proceesframe::rx_thread()
         {0x181DF456, CSD, 0xff, nullptr, 1},
         {0x011FF456, CEM, 0xff, nullptr, 1}
     };
+    int rece_Tab_num = 23;
     qDebug() << "RX_thread ID: " << QThread::currentThreadId();
     VCI_ClearBuffer(gDevType, gDevIdx, 0);
     VCI_ClearBuffer(gDevType, gDevIdx, 1);
     RX_CTX * ctx = (RX_CTX *)malloc(sizeof(RX_CTX));    // 结构体指针必须初始化
     ctx->stop = 0;
     ctx->error = 0;
-    ctx->channel = 1;
+    ctx->channel = work_Channel; // can channel 0 and 1
     ctx->total = 0; // reset counter
     VCI_CAN_OBJ can[RX_BUFF_SIZE]; // rececive buffer
     uint cnt; // current received number
@@ -63,7 +67,7 @@ void proceesframe::rx_thread()
             VCI_ERR_INFO vei;
             if (VCI_ReadErrInfo(gDevType, gDevIdx, ctx->channel,&vei))
             {
-                qDebug() << "Error code is : " << vei.ErrCode;
+                qDebug() << "Error code is : " << vei.ErrCode;  // 查询usbCAN错误码定义
             }
             printf("Null Message receive\n");
             continue;
@@ -77,7 +81,7 @@ void proceesframe::rx_thread()
                     Redata = Redata + QString::asprintf("%02x", can[i].Data[j]);
                 }
                 qDebug() << Redata;
-                for (int j = 0; j < 17; j++) {
+                for (int j = 0; j < rece_Tab_num; j++) {
                     if(can[i].ID == rece_Tab[j].Rece_CAN_ID && Verify_Frame(can[i], rece_Tab[j].Bit_num, rece_Tab[j].Data))
                     {
                         emit Send2Main(rece_Tab[j].Send_event);
@@ -182,5 +186,5 @@ int proceesframe::Verify_Frame(VCI_CAN_OBJ can, uint Len, BYTE * CAN_Data)
         if (can.Data[i] != CAN_Data[i])
             return 0;
     }
-    return 1; // ext-frame ok
+    return 1; // Verify Frame is Ok
 }

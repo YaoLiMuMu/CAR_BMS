@@ -141,33 +141,39 @@ EXTERN_C ULONG VCI_Receive(DWORD DeviceType,DWORD DeviceInd,DWORD CANInd,PVCI_CA
 #define RX_BUFF_SIZE  1000
 
 static const unsigned gDevType = 0x04;  // USBCAN-II/II+
-static const unsigned gDevIdx = 0x00;
-static const unsigned gChMask = 0x02;   // channel 2 normal
+static const unsigned gDevIdx = 0x00;   // Device Index = 0
+static const unsigned gChMask = 0x02;   // channel 2 normal, bit0-CAN1, bit1-CAN2, 3=CAN1+CAN2
 static const unsigned gBaud = 0x1C01;   // 250kb/s:1C01, 125kb/s:1C03
-static const unsigned gTxType = 0x01;   // normal send
+static const unsigned gTxType = 0x01;   // 0-normal, 1-single, 2-self_test
 static const unsigned gTxSleep = 0x01;
 static const unsigned gTxFrames = 0x01;
 static const unsigned gTxCount = 0x01;
+static const unsigned work_Channel = 1; // receive frame channel ID, can channel 0 and 1
 
 typedef enum {
-    H1=1,      // H1 Handshake start state
-    H2=2,      // H2 Handshake recognition state
-    C1=3,
-    R1=4,
-    P1=5,
-    P2=6,
-    T1=7,
-    W1
+    V1=1,       // V1 V2G mode message state
+    H1=2,       // H1 Handshake start state
+    H2=3,       // H2 Handshake recognition state
+    C1=4,       // C1 parameter Configuration state
+    R0=5,       // R0 Readiness bypass state
+    R1=6,       // Readiness charge state
+    R2=7,       // Readiness discharge state
+    P1=8,       // P1 Power charge state
+    P2=9,       // P2 Power discharge state
+    T1=10,      // T1 first Timeout
+    T2=11,      // T2 second Timeout
+    T3=12,      // T3 third Timeout
+    E1=13,      // E1 Ending State
+    S1=14       // S1 System Sleep
 } State;
 
 typedef enum{
-    Null_1=1,  // not receive CHM from system start stamp timeout=5s
-    CRM_00=2,    // receive CRM(0x00)
-    CRM_AA=3,    // receive CRM(0xAA)
-    CHM=4,       // receive CHM
-    Null_2=5,    // receive CRM from system start stamp timeout=60s
-    Null_3=6,     // not receive CRM from CHM stamp timeout=30s
-    K5_K6=7,
+    CRM_00=2,       // receive CRM(0x00)
+    CRM_AA=3,       // receive CRM(0xAA)
+    CHM=4,          // receive CHM
+    Start_Button=5, // Press Start Button
+    Mode_Button=6,  // Press Mode Switch Button
+    Kill_Button=7,  // Press End
     B_BHM=8,
     B_BRO_00=9,
     B_BCL=10,
@@ -184,33 +190,57 @@ typedef enum{
     BRM_CONF=21,
     BCP_ACK=22,
     BCP_CONF=23,
-    BCS_ST=24,
+    ST_250=24,
     BCS_ACK=25,
-    BCS_CONF,
-    BCL_ST,
-    BSM_ST
+    BCS_CONF=26,
+    ST_50=27,
+    BSM_ST=28,
+    BDC_ACK=29,
+    BDC_CONF=30,
+    CDC=31,
+    CMLP=32,
+    CCD_00=33,
+    CSDP=34,
+    CCD_01=35,
+    Ready_Button,
+    Null_1,       // not receive CHM from system start stamp timeout=5s
+    Null_2,       // not receive CRM from system start stamp timeout=60s
+    Null_3,       // not receive CRM from CHM stamp timeout=30s
+    Null_4,       // Null_4 not receive CRM from BEM stamp timeout=30s
+    Null_5,       // Null_5 not receive frame(CDC/CHM) from system start stamp timeout=30s
+    Null_6,       // Null_6 not receive CCS timeout=1s
+    Null_7,       // Null_7 not receive CCD timeout=5s
 } EventID;
 
 typedef enum{
     BRM_INIT =1,
-    BRM=2,
-    BHM=3,
-    BEM=4,
-    BCP=5,
-    BCP_INIT=6,
-    BRO_00=7,
-    BRO_AA=8,
-    BCL=9,
-    BCS_INIT=10,
-    BCS=11,
-    BSM=12,
-    BMV=13,
-    BMT=14,
-    BSP=15,
-    BST=16,
-    BSD=17,
-    Bus_sleep,
-    Free_50ms
+    BRM = 2,
+    BHM = 3,
+    BEM = 4,
+    BCP = 5,
+    BCP_INIT = 6,
+    BRO_00 = 7,
+    BRO_AA = 8,
+    BCL = 9,
+    BCS_INIT = 10,
+    BCS = 11,
+    BSM = 12,
+    BMV = 13,
+    BMT = 14,
+    BSP = 15,
+    BST = 16,
+    BSD = 17,
+    Busleep = 18,
+    Free_50ms = 19,
+    BDC_INIT = 20,
+    BDC = 21,
+    BCPP = 22,
+    BCSP = 23,
+    BCLP = 24,
+    BEM_CRM = 25,
+    BEM_CCD = 26,
+    BEM_CCS = 27,
+    N_A
 } Action;
 
 typedef struct {

@@ -15,8 +15,8 @@
 typedef struct {
     VCI_CAN_OBJ * car_frame;
     unsigned len;
-    unsigned cycle_time;
-    unsigned time_out;
+    int cycle_time;
+    bool Long_sign;
 } CAN_Messages;
 
 class sentframe : public QObject
@@ -27,11 +27,14 @@ public:
 
 signals:
     void Shoot_Error(unsigned);
-    void FeedBack(EventID);
+    void feedbackBRO_00();
     void BCS_TimeStamp();
+    void start();
 
 public slots:
-    void generate_frame(VCI_CAN_OBJ *);
+    void Initalize();
+    void Loop_Send_Msg();
+    void Trans_BSM();
     void tx_thread(Action);
     void tx_frame(CAN_Messages);
     void Auto_transmit(VCI_CAN_OBJ *);
@@ -39,8 +42,11 @@ private:
     QMap<QString, CAN_Messages> translist;
     QMutex m_mutex;
     uint err = 0;
-    CAN_Messages MSG_BHM, MSG_BRM_init, MSG_BRM, MSG_BCP_init, MSG_BCP, MSG_BRO_00, MSG_BRO_AA, MSG_BCL, MSG_BCS_init, MSG_BCS, MSG_BSM;
-    QTimer _threadIdleTimer;
+    CAN_Messages MSG_BHM, MSG_BRM_init, MSG_BRM, MSG_BCP_init, MSG_BCP, MSG_BRO_00, MSG_BRO_AA, MSG_BCL, MSG_BCS_init, MSG_BCS, MSG_BSM,
+                 MSG_BDC_init, MSG_BDC, MSG_BCPP, MSG_BCSP, MSG_BCLP;
+    int time_count;
+    QTimer *_BaseTimer;
+    QTimer *_AnBaseTimer;
 };
 
 #endif // SENTFRAME_H
