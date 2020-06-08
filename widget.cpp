@@ -56,7 +56,7 @@ VCI_CAN_OBJ Widget::_BCPP[1];
 VCI_CAN_OBJ Widget::_BCSP[1];
 int Widget::Ready_time_ms;
 bool Widget::transFree;
-QByteArray Widget::Test_Array = QByteArray::fromHex("6810D80E01");//6810D80E01 420V Voltage and 1A Current
+QByteArray Widget::Test_Array = QByteArray::fromHex("010102");//6810D80E01 420V Voltage and 1A Current
 
 Widget::Widget(QWidget *parent) :
     QWidget(parent),
@@ -77,7 +77,7 @@ Widget::Widget(QWidget *parent) :
     stateMachine.transNum = 39;
     stateMachine.transform = stateTran;
     pSM = & stateMachine;
-    Ready_time_ms = 30000; // BMS准备就绪30s
+    Ready_time_ms = 50000; // BMS准备就绪30s
     transFree = false;
     Vin_code_num = 17;
     Vin_Code_Array.resize(Vin_code_num);
@@ -101,7 +101,7 @@ Widget::Widget(QWidget *parent) :
             _BCL->Data[1] = 0x10;
             _BCL->Data[2] = 0xD8;
             _BCL->Data[3] = 0x0E;
-            _BCL->Data[4] = 0x01;
+            _BCL->Data[4] = 0x02;
             _BCL->ID= 0x181056F4;
         }
         // _BCLP Frame Data
@@ -114,7 +114,7 @@ Widget::Widget(QWidget *parent) :
             _BCLP->Data[1] = 0x10;
             _BCLP->Data[2] = 0xD8;
             _BCLP->Data[3] = 0x0E;
-            _BCLP->Data[4] = 0x01;
+            _BCLP->Data[4] = 0x03;
             _BCLP->ID= 0x181056F4;
         }
         // _BCS Frame Data
@@ -448,18 +448,18 @@ void Widget::Parser(EventID Event, QByteArray CAN_Array)    // 帧数据内容�
 void Widget::Changer_Vision(QByteArray CHM_Array)       // Agreement Version
 {
     CHM_Array.resize(3);       // 必须限值QByteArray长度,要不Debug处理报错
-    ui->label1_6->setText(QString("%1.%2%3").arg(int(CHM_Array.at(0))).arg(int(CHM_Array.at(1))).arg(int(CHM_Array.at(2))));
+    ui->label1_6->setText(QString("%1.%2%3").arg(uchar(CHM_Array.at(0))).arg(uchar(CHM_Array.at(1))).arg(uchar(CHM_Array.at(2))));
 }
 
 void Widget::UpdateCCS_CV(QByteArray CCS_Array)
 {
-    CCS_Array.resize(8);
+    CCS_Array.resize(7);
     double cvtemp;
-    cvtemp = (int(CCS_Array.at(1))*256 + int(CCS_Array.at(0)))/10;
+    cvtemp = (uchar(CCS_Array.at(1))*256 + uchar(CCS_Array.at(0)))/10;
     ui->lcdNumber1_2->display(cvtemp);
-    cvtemp = 400-(int(CCS_Array.at(3))*256 + int(CCS_Array.at(2)))/10;
-    ui->lcdNumber1_2->display(cvtemp);
-    switch (CCS_Array.at(6)) {
+    cvtemp = (uchar(CCS_Array.at(3))*256 + uchar(CCS_Array.at(2)))/10 - 400;
+    ui->lcdNumber1_1->display(cvtemp);
+    switch (uchar(CCS_Array.at(6)&0x03)) {
     case 0x00:
         ui->label1_12->setText("暂停");
         break;
@@ -560,6 +560,12 @@ void Widget::on_pushButton1_1_clicked()
     output = ui->lineEdit1_2->text();
     _BCL->Data[0] = uchar(processVoltage(output,10).at(1));
     _BCL->Data[1] = uchar(processVoltage(output,10).at(0));
+    output = ui->lineEdit1_9->text();
+    _BCLP->Data[0] = uchar(processVoltage(output,10).at(1));
+    _BCLP->Data[1] = uchar(processVoltage(output,10).at(0));
+    output = ui->lineEdit1_8->text();
+    _BCLP->Data[2] = uchar(processCurrent(output,10).at(1));
+    _BCLP->Data[3] = uchar(processCurrent(output,10).at(0));
     qDebug() << "BMS Demand Voltage and Current set to " + ui->lineEdit1_2->text() + " V " + ui->lineEdit1_1->text() + " A";
     // 设置电池单体最高温度
     if (!ui->label1_3->text().isEmpty())

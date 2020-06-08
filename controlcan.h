@@ -144,7 +144,7 @@ static const unsigned gDevType = 0x04;  // USBCAN-II/II+
 static const unsigned gDevIdx = 0x00;   // Device Index = 0
 static const unsigned gChMask = 0x02;   // channel 2 normal, bit0-CAN1, bit1-CAN2, 3=CAN1+CAN2
 static const unsigned gBaud = 0x1C01;   // 250kb/s:1C01, 125kb/s:1C03
-static const unsigned gTxType = 0x02;   // 0-normal, 1-single, 2-self_test
+static const unsigned gTxType = 0x01;   // 0-normal, 1-single, 2-self_test
 static const unsigned gTxSleep = 0x01;
 static const unsigned gTxFrames = 0x01;
 static const unsigned gTxCount = 0x01;

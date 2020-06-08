@@ -108,6 +108,7 @@ void proceesframe::rx_thread()
             ctx->channel, ctx->total, ctx->error ? "error(s) detected" : "no error");
     if (ctx->error > 256)
         emit Send2UI(ctx->error);
+    free(ctx);
 }
 
 int proceesframe::Verify_Frame(VCI_CAN_OBJ can, uint Len, BYTE * CAN_Data)
