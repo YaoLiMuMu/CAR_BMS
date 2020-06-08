@@ -72,12 +72,20 @@ private slots:
     QByteArray processVoltage(QString, int);    // transfer Voltages String to BMS Demand Voltage
     QByteArray processCurrent(QString, int);    // transfer Current String to BMS Demand Current
     QByteArray processTemprature(QString);      // trnasfer Temprature String to BMS Tcell
-    void BCS_BSM_Gen();
+    void UpdateCCS_CV(QByteArray);                 // update CCS voltage and current
+    void UpdateCCD_01(QByteArray);
+    void UpdateCCD_00(QByteArray);
     void BMS_Ready();
     void Changer_Vision(QByteArray);            // show Agreement Vision V1.10/V1.12
     void on_lineEdit1_6_textChanged(const QString &arg1);  // VIN Code Edit
     void Parser(EventID, QByteArray);           // analyze can data
     void on_pushButton1_2_clicked();
+
+    void on_checkBox1_2_stateChanged();
+
+    void on_checkBox1_1_stateChanged();
+
+    void on_pushButton1_3_clicked();
 
 private:
     Ui::Widget *ui;
@@ -85,8 +93,6 @@ private:
     QThread * Rthread;
     proceesframe * pframe;
     sentframe * sframe;
-    QTimer *myTimer;
-    QTimer *byTimer;
     StateMachine * pSM;
     int Vin_code_num;                           // Vin字节数目
     QByteArray Vin_Code_Array;                  // Vin码储存数组

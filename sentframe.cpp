@@ -152,6 +152,7 @@ sentframe::sentframe(QObject *parent) : QObject(parent)
 
 void sentframe::Initalize()
 {
+    qDebug() << "TX_thread ID: " << QThread::currentThreadId();
     _BaseTimer = new QTimer (this);
     _AnBaseTimer = new QTimer (this);
     connect(_BaseTimer, SIGNAL(timeout()), this, SLOT(Loop_Send_Msg()));
@@ -160,75 +161,10 @@ void sentframe::Initalize()
 
 void sentframe::tx_thread(Action eve_act)
 {
-//    QMutexLocker locker(&q_mutex);
 //    qDebug() << "TX_thread ID: " << QThread::currentThreadId() << "execute action code is " << eve_act;
-//    // Qmap insert list
-//    translist.insert("CHM", BHM);
-//    translist.insert("CRM_00", BRM_init);
-//    translist.insert("CRM_re", BRM_con);
-//    translist.insert("CRM_aa", MSG_BCP_init);
-//    translist.insert("BCP_re", MSG_BCP);
-//    translist.insert("BRO_aa", BRO);
-//    translist.insert("BCL", BCL);
-//    translist.insert("BCS_re", MSG_BCS);
-//    translist.insert("BCS_in", MSG_BCS_init);
-//    VCI_CAN_OBJ *buff = (VCI_CAN_OBJ *)malloc(sizeof(VCI_CAN_OBJ) * gTxFrames);
-//    unsigned tx;
-//    for (tx = 0; tx < gTxCount; tx++)
-//    {
-//        for (int i = 0; i < 4; i++)
-//        {
-//            if ((gChMask & (1 << i)) == 0) continue;
-//            while (translist.contains(Widget::Gmesg))
-//            {
-//                for (int j = 0; j < translist.value(Widget::Gmesg).len; j++)
-//                {
-//                    QDateTime nowtime = QDateTime::currentDateTime();
-//                    QString timeblock = nowtime.toString("hh:mm:ss.zzz   ") + QString::asprintf("CAN TX successed: ID=0x%08x, Data=0x", translist.value(Widget::Gmesg).car_frame[j].ID);
-//                    if( gTxFrames == VCI_Transmit(gDevType, gDevIdx, i, &translist.value(Widget::Gmesg).car_frame[j],  gTxFrames))
-//                    {
-//                        for (int ii = 0; ii < translist.value(Widget::Gmesg).car_frame[j].DataLen; ii++) {
-//                            timeblock = timeblock + QString::asprintf("%02x", translist.value(Widget::Gmesg).car_frame[j].Data[ii]);
-//                        }
-//                        qDebug() << timeblock;
-//                        msleep(translist.value(Widget::Gmesg).cycle_time);
-//                    }
-//                    else {
-//                        j--;
-//                        continue;
-//                    }
-//                    if (Widget::Gmesg == "CRM_re" && j == 6 && Widget::CRM_AA == 0)
-//                    {
-//                        Widget::Gmesg = "CRM_00";
-////                        msleep(245);
-//                    }
-//                    if (Widget::Gmesg == "BCP_re" && j == 1 && Widget::CML == 0)
-//                    {
-//                        Widget::Gmesg = "CRM_aa";
-////                        msleep(245);
-//                    }
-//                    if (Widget::Gmesg == "BCL")
-//                    {
-//                        BCL.car_frame->Data[0] = uchar(Widget::Demand_CV.at(0));
-//                        BCL.car_frame->Data[1] = uchar(Widget::Demand_CV.at(1));
-//                        BCL.car_frame->Data[2] = uchar(Widget::Demand_CV.at(2));
-//                        BCL.car_frame->Data[3] = uchar(Widget::Demand_CV.at(3));
-//                        BCL.car_frame->Data[4] = uchar(Widget::Demand_CV.at(4));
-//                        Widget::BCL2BCS++;
-//                        if (Widget::BCL2BCS == 6)
-//                        {
-//                            Widget::Gmesg = "BCS_in";
-//                            Widget::BCL2BCS = 0;
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//    }
-//    free(buff);
-    if (eve_act == N_A)
+    if (eve_act == N_A) // N_A switch state and keep can bus transmit
         return;
-    if ((eve_act != BRM)&&(eve_act != BCS)&&(eve_act != BCP)&&(eve_act != BDC))
+    if ((eve_act != BRM)&&(eve_act != BCS)&&(eve_act != BCP)&&(eve_act != BDC))     // 长消息帧发送时不打断原周期
     {
         _BaseTimer->stop();
         _AnBaseTimer->stop();
@@ -256,7 +192,6 @@ void sentframe::tx_thread(Action eve_act)
         break;
     case BRO_00:
         tx_frame(MSG_BRO_00);
-//        msleep(1000);
         emit feedbackBRO_00();
         _BaseTimer->start(MSG_BRO_00.cycle_time);
         break;
@@ -291,8 +226,8 @@ void sentframe::tx_thread(Action eve_act)
     case BSM:
         tx_frame(MSG_BSM);
         break;
-    case Free_50ms:
-        msleep(50);
+    case Busleep:
+        msleep(500);
         break;
     case BDC:
         tx_frame(MSG_BDC);
@@ -300,6 +235,8 @@ void sentframe::tx_thread(Action eve_act)
     case BDC_INIT:
         tx_frame(MSG_BDC_init);
         _BaseTimer->start(MSG_BDC_init.cycle_time);
+        break;
+    default:
         break;
     }
 }
@@ -336,10 +273,12 @@ void sentframe::Loop_Send_Msg()// Priodic message
     case R2:
         tx_frame(MSG_BRO_AA);
         break;
+    default:
+        break;
     }
 }
 
-void sentframe::Trans_BSM()
+void sentframe::Trans_BSM()     // another timer for BSM & BCS & BCSP
 {
     switch (stateMachine.state) {
     case P1:
@@ -353,6 +292,8 @@ void sentframe::Trans_BSM()
         msleep(10);
         tx_frame(MSG_BCSP);
         tx_frame(MSG_BCS_init);
+        break;
+    default:
         break;
     }
 }
@@ -392,7 +333,7 @@ void sentframe::Auto_transmit(VCI_CAN_OBJ * vco)
             err++;
             continue;
         }
-        QString Rece_log = QDateTime::currentDateTime().toString("hh:mm:ss.zzz  ") + QString::asprintf("CAN TX successed: ID=0x%08x, Data=0x", vco->ID);
+        QString Rece_log = QDateTime::currentDateTime().toString("hh:mm:ss.zzz ") + QString::asprintf("CAN TX successed: ID=0x%08x, Data=0x", vco->ID);
         for (int ii = 0; ii < vco->DataLen; ii++) {
             Rece_log = Rece_log + QString::asprintf("%02x", vco->Data[ii]);
         }

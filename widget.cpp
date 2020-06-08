@@ -8,15 +8,14 @@ StateTransform stateTran[] = {
         {V1, BDC_ACK, V1, BDC},
         {V1, CHM, H1, BHM},
         {V1, Null_5, S1, Busleep},
-        {H1, Null_1, H2, BRM_INIT},
+        {V1, Start_Button, V1, Busleep},
+        {H1, Null_1, H2, Busleep},
         {H1, CRM_00, H2, BRM_INIT},
-        {H1, CHM, H1, BHM},
-        {H2, CRM_00, H2, BRM_INIT},
+        {H1, Start_Button, H1, Busleep},
         {H2, Null_2, T1, BEM_CRM},
         {H2, Null_3, T1, BEM_CRM},
         {H2, BRM_ACK, H2, BRM},
         {H2, CRM_AA, C1, BCP_INIT},
-        {C1, CRM_AA, C1, BCP_INIT},
         {C1, BCP_ACK, C1, BCP},
         {C1, CML, R0, BRO_00},
         {R0, Ready_Button, R1, BRO_AA},
@@ -44,7 +43,6 @@ StateTransform stateTran[] = {
         {E1, CST, S1, BSD},
         {E1, CSD, S1, Busleep},
         {S1, Start_Button, V1, Busleep},
-        {S1, Mode_Button, H1, Busleep}
     };// 该柔性数组不能在被调函数中声明赋值, 要不被调函数结束后会被回收, 则指向该数组的指针变为空指针
 VCI_CAN_OBJ Widget::_BCL[1];
 VCI_CAN_OBJ Widget::_BCLP[1];
@@ -73,16 +71,13 @@ Widget::Widget(QWidget *parent) :
     QThread * Rthread = new QThread;
     pframe->moveToThread(Rthread);
     sframe->moveToThread(Tthread);
-    myTimer = new QTimer(this);
-    byTimer = new QTimer(this);
-    byTimer->setInterval(50);
     // Initial pSM;
     pSM = new StateMachine;
     stateMachine.state = V1;
-    stateMachine.transNum = 41;
+    stateMachine.transNum = 39;
     stateMachine.transform = stateTran;
     pSM = & stateMachine;
-    Ready_time_ms = 1000; // BMS准备就绪40s
+    Ready_time_ms = 30000; // BMS准备就绪30s
     transFree = false;
     Vin_code_num = 17;
     Vin_Code_Array.resize(Vin_code_num);
@@ -90,6 +85,9 @@ Widget::Widget(QWidget *parent) :
     {
         Widget::ParseTable.insert(CDC, & Widget::Changer_Vision);
         Widget::ParseTable.insert(CHM, & Widget::Changer_Vision);
+        Widget::ParseTable.insert(CCS, & Widget::UpdateCCS_CV);
+        Widget::ParseTable.insert(CCD_00, & Widget::UpdateCCD_00);
+        Widget::ParseTable.insert(CCD_01, & Widget::UpdateCCD_01);
     }
     // Initialization Frame Data
     {
@@ -421,14 +419,8 @@ Widget::Widget(QWidget *parent) :
     connect(sframe,SIGNAL(feedbackBRO_00()), this, SLOT(BMS_Ready()));
     Tthread->start();
     Rthread->start();
-//    connect(myTimer, SIGNAL(timeout()), this, SLOT(BCS_BSM_Gen()));
-//    connect(byTimer, SIGNAL(timeout()), this, SLOT(BCL_Gen()));
-//    msleep(1000);
-//    myTimer->setInterval(Ready_time_ms);
-//    myTimer->
-//    myTimer->start();
-//    byTimer->start();
-//    runStateMachine(CCD_00); // 此段注释用于代码调试
+    msleep(1000);
+//    runStateMachine(CML); // 此段注释用于代码调试
     connect(pframe,SIGNAL(Sendcan(EventID, QByteArray)),this,SLOT(Parser(EventID, QByteArray)));  // receive and analytical data
     connect(pframe,SIGNAL(Send2UI(unsigned)),this,SLOT(CloseDev(unsigned)));      // CLOSE device for receive error
     connect(sframe,SIGNAL(Shoot_Error(unsigned)),this,SLOT(CloseDev(unsigned))); // ClOSE device for transmit error
@@ -445,7 +437,7 @@ Widget::~Widget() // 析构函数
     delete ui;
 }
 
-void Widget::Parser(EventID Event, QByteArray CAN_Array)    // 帧数据内容解析
+void Widget::Parser(EventID Event, QByteArray CAN_Array)    // 帧数据内容解析与映射处理
 {
      if(ParseTable.contains(Event))
      {
@@ -455,21 +447,68 @@ void Widget::Parser(EventID Event, QByteArray CAN_Array)    // 帧数据内容�
 
 void Widget::Changer_Vision(QByteArray CHM_Array)       // Agreement Version
 {
-    CHM_Array.resize(3);// !! 重点
+    CHM_Array.resize(3);       // 必须限值QByteArray长度,要不Debug处理报错
     ui->label1_6->setText(QString("%1.%2%3").arg(int(CHM_Array.at(0))).arg(int(CHM_Array.at(1))).arg(int(CHM_Array.at(2))));
 }
 
-void Widget::BCS_BSM_Gen()
+void Widget::UpdateCCS_CV(QByteArray CCS_Array)
 {
-    runStateMachine(BSM_ST);
-    msleep(10);
-    runStateMachine(ST_250);
+    CCS_Array.resize(8);
+    double cvtemp;
+    cvtemp = (int(CCS_Array.at(1))*256 + int(CCS_Array.at(0)))/10;
+    ui->lcdNumber1_2->display(cvtemp);
+    cvtemp = 400-(int(CCS_Array.at(3))*256 + int(CCS_Array.at(2)))/10;
+    ui->lcdNumber1_2->display(cvtemp);
+    switch (CCS_Array.at(6)) {
+    case 0x00:
+        ui->label1_12->setText("暂停");
+        break;
+    case 0x01:
+        ui->label1_12->setText("充电");
+        break;
+    case 0x02:
+        ui->label1_12->setText("放电");
+        break;
+    default:
+        ui->label1_12->setText("F");
+    }
 }
+
+void Widget::UpdateCCD_01(QByteArray CCD_Array)
+{
+    CCD_Array.resize(3);
+    switch (CCD_Array.at(0)) {
+    case 0x00:
+        ui->label1_19->setText("充电");
+        break;
+    case 0x01:
+        ui->label1_19->setText("放电");
+        break;
+    default:
+        ui->label1_19->setText("F");
+    }
+}
+
+void Widget::UpdateCCD_00(QByteArray CCD_Array)
+{
+    CCD_Array.resize(3);
+    switch (CCD_Array.at(0)) {
+    case 0x00:
+        ui->label1_19->setText("充电");
+        break;
+    case 0x01:
+        ui->label1_19->setText("放电");
+        break;
+    default:
+        ui->label1_19->setText("F");
+    }
+}
+
 
 void Widget::BMS_Ready()
 {
     QEventLoop loop;
-    QTimer::singleShot(Ready_time_ms, &loop, SLOT(quit()));    // 长消息报文帧间隔时间10ms
+    QTimer::singleShot(Ready_time_ms, &loop, SLOT(quit()));    // BMS准备就绪时间, Qtimer单次触发
     loop.exec();
     runStateMachine(Ready_Button);
 }
@@ -489,9 +528,9 @@ void Widget::runStateMachine(EventID evt)
             printf( "Current_State= %u Do not process event: %u\r\n", pSM->state, evt);
             return;
         }
-    pSM->state = pTrans->nextState; // 需要转化为下个变量, 必须需要pTrans这个中间变量
+    pSM->state = pTrans->nextState; // 需要转化为下个状态变量, 必须需要pTrans这个中间变量
     emit EXE_Action(pTrans->action);
-    qDebug() << "___________________Next State is : " << pSM->state << ", and Action code is " << pTrans->action;
+    qDebug() << "Next State is : " << pSM->state << ", and Action code is " << pTrans->action;
 }
 
 void Widget::CloseDev(unsigned Error)
@@ -501,8 +540,8 @@ void Widget::CloseDev(unsigned Error)
     printf("TX/RX stopped, <ENTER> to CloseDevice...\n");
     getchar();
     VCI_ERR_INFO vei;
-    if (!VCI_ReadErrInfo(gDevType, gDevIdx, 0, &vei))
-        printf("Err_code=%0x\n", vei.ErrCode);
+    if (VCI_ReadErrInfo(gDevType, gDevIdx, work_Channel, &vei))
+        printf("The Last Time Err_code = %0x\n", vei.ErrCode);
     VCI_CloseDevice(gDevType, gDevIdx);
     printf("VCI_CloseDevice\n");
 }
@@ -511,23 +550,24 @@ void Widget::on_pushButton1_1_clicked()
 {
     if (ui->lineEdit1_1->text().isEmpty() || ui->lineEdit1_2->text().isEmpty())
         {
-        QMessageBox::information(this,"Warning","Please Input Voltage and Current");
+        QMessageBox::information(this,"Warning","Please Input Demand Voltage and Current");
         return;
     }
+    // 设置电池需求电压, 需求电流
     QString output = ui->lineEdit1_1->text();
-//    Demand_CV.data()[2] = processCurrent(output,10).at(1);
-//    Demand_CV.data()[3] = processCurrent(output,10).at(0);
     _BCL->Data[2] = uchar(processCurrent(output,10).at(1));
     _BCL->Data[3] = uchar(processCurrent(output,10).at(0));
     output = ui->lineEdit1_2->text();
-//    Demand_CV.data()[0] = processVoltage(output,10).at(1);
-//    Demand_CV.data()[1] = processVoltage(output,10).at(0);
     _BCL->Data[0] = uchar(processVoltage(output,10).at(1));
     _BCL->Data[1] = uchar(processVoltage(output,10).at(0));
-    qDebug() << "BMS Demand Voltage and Current Frame set to: 0x" << _BCL->Data[0]
-             << _BCL->Data[1] << _BCL->Data[2] << _BCL->Data[3] << _BCL->Data[4];
-    output = ui->lineEdit1_3->text();
-    _BSM->Data[1] = uchar(processTemprature(output).at(0));
+    qDebug() << "BMS Demand Voltage and Current set to " + ui->lineEdit1_2->text() + " V " + ui->lineEdit1_1->text() + " A";
+    // 设置电池单体最高温度
+    if (!ui->label1_3->text().isEmpty())
+    {
+        output = ui->lineEdit1_3->text();
+        _BSM->Data[1] = uchar(processTemprature(output).at(0));
+    }
+    // 设置电池最高电压(用于绝缘检测电压)
     if (!ui->lineEdit1_4->text().isEmpty())
     {
         output = ui->lineEdit1_4->text();
@@ -536,35 +576,20 @@ void Widget::on_pushButton1_1_clicked()
         _BCP[0].Data[7] = uchar(processVoltage(output,10).at(1));
         _BCP[1].Data[1] = uchar(processVoltage(output,10).at(0));
     }
+    // 设置电池起始电压
     if (!ui->lineEdit1_5->text().isEmpty())
     {
         output = ui->lineEdit1_5->text();
         _BCP[1].Data[5] = uchar(processVoltage(output,10).at(1));
         _BCP[1].Data[6] = uchar(processVoltage(output,10).at(0));
     }
-    if(ui->checkBox1_1->isChecked())
-        _BSM->Data[6] = 0xC0; // 暂停
-    else {
-        _BSM->Data[6] = 0xD0; // 允许充电
-    }
-    if(ui->checkBox1_2->isChecked())
+    // set up BMS default ready time
+    if (!ui->lineEdit1_7->text().isEmpty())
     {
-        if (stateMachine.state == V1)
-        {
-            stateMachine.state = H1; // 常规模式
-            stateMachine.transform[16].action = BCL;
-            stateMachine.transform[16].nextState = P1;
-        }
+        Ready_time_ms = ui->lineEdit1_7->text().toInt() * 1000;
     }
-    else {
-        if (stateMachine.state == H1)
-        {
-            stateMachine.state = V1; // V2G模式
-            stateMachine.transform[16].action = N_A;
-            stateMachine.transform[16].nextState = R2;
-        }
-    }
-    if(ui->label2_13->text() == "17/17")
+    // input Vin code in LineEdit
+    if (ui->label1_17->text() == "17/17")
     {
         QString texttemp = ui->lineEdit1_6->text();
         std::string tempstring = texttemp.toStdString();
@@ -578,40 +603,40 @@ void Widget::on_pushButton1_1_clicked()
         Vin_Code_Array = QByteArray::fromHex(QString::fromStdString(tempstring).toLocal8Bit());
         // VIN code update
         {
-        _BRM[3].Data[4] = uchar(Vin_Code_Array.at(0));
-        _BRM[3].Data[5] = uchar(Vin_Code_Array.at(1));
-        _BRM[3].Data[6] = uchar(Vin_Code_Array.at(2));
-        _BRM[3].Data[7] = uchar(Vin_Code_Array.at(3));
-        _BRM[4].Data[1] = uchar(Vin_Code_Array.at(4));
-        _BRM[4].Data[2] = uchar(Vin_Code_Array.at(5));
-        _BRM[4].Data[3] = uchar(Vin_Code_Array.at(6));
-        _BRM[4].Data[4] = uchar(Vin_Code_Array.at(7));
-        _BRM[4].Data[5] = uchar(Vin_Code_Array.at(8));
-        _BRM[4].Data[6] = uchar(Vin_Code_Array.at(9));
-        _BRM[4].Data[7] = uchar(Vin_Code_Array.at(10));
-        _BRM[5].Data[1] = uchar(Vin_Code_Array.at(11));
-        _BRM[5].Data[2] = uchar(Vin_Code_Array.at(12));
-        _BRM[5].Data[3] = uchar(Vin_Code_Array.at(13));
-        _BRM[5].Data[4] = uchar(Vin_Code_Array.at(14));
-        _BRM[5].Data[5] = uchar(Vin_Code_Array.at(15));
-        _BRM[5].Data[6] = uchar(Vin_Code_Array.at(16));
-        _BDC[0].Data[1] = uchar(Vin_Code_Array.at(0));
-        _BDC[0].Data[2] = uchar(Vin_Code_Array.at(1));
-        _BDC[0].Data[3] = uchar(Vin_Code_Array.at(2));
-        _BDC[0].Data[4] = uchar(Vin_Code_Array.at(3));
-        _BDC[0].Data[5] = uchar(Vin_Code_Array.at(4));
-        _BDC[0].Data[6] = uchar(Vin_Code_Array.at(5));
-        _BDC[0].Data[7] = uchar(Vin_Code_Array.at(6));
-        _BDC[1].Data[1] = uchar(Vin_Code_Array.at(7));
-        _BDC[1].Data[2] = uchar(Vin_Code_Array.at(8));
-        _BDC[1].Data[3] = uchar(Vin_Code_Array.at(9));
-        _BDC[1].Data[4] = uchar(Vin_Code_Array.at(10));
-        _BDC[1].Data[5] = uchar(Vin_Code_Array.at(11));
-        _BDC[1].Data[6] = uchar(Vin_Code_Array.at(12));
-        _BDC[1].Data[7] = uchar(Vin_Code_Array.at(13));
-        _BRM[2].Data[1] = uchar(Vin_Code_Array.at(14));
-        _BRM[2].Data[2] = uchar(Vin_Code_Array.at(15));
-        _BRM[2].Data[3] = uchar(Vin_Code_Array.at(16));
+            _BRM[3].Data[4] = uchar(Vin_Code_Array.at(0));
+            _BRM[3].Data[5] = uchar(Vin_Code_Array.at(1));
+            _BRM[3].Data[6] = uchar(Vin_Code_Array.at(2));
+            _BRM[3].Data[7] = uchar(Vin_Code_Array.at(3));
+            _BRM[4].Data[1] = uchar(Vin_Code_Array.at(4));
+            _BRM[4].Data[2] = uchar(Vin_Code_Array.at(5));
+            _BRM[4].Data[3] = uchar(Vin_Code_Array.at(6));
+            _BRM[4].Data[4] = uchar(Vin_Code_Array.at(7));
+            _BRM[4].Data[5] = uchar(Vin_Code_Array.at(8));
+            _BRM[4].Data[6] = uchar(Vin_Code_Array.at(9));
+            _BRM[4].Data[7] = uchar(Vin_Code_Array.at(10));
+            _BRM[5].Data[1] = uchar(Vin_Code_Array.at(11));
+            _BRM[5].Data[2] = uchar(Vin_Code_Array.at(12));
+            _BRM[5].Data[3] = uchar(Vin_Code_Array.at(13));
+            _BRM[5].Data[4] = uchar(Vin_Code_Array.at(14));
+            _BRM[5].Data[5] = uchar(Vin_Code_Array.at(15));
+            _BRM[5].Data[6] = uchar(Vin_Code_Array.at(16));
+            _BDC[0].Data[1] = uchar(Vin_Code_Array.at(0));
+            _BDC[0].Data[2] = uchar(Vin_Code_Array.at(1));
+            _BDC[0].Data[3] = uchar(Vin_Code_Array.at(2));
+            _BDC[0].Data[4] = uchar(Vin_Code_Array.at(3));
+            _BDC[0].Data[5] = uchar(Vin_Code_Array.at(4));
+            _BDC[0].Data[6] = uchar(Vin_Code_Array.at(5));
+            _BDC[0].Data[7] = uchar(Vin_Code_Array.at(6));
+            _BDC[1].Data[1] = uchar(Vin_Code_Array.at(7));
+            _BDC[1].Data[2] = uchar(Vin_Code_Array.at(8));
+            _BDC[1].Data[3] = uchar(Vin_Code_Array.at(9));
+            _BDC[1].Data[4] = uchar(Vin_Code_Array.at(10));
+            _BDC[1].Data[5] = uchar(Vin_Code_Array.at(11));
+            _BDC[1].Data[6] = uchar(Vin_Code_Array.at(12));
+            _BDC[1].Data[7] = uchar(Vin_Code_Array.at(13));
+            _BRM[2].Data[1] = uchar(Vin_Code_Array.at(14));
+            _BRM[2].Data[2] = uchar(Vin_Code_Array.at(15));
+            _BRM[2].Data[3] = uchar(Vin_Code_Array.at(16));
         }
     }
 }
@@ -620,9 +645,7 @@ QByteArray Widget::processVoltage(QString item, int k) // or can try str.toLatin
 {
     QByteArray dat;
     int val = item.toInt() * k; // int < 2147483648
-    item = item.setNum(val, 16);    // or String str = Interger.toHexString(val) ; use String
-    if (item.length()%2 != 0)
-        item = '0' + item;
+    item = QString::asprintf("%04x", val);  // or String str = Interger.toHexString(val) ; or item = item.setNum(val, 16);  需要考虑补"0"
     dat.resize(item.length()/2);    // can't use sizeof get Qstring size, because will get Qstring object point size
     char ctempor = 0;
     for (int i = 0; i < item.length()/2; i++)
@@ -647,9 +670,7 @@ QByteArray Widget::processCurrent(QString item, int k) // or can try str.toLatin
 {
     QByteArray dat;
     int val = 4000 - item.toInt() * k; // int < 2147483648
-    item = item.setNum(val, 16);    // or String str = Interger.toHexString(val) ; use String
-    if (item.length()%2 != 0)
-        item = '0' + item;
+    item = QString::asprintf("%04x", val);    // or String str = Interger.toHexString(val) ; use String
     dat.resize(item.length()/2);    // can't use sizeof get Qstring size, because will get Qstring object point size
     char ctempor = 0;
     for (int i = 0; i < item.length()/2; i++)
@@ -697,7 +718,7 @@ QByteArray Widget::processTemprature(QString item)
     return dat;
 }
 
-void Widget::on_lineEdit1_6_textChanged(const QString &arg1)
+void Widget::on_lineEdit1_6_textChanged(const QString &arg1)    // Vin code Edit Line
 {
     if(ui->lineEdit1_6->text().isEmpty())
         return;
@@ -712,7 +733,7 @@ void Widget::on_lineEdit1_6_textChanged(const QString &arg1)
         flag = 0;
         if(arg1.length()<2){
             ui->lineEdit1_6->setText(arg1.toUpper());
-            ui->label2_13->setText(QString::number(0)+QString::fromUtf8("/")+QString::number(Vin_code_num));
+            ui->label1_17->setText(QString::number(0)+QString::fromUtf8("/")+QString::number(Vin_code_num));
             return;
         }
         QString texttemp = arg1.toUpper();
@@ -724,7 +745,7 @@ void Widget::on_lineEdit1_6_textChanged(const QString &arg1)
                 it--;
             }
         }
-        ui->label2_13->setText(QString::number(tempstring.length()/2)+QString::fromUtf8("/")+QString::number(Vin_code_num));
+        ui->label1_17->setText(QString::number(tempstring.length()/2)+QString::fromUtf8("/")+QString::number(Vin_code_num));
         texttemp = QString::fromStdString(tempstring);
         short mod = (texttemp.length()/2);
         short res = (texttemp.length()%2);
@@ -748,7 +769,61 @@ void Widget::on_lineEdit1_6_textChanged(const QString &arg1)
 }
 
 
-void Widget::on_pushButton1_2_clicked()
+void Widget::on_pushButton1_2_clicked()     // BMS Ready to charge
 {
     runStateMachine(Ready_Button);
+}
+
+void Widget::on_checkBox1_2_stateChanged()  // Switch with Normal mode and V2G mode
+{
+    if(ui->checkBox1_2->isChecked())
+    {
+        if (stateMachine.state == V1 || stateMachine.state == S1)
+        {
+            stateMachine.state = H1; // 常规模式
+            stateMachine.transform[16].action = BCL;
+            stateMachine.transform[16].nextState = P1;
+            qDebug() << "BMS had been setup to Normal Mode";
+        }
+    }
+    else {
+        if (stateMachine.state == H1 || stateMachine.state == S1)
+        {
+            stateMachine.state = V1; // V2G模式
+            stateMachine.transform[16].action = N_A;
+            stateMachine.transform[16].nextState = R2;
+            qDebug() << "BMS had been setup to V2G Mode";
+        }
+    }
+}
+
+void Widget::on_checkBox1_1_stateChanged()  // Switch with paues charging and continue charging
+{
+    if(ui->checkBox1_1->isChecked())
+    {
+        _BSM->Data[6] = 0xC0; // 暂停
+        qDebug() << "BMS request a pause charging";
+    }
+    else {
+        _BSM->Data[6] = 0xD0; // 允许充电
+        qDebug() << "BSM allow continue charging";
+    }
+}
+
+void Widget::on_pushButton1_3_clicked()
+{
+    if(ui->checkBox1_2->isChecked())
+    {
+        stateMachine.state = H1; // 常规模式
+        stateMachine.transform[16].action = BCL;
+        stateMachine.transform[16].nextState = P1;
+        qDebug() << "BMS had been setup to Normal Mode";
+    }
+    else {
+        stateMachine.state = V1; // V2G模式
+        stateMachine.transform[16].action = N_A;
+        stateMachine.transform[16].nextState = R2;
+        qDebug() << "BMS had been setup to V2G Mode";
+    }
+    runStateMachine(Start_Button);
 }

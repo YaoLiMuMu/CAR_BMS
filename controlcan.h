@@ -144,7 +144,7 @@ static const unsigned gDevType = 0x04;  // USBCAN-II/II+
 static const unsigned gDevIdx = 0x00;   // Device Index = 0
 static const unsigned gChMask = 0x02;   // channel 2 normal, bit0-CAN1, bit1-CAN2, 3=CAN1+CAN2
 static const unsigned gBaud = 0x1C01;   // 250kb/s:1C01, 125kb/s:1C03
-static const unsigned gTxType = 0x01;   // 0-normal, 1-single, 2-self_test
+static const unsigned gTxType = 0x02;   // 0-normal, 1-single, 2-self_test
 static const unsigned gTxSleep = 0x01;
 static const unsigned gTxFrames = 0x01;
 static const unsigned gTxCount = 0x01;
@@ -168,41 +168,33 @@ typedef enum {
 } State;
 
 typedef enum{
-    CRM_00=2,       // receive CRM(0x00)
-    CRM_AA=3,       // receive CRM(0xAA)
-    CHM=4,          // receive CHM
-    Start_Button=5, // Press Start Button
-    Mode_Button=6,  // Press Mode Switch Button
-    Kill_Button=7,  // Press End
-    B_BHM=8,
-    B_BRO_00=9,
-    B_BCL=10,
-    B_BCS_INIT=11,
-    CTS=12,
-    CML=13,
-    CRO_00=14,
-    CRO_AA=15,
-    CCS=16,
-    CST=17,
-    CSD=18,
+    Start_Button=1, // Press Start Button
+    Kill_Button=2,  // Press End
+    Ready_Button=3,   // Ready sigal
+    CDC=4,
+    CHM=5,          // receive CHM
+    CRM_00=6,       // receive CRM(0x00)
+    CRM_AA=7,       // receive CRM(0xAA)
+    CTS=8,
+    CML=9,
+    CMLP=10,
+    CRO_00=11,
+    CRO_AA=12,
+    CCD_00=13,
+    CCD_01=14,
+    CCS=15,
+    CST=16,
+    CSD=17,
+    CSDP=18,
     CEM=19,
     BRM_ACK=20,
     BRM_CONF=21,
     BCP_ACK=22,
     BCP_CONF=23,
-    ST_250=24,
-    BCS_ACK=25,
-    BCS_CONF=26,
-    ST_50=27,
-    BSM_ST=28,
-    BDC_ACK=29,
-    BDC_CONF=30,
-    CDC=31,
-    CMLP=32,
-    CCD_00=33,
-    CSDP=34,
-    CCD_01=35,
-    Ready_Button,
+    BCS_ACK=24,
+    BCS_CONF=25,
+    BDC_ACK=26,
+    BDC_CONF=27,
     Null_1,       // not receive CHM from system start stamp timeout=5s
     Null_2,       // not receive CRM from system start stamp timeout=60s
     Null_3,       // not receive CRM from CHM stamp timeout=30s
@@ -213,34 +205,32 @@ typedef enum{
 } EventID;
 
 typedef enum{
-    BRM_INIT =1,
-    BRM = 2,
+    BDC_INIT = 1,
+    BDC = 2,
     BHM = 3,
-    BEM = 4,
-    BCP = 5,
+    BRM_INIT = 4,
+    BRM = 5,
     BCP_INIT = 6,
-    BRO_00 = 7,
-    BRO_AA = 8,
-    BCL = 9,
-    BCS_INIT = 10,
-    BCS = 11,
-    BSM = 12,
-    BMV = 13,
-    BMT = 14,
-    BSP = 15,
-    BST = 16,
-    BSD = 17,
-    Busleep = 18,
-    Free_50ms = 19,
-    BDC_INIT = 20,
-    BDC = 21,
-    BCPP = 22,
-    BCSP = 23,
-    BCLP = 24,
-    BEM_CRM = 25,
-    BEM_CCD = 26,
-    BEM_CCS = 27,
-    N_A
+    BCP = 7,
+    BCPP = 8,
+    BRO_00 = 9,
+    BRO_AA = 10,
+    BCL = 11,
+    BCLP = 12,
+    BCS_INIT = 13,
+    BCS = 14,
+    BCSP = 15,
+    BSM = 16,
+    BMV = 17,
+    BMT = 18,
+    BSP = 19,
+    BST = 20,
+    BSD = 21,
+    BEM_CRM = 22,
+    BEM_CCD = 23,
+    BEM_CCS = 24,
+    Busleep = 25,
+    N_A = 26,
 } Action;
 
 typedef struct {

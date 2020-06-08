@@ -44,30 +44,30 @@ void proceesframe::rx_thread()
         {0x1812F456, CCS, 0xff, nullptr, 1},
         {0x101AF456, CST, 0xff, nullptr, 1},
         {0x181DF456, CSD, 0xff, nullptr, 1},
-        {0x011FF456, CEM, 0xff, nullptr, 1}
+        {0x011FF456, CEM, 0xff, nullptr, 1},
     };
     int rece_Tab_num = 23;
     qDebug() << "RX_thread ID: " << QThread::currentThreadId();
-    VCI_ClearBuffer(gDevType, gDevIdx, 0);
-    VCI_ClearBuffer(gDevType, gDevIdx, 1);
+    VCI_ClearBuffer(gDevType, gDevIdx, work_Channel);
     RX_CTX * ctx = (RX_CTX *)malloc(sizeof(RX_CTX));    // 结构体指针必须初始化
     ctx->stop = 0;
     ctx->error = 0;
     ctx->channel = work_Channel; // can channel 0 and 1
-    ctx->total = 0; // reset counter
+    ctx->total = 0;             // reset counter
     VCI_CAN_OBJ can[RX_BUFF_SIZE]; // rececive buffer
-    uint cnt; // current received number
+    uint cnt;                   // current received number
     uint i,j;
     unsigned check_point = 0;
-    while (!ctx->stop && !ctx->error)
+    while (!ctx->stop)          // while (!ctx->stop && !ctx->error)
     {
-        cnt = VCI_Receive(gDevType, gDevIdx, ctx->channel, can, 1000, RX_WAIT_TIME); // 返回实际读取到的帧数
+        cnt = VCI_Receive(gDevType, gDevIdx, ctx->channel, can, 1, RX_WAIT_TIME); // 返回实际读取到的帧数
         if (!cnt)
         {
             VCI_ERR_INFO vei;
             if (VCI_ReadErrInfo(gDevType, gDevIdx, ctx->channel,&vei))
             {
-                qDebug() << "Error code is : " << vei.ErrCode;  // 查询usbCAN错误码定义
+                if (vei.ErrCode != 0)
+                    qDebug() << "CAN Receive Error code is : 0x" + QString::asprintf("%04x", vei.ErrCode);  // 查询usbCAN错误码定义
             }
             printf("Null Message receive\n");
             continue;
@@ -80,102 +80,31 @@ void proceesframe::rx_thread()
                     CAN_Array.data()[j] = can[i].Data[j];
                     Redata = Redata + QString::asprintf("%02x", can[i].Data[j]);
                 }
-                qDebug() << Redata;
+                qDebug() << QDateTime::currentDateTime().toString("hh:mm:ss.zzz ") + Redata;
                 for (int j = 0; j < rece_Tab_num; j++) {
+                    check_point = 1;
                     if(can[i].ID == rece_Tab[j].Rece_CAN_ID && Verify_Frame(can[i], rece_Tab[j].Bit_num, rece_Tab[j].Data))
                     {
+                        check_point = 0;
                         emit Send2Main(rece_Tab[j].Send_event);
                         if (rece_Tab[j].Trans_flag)
                             emit Sendcan(rece_Tab[j].Send_event, CAN_Array);
-                        qDebug() << "*******Event code is : " << rece_Tab[j].Send_event;
+                        qDebug() << "received and verified Event code is : " << rece_Tab[j].Send_event;
                         break;
                     }
                 }
-//                switch (can[i].ID) {
-//                case 0x1826F456:
-//                    Widget::Gmesg = "CHM";
-//                    break;
-//                case 0x1801F456:
-//                    switch (can[i].Data[0]) {
-//                    case 0x00:
-//                        Widget::Gmesg = "CRM_00";
-//                        Widget::CRM_00 = 1;
-//                        break;
-//                    case 0xaa:
-//                        Widget::Gmesg = "CRM_aa";
-//                        Widget::CRM_AA = 1;
-//                        break;
-//                    }
-//                    break;
-//                case 0x1CECF456:
-//                    switch (can[i].Data[6]) {
-//                    case 0x02:
-//                        switch (can[i].Data[0]) {
-//                        case 0x11:
-//                            Widget::Gmesg = "CRM_re";
-//                            break;
-//                        case 0x13:
-//                            if (Widget::CRM_AA)
-//                               Widget::Gmesg = "CRM_aa";
-//                            else {
-//                                Widget::Gmesg = "CRM_00";
-//                            }
-//                            break;
-//                        }
-//                        break;
-//                    case 0x06:
-//                        switch (can[i].Data[0]) {
-//                        case 0x11:
-//                            Widget::Gmesg = "BCP_re";       // transmit BCP long_message
-//                            break;
-//                        case 0x13:
-//                            if (Widget::CML)
-//                                Widget::Gmesg = "BRO_aa";   // wait for CML after BCP, transmit BRO(0xAA)
-//                            else {
-//                                Widget::Gmesg = "BCP_re";
-//                            }
-//                        }
-//                        break;
-//                    case 0x11:
-//                        switch (can[i].Data[0]) {
-//                        case 0x11:
-//                            Widget::Gmesg = "BCS_re";
-//                            break;
-//                        case 0x13:
-//                            Widget::Gmesg = "BCL";
-//                        }
-//                    }
-//                    break;
-//                case 0x1808F456:
-//                    Widget::Gmesg = "BRO_aa";   // after CML, transfer BRO(0xAA)
-//                    Widget::CML = 1;            // stamp for CML history
-//                    break;
-//                case 0x100AF456:
-//                    switch (can[i].Data[0]) {
-//                    case 0x00:
-//                        Widget::Gmesg = "BRO_aa";
-//                        break;
-//                    case 0xaa:
-//                        Widget::Gmesg = "BCL";
-//                    }
-//                }
-//                qDebug() << "****************************************" << Widget::Gmesg ;
-
-                continue;
-
-            printf("CAN%d: verify_frame() failed\n", ctx->channel);
-            ctx->error = 1;
-            break;
+                ctx->error = ctx->error + check_point;
         }
-        if (ctx->error) break;
-
+        if (ctx->error > 0)
+        {
+            printf("Warning!!!CAN%d: has %d frames verify failed, I.e.these frames don't meet protocol", ctx->channel, ctx->error);
+        }
         ctx->total += cnt;
-        if (ctx->total / CHECK_POINT >= check_point) {
-            printf("CAN%d: %d frames received & verified\n", ctx->channel, ctx->total);
-            check_point++;
-        }
     }
-    emit Send2UI(ctx->error);
+    printf("CAN%d RX thread terminated, %d frames received & verified: %s\n",
+            ctx->channel, ctx->total, ctx->error ? "error(s) detected" : "no error");
+    if (ctx->error > 256)
+        emit Send2UI(ctx->error);
 }
 
 int proceesframe::Verify_Frame(VCI_CAN_OBJ can, uint Len, BYTE * CAN_Data)
