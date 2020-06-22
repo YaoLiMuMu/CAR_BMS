@@ -71,10 +71,13 @@ private slots:
     void on_pushButton1_1_clicked();            // function for loading Demand Voltage/Current setting
     QByteArray processVoltage(QString, int);    // transfer Voltages String to BMS Demand Voltage
     QByteArray processCurrent(QString, int);    // transfer Current String to BMS Demand Current
+    QByteArray processCurrentBCLP(QString, int);    // transfer Current String to BMS R若echanger Current
     QByteArray processTemprature(QString);      // trnasfer Temprature String to BMS Tcell
     void UpdateCCS_CV(QByteArray);                 // update CCS voltage and current
     void UpdateCCD_01(QByteArray);
     void UpdateCCD_00(QByteArray);
+    void UpdateCML_CV(QByteArray);
+    void UpdateCMLP_CV(QByteArray);
     void BMS_Ready();
     void Changer_Vision(QByteArray);            // show Agreement Vision V1.10/V1.12
     void on_lineEdit1_6_textChanged(const QString &arg1);  // VIN Code Edit

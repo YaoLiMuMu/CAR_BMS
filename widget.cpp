@@ -88,6 +88,8 @@ Widget::Widget(QWidget *parent) :
         Widget::ParseTable.insert(CCS, & Widget::UpdateCCS_CV);
         Widget::ParseTable.insert(CCD_00, & Widget::UpdateCCD_00);
         Widget::ParseTable.insert(CCD_01, & Widget::UpdateCCD_01);
+        Widget::ParseTable.insert(CML, & Widget::UpdateCML_CV);
+        Widget::ParseTable.insert(CMLP, & Widget::UpdateCMLP_CV);
     }
     // Initialization Frame Data
     {
@@ -420,20 +422,23 @@ Widget::Widget(QWidget *parent) :
     Tthread->start();
     Rthread->start();
     msleep(1000);
-//    runStateMachine(CML); // 此段注释用于代码调试
+//    runStateMachine(CCD_00); // 此段用于代码调试或注释
     connect(pframe,SIGNAL(Sendcan(EventID, QByteArray)),this,SLOT(Parser(EventID, QByteArray)));  // receive and analytical data
+    connect(sframe,SIGNAL(finished()), Tthread, SLOT(quit()));
+    connect(Tthread,SIGNAL(finished()),sframe,SLOT(deleteLater()));
+    connect(Tthread,SIGNAL(finished()),Tthread,SLOT(deleteLater()));
     connect(pframe,SIGNAL(Send2UI(unsigned)),this,SLOT(CloseDev(unsigned)));      // CLOSE device for receive error
     connect(sframe,SIGNAL(Shoot_Error(unsigned)),this,SLOT(CloseDev(unsigned))); // ClOSE device for transmit error
 }
 
 Widget::~Widget() // 析构函数
 {
-    pframe->deleteLater();  //一定要在QThread线程退出之前释放内存
-    sframe->deleteLater();
-    Tthread->quit();    //调用quit让线程退出消息循环,否则线程一直在exec循环中
-    Tthread->wait();    //调用完quit后紧接着要调用wait来回收线程资源
-    Rthread->quit();
-    Rthread->wait();
+//    pframe->deleteLater();  //一定要在QThread线程退出之前释放内存
+//    sframe->deleteLater();
+//    Tthread->quit();    //调用quit让线程退出消息循环,否则线程一直在exec循环中
+//    Tthread->wait();    //调用完quit后紧接着要调用wait来回收线程资源
+//    Rthread->quit();
+//    Rthread->wait();
     delete ui;
 }
 
@@ -504,6 +509,34 @@ void Widget::UpdateCCD_00(QByteArray CCD_Array)
     }
 }
 
+void Widget::UpdateCML_CV(QByteArray CML_Array)
+{
+    CML_Array.resize(8);
+    double cvtemp;
+    cvtemp = (uchar(CML_Array.at(1))*256 + uchar(CML_Array.at(0)))/10;
+    ui->label1_21->setText(QString("%1V").arg(cvtemp));
+    cvtemp = (uchar(CML_Array.at(3))*256 + uchar(CML_Array.at(2)))/10;
+    ui->label1_23->setText(QString("%1V").arg(cvtemp));
+    cvtemp = 400 - (uchar(CML_Array.at(5))*256 + uchar(CML_Array.at(4)))/10;
+    ui->label1_24->setText(QString("%1A").arg(cvtemp));
+    cvtemp = 400 - (uchar(CML_Array.at(7))*256 + uchar(CML_Array.at(6)))/10;
+    ui->label1_25->setText(QString("%1A").arg(cvtemp));
+}
+
+void Widget::UpdateCMLP_CV(QByteArray CMLP_Array)
+{
+    CMLP_Array.resize(8);
+    double cvtemp;
+    cvtemp = (uchar(CMLP_Array.at(1))*256 + uchar(CMLP_Array.at(0)))/10;
+    ui->label1_26->setText(QString("%1V").arg(cvtemp));
+    cvtemp = (uchar(CMLP_Array.at(3))*256 + uchar(CMLP_Array.at(2)))/10;
+    ui->label1_27->setText(QString("%1V").arg(cvtemp));
+    cvtemp = (uchar(CMLP_Array.at(5))*256 + uchar(CMLP_Array.at(4)))/10 - 400;
+    ui->label1_28->setText(QString("%1A").arg(cvtemp));
+    cvtemp = (uchar(CMLP_Array.at(7))*256 + uchar(CMLP_Array.at(6)))/10 - 400;
+    ui->label1_29->setText(QString("%1A").arg(cvtemp));
+}
+
 
 void Widget::BMS_Ready()
 {
@@ -564,8 +597,8 @@ void Widget::on_pushButton1_1_clicked()
     _BCLP->Data[0] = uchar(processVoltage(output,10).at(1));
     _BCLP->Data[1] = uchar(processVoltage(output,10).at(0));
     output = ui->lineEdit1_8->text();
-    _BCLP->Data[2] = uchar(processCurrent(output,10).at(1));
-    _BCLP->Data[3] = uchar(processCurrent(output,10).at(0));
+    _BCLP->Data[2] = uchar(processCurrentBCLP(output,10).at(1));
+    _BCLP->Data[3] = uchar(processCurrentBCLP(output,10).at(0));
     qDebug() << "BMS Demand Voltage and Current set to " + ui->lineEdit1_2->text() + " V " + ui->lineEdit1_1->text() + " A";
     // 设置电池单体最高温度
     if (!ui->label1_3->text().isEmpty())
@@ -676,6 +709,31 @@ QByteArray Widget::processCurrent(QString item, int k) // or can try str.toLatin
 {
     QByteArray dat;
     int val = 4000 - item.toInt() * k; // int < 2147483648
+    item = QString::asprintf("%04x", val);    // or String str = Interger.toHexString(val) ; use String
+    dat.resize(item.length()/2);    // can't use sizeof get Qstring size, because will get Qstring object point size
+    char ctempor = 0;
+    for (int i = 0; i < item.length()/2; i++)
+    {
+        if (item.toLocal8Bit().data()[2*i] >= '0' && item.toLocal8Bit().data()[2*i] <= '9')
+            ctempor = item.toLocal8Bit().data()[2*i] -48;
+        else {
+            ctempor = 0xa + (item.toLocal8Bit().data()[2*i] - 'a');
+        }
+        dat.data()[i] = ctempor;
+        if (item.toLocal8Bit().data()[2*i+1] >= '0' && item.toLocal8Bit().data()[2*i+1] <= '9')
+            ctempor = item.toLocal8Bit().data()[2*i+1] -48;
+        else {
+            ctempor = 0xa + (item.toLocal8Bit().data()[2*i+1] - 'a');
+        }
+        dat.data()[i] = char((dat.data()[i] << 4) | ctempor);
+    }
+    return dat;
+}
+
+QByteArray Widget::processCurrentBCLP(QString item, int k) // or can try str.toLatin1()/str.toUtf8()
+{
+    QByteArray dat;
+    int val = 4000 + item.toInt() * k; // int < 2147483648
     item = QString::asprintf("%04x", val);    // or String str = Interger.toHexString(val) ; use String
     dat.resize(item.length()/2);    // can't use sizeof get Qstring size, because will get Qstring object point size
     char ctempor = 0;

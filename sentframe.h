@@ -28,6 +28,7 @@ public:
 signals:
     void Shoot_Error(unsigned);
     void feedbackBRO_00();
+    void finished();
 
 public slots:
     void Initalize();

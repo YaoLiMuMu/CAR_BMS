@@ -22,8 +22,8 @@ void proceesframe::rx_thread()
     BYTE ccd_01[] = {0x01};
     ReceTab rece_Tab[] = {
         {0x1833F456, CSDP, 0xff, nullptr, 0},
-        {0x1832F456, CCD_00, 0xff, ccd_00, 1},
-        {0x1832F456, CCD_01, 0xff, ccd_01, 1},
+        {0x1832F456, CCD_00, 0x01, ccd_00, 1},
+        {0x1832F456, CCD_01, 0x01, ccd_01, 1},
         {0x1831F456, CMLP, 0xff, nullptr, 1},
         {0x1828F456, CDC, 0xff, nullptr, 0},
         {0x1CECF456, BDC_ACK, 0x08, bdc_ack, 0},
@@ -37,7 +37,7 @@ void proceesframe::rx_thread()
         {0x1CECF456, BCP_CONF, 0x08, bcp_conf, 0},
         {0x1CECF456, BCS_ACK, 0x08, bcs_ack, 0},
         {0x1CECF456, BCS_CONF, 0x08, bcs_conf, 0},
-        {0x1808F456, CML, 0xff, nullptr, 0},
+        {0x1808F456, CML, 0xff, nullptr, 1},
         {0x100AF456, CRO_00, 0x01, readiness_00, 1},
         {0x100AF456, CRO_AA, 0x01, readiness_AA, 1},
         {0x1807F456, CTS, 0xff, nullptr, 1},
@@ -108,6 +108,7 @@ void proceesframe::rx_thread()
             ctx->channel, ctx->total, ctx->error ? "error(s) detected" : "no error");
     if (ctx->error > 256)
         emit Send2UI(ctx->error);
+    free(ctx);
 }
 
 int proceesframe::Verify_Frame(VCI_CAN_OBJ can, uint Len, BYTE * CAN_Data)

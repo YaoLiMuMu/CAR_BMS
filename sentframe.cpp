@@ -337,11 +337,12 @@ void sentframe::Auto_transmit(VCI_CAN_OBJ * vco)
         for (int ii = 0; ii < vco->DataLen; ii++) {
             Rece_log = Rece_log + QString::asprintf("%02x", vco->Data[ii]);
         }
+        qDebug() << Rece_log;// QDateTime::currentMSecsSinceEpoch()表示ms总计时
         if (err == 256) // 2^8
         {
             qDebug() << "TX_transmit stop error : total errors times =" << err;
             emit Shoot_Error(err);
+            emit finished();
         }
-        qDebug() << Rece_log;// QDateTime::currentMSecsSinceEpoch()表示ms总计时
     }
 }
