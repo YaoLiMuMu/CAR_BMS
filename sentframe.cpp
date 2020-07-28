@@ -22,6 +22,11 @@ sentframe::sentframe(QObject *parent) : QObject(parent)
     MSG_BDC_init.Long_sign = 0;
     MSG_BDC_init.cycle_time = 250;
     MSG_BDC_init.len = 1;
+    // BST frame
+    MSG_BST.car_frame = & Widget::_BST[0];
+    MSG_BST.Long_sign = 0;
+    MSG_BST.cycle_time = 10;
+    MSG_BST.len = 1;
     // BDC frame
     MSG_BDC.car_frame = & Widget::_BDC[0];
     MSG_BDC.Long_sign = 1;
@@ -157,6 +162,8 @@ void sentframe::Initalize()
     _AnBaseTimer = new QTimer (this);
     connect(_BaseTimer, SIGNAL(timeout()), this, SLOT(Loop_Send_Msg()));
     connect(_AnBaseTimer, SIGNAL(timeout()), this, SLOT(Trans_BSM()));
+    _BaseTimer->setTimerType(Qt::PreciseTimer);
+    _AnBaseTimer->setTimerType(Qt::PreciseTimer);   // 定时器使用高精度类型
 }
 
 void sentframe::tx_thread(Action eve_act)
@@ -195,6 +202,11 @@ void sentframe::tx_thread(Action eve_act)
         emit feedbackBRO_00();
         _BaseTimer->start(MSG_BRO_00.cycle_time);
         break;
+    case BST:
+        tx_frame(MSG_BST);
+        emit feedbackBST();
+        _BaseTimer->start(MSG_BST.cycle_time);
+        break;
     case BRO_AA:
         tx_frame(MSG_BRO_AA);
         _BaseTimer->start(MSG_BRO_AA.cycle_time);
@@ -222,9 +234,6 @@ void sentframe::tx_thread(Action eve_act)
         break;
     case BCS:
         tx_frame(MSG_BCS);
-        break;
-    case BSM:
-        tx_frame(MSG_BSM);
         break;
     case Busleep:
         msleep(500);
@@ -254,9 +263,9 @@ void sentframe::Loop_Send_Msg()// Priodic message
         tx_frame(MSG_BRM_init);
         break;
     case C1:
-        tx_frame(MSG_BCP_init);
-        msleep(10);
         tx_frame(MSG_BCPP);     // BCP and BCPP message transmit together
+        msleep(10);
+        tx_frame(MSG_BCP_init);
         break;
     case P1:
         tx_frame(MSG_BCL);
@@ -272,6 +281,9 @@ void sentframe::Loop_Send_Msg()// Priodic message
         break;
     case R2:
         tx_frame(MSG_BRO_AA);
+        break;
+    case E1:
+        tx_frame(MSG_BST);
         break;
     default:
         break;
@@ -314,7 +326,7 @@ void sentframe::tx_frame(CAN_Messages Msg)
         for (uint j = 0; j < Msg.len; j++) {
             Auto_transmit(&Msg.car_frame[j]);
             QEventLoop loop;
-            QTimer::singleShot(10, &loop, SLOT(quit()));    // 长消息报文帧间隔时间10ms
+            QTimer::singleShot(10, Qt::PreciseTimer, &loop, SLOT(quit()));    // 长消息报文帧间隔时间10ms, 高精度类型
             loop.exec();
         }
     }
@@ -328,11 +340,13 @@ void sentframe::Auto_transmit(VCI_CAN_OBJ * vco)
     for (uint i = 0; i < 4; i++) {
         if ((gChMask & (1 << i)) == 0) {
             continue;
-        }
+        } 
+        m_mutex.lock(); // _BSM 全局变量互锁
         while (!VCI_Transmit(gDevType, gDevIdx, i, vco, 1)) {
             err++;
             continue;
         }
+        m_mutex.unlock();
         QString Rece_log = QDateTime::currentDateTime().toString("hh:mm:ss.zzz ") + QString::asprintf("CAN TX successed: ID=0x%08x, Data=0x", vco->ID);
         for (int ii = 0; ii < vco->DataLen; ii++) {
             Rece_log = Rece_log + QString::asprintf("%02x", vco->Data[ii]);

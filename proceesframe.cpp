@@ -21,7 +21,7 @@ void proceesframe::rx_thread()
     BYTE ccd_00[] = {0x00};
     BYTE ccd_01[] = {0x01};
     ReceTab rece_Tab[] = {
-        {0x1833F456, CSDP, 0xff, nullptr, 0},
+        {0x1833F456, CSDP, 0xff, nullptr, 1},
         {0x1832F456, CCD_00, 0x01, ccd_00, 1},
         {0x1832F456, CCD_01, 0x01, ccd_01, 1},
         {0x1831F456, CMLP, 0xff, nullptr, 1},
@@ -38,8 +38,8 @@ void proceesframe::rx_thread()
         {0x1CECF456, BCS_ACK, 0x08, bcs_ack, 0},
         {0x1CECF456, BCS_CONF, 0x08, bcs_conf, 0},
         {0x1808F456, CML, 0xff, nullptr, 1},
-        {0x100AF456, CRO_00, 0x01, readiness_00, 1},
-        {0x100AF456, CRO_AA, 0x01, readiness_AA, 1},
+        {0x100AF456, CRO_00, 0x01, readiness_00, 0},
+        {0x100AF456, CRO_AA, 0x01, readiness_AA, 0},
         {0x1807F456, CTS, 0xff, nullptr, 1},
         {0x1812F456, CCS, 0xff, nullptr, 1},
         {0x101AF456, CST, 0xff, nullptr, 1},

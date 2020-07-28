@@ -9,6 +9,7 @@ StateTransform stateTran[] = {
         {V1, CHM, H1, BHM},
         {V1, Null_5, S1, Busleep},
         {V1, Start_Button, V1, Busleep},
+        {H1, CHM, H1, BHM},
         {H1, Null_1, H2, Busleep},
         {H1, CRM_00, H2, BRM_INIT},
         {H1, Start_Button, H1, Busleep},
@@ -43,7 +44,12 @@ StateTransform stateTran[] = {
         {E1, CST, S1, BSD},
         {E1, CSD, S1, Busleep},
         {S1, Start_Button, V1, Busleep},
+        {H2, CST, E1, BST},
+        {C1, CST, E1, BST},
+        {R0, CST, E1, BST},
+        {E1, Kill_Button, S1, Busleep}
     };// 该柔性数组不能在被调函数中声明赋值, 要不被调函数结束后会被回收, 则指向该数组的指针变为空指针
+QMutex m_mutex;
 VCI_CAN_OBJ Widget::_BCL[1];
 VCI_CAN_OBJ Widget::_BCLP[1];
 VCI_CAN_OBJ Widget::_BCS[2];
@@ -54,6 +60,7 @@ VCI_CAN_OBJ Widget::_BRM[7];
 VCI_CAN_OBJ Widget::_BDC[4];
 VCI_CAN_OBJ Widget::_BCPP[1];
 VCI_CAN_OBJ Widget::_BCSP[1];
+VCI_CAN_OBJ Widget::_BST[1];
 int Widget::Ready_time_ms;
 bool Widget::transFree;
 QByteArray Widget::Test_Array = QByteArray::fromHex("010102");//6810D80E01 420V Voltage and 1A Current
@@ -74,10 +81,10 @@ Widget::Widget(QWidget *parent) :
     // Initial pSM;
     pSM = new StateMachine;
     stateMachine.state = V1;
-    stateMachine.transNum = 39;
+    stateMachine.transNum = 44;
     stateMachine.transform = stateTran;
     pSM = & stateMachine;
-    Ready_time_ms = 50000; // BMS准备就绪30s
+    Ready_time_ms = 30000; // BMS准备就绪30s
     transFree = false;
     Vin_code_num = 17;
     Vin_Code_Array.resize(Vin_code_num);
@@ -93,6 +100,18 @@ Widget::Widget(QWidget *parent) :
     }
     // Initialization Frame Data
     {
+        // _BST Frame Data
+        {
+            _BST->SendType = gTxType;
+            _BST->RemoteFlag = 0;
+            _BST->ExternFlag = 1;
+            _BST->DataLen = 4;
+            _BST->Data[0] = 0x40;
+            _BST->Data[1] = 0x00;
+            _BST->Data[2] = 0x00;
+            _BST->Data[3] = 0xF0;
+            _BST->ID = 0x101956F4;
+        }
         // _BCL Frame Data
         {
             _BCL->SendType = gTxType;
@@ -119,6 +138,35 @@ Widget::Widget(QWidget *parent) :
             _BCLP->Data[4] = 0x03;
             _BCLP->ID= 0x181056F4;
         }
+        // _BCP Frame Data
+        {
+            _BCP[0].SendType = gTxType;
+            _BCP[0].RemoteFlag = 0;
+            _BCP[0].ExternFlag = 1;
+            _BCP[0].DataLen = 8;
+            _BCP[0].Data[0] = 0x01;
+            _BCP[0].Data[1] = 0x60;
+            _BCP[0].Data[2] = 0x09;
+            _BCP[0].Data[3] = 0xDC;
+            _BCP[0].Data[4] = 0x05;
+            _BCP[0].Data[5] = 0x10;
+            _BCP[0].Data[6] = 0x27;   // 1000Kwh
+            _BCP[0].Data[7] = 0x68;
+            _BCP[0].ID = 0x1CEB56F4;
+            _BCP[1].SendType = gTxType;
+            _BCP[1].RemoteFlag = 0;
+            _BCP[1].ExternFlag = 1;
+            _BCP[1].DataLen = 8;
+            _BCP[1].Data[0] = 0x02;
+            _BCP[1].Data[1] = 0x10;  // 最高允许电压420V
+            _BCP[1].Data[2] = 0xFA;  // 200℃
+            _BCP[1].Data[3] = 0xF4;
+            _BCP[1].Data[4] = 0x01; // 50% SOC
+            _BCP[1].Data[5] = 0xA0;
+            _BCP[1].Data[6] = 0x0F; // 当前电压400V
+            _BCP[1].Data[7] = 0xFF;
+            _BCP[1].ID = 0x1CEB56F4;
+        }
         // _BCS Frame Data
         {
             _BCS[0].SendType = gTxType;
@@ -126,8 +174,8 @@ Widget::Widget(QWidget *parent) :
             _BCS[0].ExternFlag = 1;
             _BCS[0].DataLen = 8;
             _BCS[0].Data[0] = 0x01;
-            _BCS[0].Data[1] = 0x0F;
-            _BCS[0].Data[2] = 0x0F;
+            _BCS[0].Data[1] = _BCP[1].Data[5];
+            _BCS[0].Data[2] = _BCP[1].Data[6];      // 电压初始化
             _BCS[0].Data[3] = 0x96;
             _BCS[0].Data[4] = 0x0F;
             _BCS[0].Data[5] = 0x98;
@@ -147,35 +195,6 @@ Widget::Widget(QWidget *parent) :
             _BCS[1].Data[6] = 0xFF;
             _BCS[1].Data[7] = 0xFF;
             _BCS[1].ID = 0x1CEB56F4;
-        }
-        // _BCP Frame Data
-        {
-            _BCP[0].SendType = gTxType;
-            _BCP[0].RemoteFlag = 0;
-            _BCP[0].ExternFlag = 1;
-            _BCP[0].DataLen = 8;
-            _BCP[0].Data[0] = 0x01;
-            _BCP[0].Data[1] = 0x60;
-            _BCP[0].Data[2] = 0x09;
-            _BCP[0].Data[3] = 0xDC;
-            _BCP[0].Data[4] = 0x05;
-            _BCP[0].Data[5] = 0x10;
-            _BCP[0].Data[6] = 0x27;
-            _BCP[0].Data[7] = 0x68;
-            _BCP[0].ID = 0x1CEB56F4;
-            _BCP[1].SendType = gTxType;
-            _BCP[1].RemoteFlag = 0;
-            _BCP[1].ExternFlag = 1;
-            _BCP[1].DataLen = 8;
-            _BCP[1].Data[0] = 0x02;
-            _BCP[1].Data[1] = 0x10;
-            _BCP[1].Data[2] = 0xFA;
-            _BCP[1].Data[3] = 0xF4;
-            _BCP[1].Data[4] = 0x01;
-            _BCP[1].Data[5] = 0xA0;
-            _BCP[1].Data[6] = 0x0F;
-            _BCP[1].Data[7] = 0xFF;
-            _BCP[1].ID = 0x1CEB56F4;
         }
         // _BSM Frame Data
         {
@@ -197,9 +216,9 @@ Widget::Widget(QWidget *parent) :
             _BHM->SendType = gTxType;
             _BHM->RemoteFlag = 0;
             _BHM->ExternFlag = 1;
-            _BHM->DataLen = 7;
-            _BHM->Data[0] = 0x4C;
-            _BHM->Data[1] = 0x1D;
+            _BHM->DataLen = 2   ;
+            _BHM->Data[0] = 0x68;
+            _BHM->Data[1] = 0x10;       // 最高允许电压420V
             _BHM->ID = 0x182756F4;
         }
         // _BRM Frame Data
@@ -250,35 +269,35 @@ Widget::Widget(QWidget *parent) :
             _BRM[3].Data[1] = 0x00;
             _BRM[3].Data[2] = 0x01;
             _BRM[3].Data[3] = 0xFF;
-            _BRM[3].Data[4] = 'N';
-            _BRM[3].Data[5] = 'Z';
-            _BRM[3].Data[6] = '0';
-            _BRM[3].Data[7] = '9';
+            _BRM[3].Data[4] = 0x01;
+            _BRM[3].Data[5] = 0x02;
+            _BRM[3].Data[6] = 0x03;
+            _BRM[3].Data[7] = 0x04;
             _BRM[3].ID = 0x1CEB56F4;
             _BRM[3].ExternFlag = 1;
             _BRM[4].SendType = gTxType;
             _BRM[4].RemoteFlag = 0;
             _BRM[4].DataLen = 8;
             _BRM[4].Data[0] = 0x05;
-            _BRM[4].Data[1] = '4';
-            _BRM[4].Data[2] = '3';
-            _BRM[4].Data[3] = 0x06;
-            _BRM[4].Data[4] = 0x07;
-            _BRM[4].Data[5] = 0x08;
-            _BRM[4].Data[6] = 0x09;
-            _BRM[4].Data[7] = 0x0A;
+            _BRM[4].Data[1] = 0x05;
+            _BRM[4].Data[2] = 0x06;
+            _BRM[4].Data[3] = 0x07;
+            _BRM[4].Data[4] = 0x08;
+            _BRM[4].Data[5] = 0x09;
+            _BRM[4].Data[6] = 0x0A;
+            _BRM[4].Data[7] = 0x0B;
             _BRM[4].ID = 0x1CEB56F4;
             _BRM[4].ExternFlag = 1;
             _BRM[5].SendType = gTxType;
             _BRM[5].RemoteFlag = 0;
             _BRM[5].DataLen = 8;
             _BRM[5].Data[0] = 0x06;
-            _BRM[5].Data[1] = 0x00;
-            _BRM[5].Data[2] = 0x00;
-            _BRM[5].Data[3] = 0x00;
-            _BRM[5].Data[4] = 0x00;
-            _BRM[5].Data[5] = 0x00;
-            _BRM[5].Data[6] = 0x00;
+            _BRM[5].Data[1] = 0x0C;
+            _BRM[5].Data[2] = 0x0D;
+            _BRM[5].Data[3] = 0x0E;
+            _BRM[5].Data[4] = 0x0F;
+            _BRM[5].Data[5] = 0x10;
+            _BRM[5].Data[6] = 0x11;
             _BRM[5].Data[7] = 0xFF;
             _BRM[5].ID = 0x1CEB56F4;
             _BRM[5].ExternFlag = 1;
@@ -360,7 +379,7 @@ Widget::Widget(QWidget *parent) :
             _BCPP->Data[0] = 0x68;
             _BCPP->Data[1] = 0x10;  // Maximum output Current = 20 A
             _BCPP->Data[2] = 0x60;
-            _BCPP->Data[3] = 0x09;  // Lowest Voltage
+            _BCPP->Data[3] = 0x09;  // Lowest Voltage 240V
             _BCPP->Data[4] = 0xFA;
             _BCPP->Data[5] = 0x00;  // Lowest Cell Voltage = 2.50 V
             _BCPP->Data[6] = 0x05;  // Lowest SOC = 5%
@@ -371,12 +390,15 @@ Widget::Widget(QWidget *parent) :
             _BCSP->SendType = gTxType;
             _BCSP->RemoteFlag = 0;
             _BCSP->ExternFlag = 1;
-            _BCSP->DataLen = 5;
-            _BCSP->Data[0] = 0xFF;
-            _BCSP->Data[1] = 0xFF;  // Maximum output Current = 20 A
+            _BCSP->DataLen = 8;
+            _BCSP->Data[0] = 0x2C;
+            _BCSP->Data[1] = 0x01;  // remain rechange time 300min图
             _BCSP->Data[2] = 0xE8;
             _BCSP->Data[3] = 0x03;  // Rechange Mileage = 100 km
             _BCSP->Data[4] = 0xFF;
+            _BCSP->Data[5] = 0xFF;
+            _BCSP->Data[6] = 0xFF;
+            _BCSP->Data[7] = 0xFF;
             _BCSP->ID= 0x1C3456F4;  // BCSP PGN = 0x34
         }
     }
@@ -419,10 +441,11 @@ Widget::Widget(QWidget *parent) :
     connect(pframe,SIGNAL(Send2Main(EventID)), this, SLOT(runStateMachine(EventID)));
     connect(this,SIGNAL(EXE_Action(Action)), sframe, SLOT(tx_thread(Action)));
     connect(sframe,SIGNAL(feedbackBRO_00()), this, SLOT(BMS_Ready()));
+    connect(sframe,SIGNAL(feedbackBST()), this, SLOT(BMS_Ready()));
     Tthread->start();
     Rthread->start();
     msleep(1000);
-//    runStateMachine(CCD_00); // 此段用于代码调试或注释
+    //runStateMachine(BDC_ACK); // 此段用于代码调试或注释
     connect(pframe,SIGNAL(Sendcan(EventID, QByteArray)),this,SLOT(Parser(EventID, QByteArray)));  // receive and analytical data
     connect(sframe,SIGNAL(finished()), Tthread, SLOT(quit()));
     connect(Tthread,SIGNAL(finished()),sframe,SLOT(deleteLater()));
@@ -435,7 +458,7 @@ Widget::~Widget() // 析构函数
 {
 //    pframe->deleteLater();  //一定要在QThread线程退出之前释放内存
 //    sframe->deleteLater();
-//    Tthread->quit();    //调用quit让线程退出消息循环,否则线程一直在exec循环中
+//    Tthread->quit();    //调用qui最高(低)单体动力蓄电池电压及其组号t让线程退出消息循环,否则线程一直在exec循环中
 //    Tthread->wait();    //调用完quit后紧接着要调用wait来回收线程资源
 //    Rthread->quit();
 //    Rthread->wait();
@@ -458,7 +481,11 @@ void Widget::Changer_Vision(QByteArray CHM_Array)       // Agreement Version
 
 void Widget::UpdateCCS_CV(QByteArray CCS_Array)
 {
-    CCS_Array.resize(7);
+    CCS_Array.resize(8);
+    _BCS[0].Data[1] = uchar(CCS_Array.at(0));
+    _BCS[0].Data[2] = uchar(CCS_Array.at(1));
+    _BCS[0].Data[3] = uchar(CCS_Array.at(2));
+    _BCS[0].Data[4] = uchar(CCS_Array.at(3));       // BCS Voltage and current change with CCS
     double cvtemp;
     cvtemp = (uchar(CCS_Array.at(1))*256 + uchar(CCS_Array.at(0)))/10;
     ui->lcdNumber1_2->display(cvtemp);
@@ -481,13 +508,16 @@ void Widget::UpdateCCS_CV(QByteArray CCS_Array)
 
 void Widget::UpdateCCD_01(QByteArray CCD_Array)
 {
+    QMutexLocker m_lock(&m_mutex);
     CCD_Array.resize(3);
     switch (CCD_Array.at(0)) {
     case 0x00:
         ui->label1_19->setText("充电");
+        _BSM->Data[6] = 0xD0;
         break;
     case 0x01:
         ui->label1_19->setText("放电");
+        _BSM->Data[6] = 0xE0;
         break;
     default:
         ui->label1_19->setText("F");
@@ -496,13 +526,16 @@ void Widget::UpdateCCD_01(QByteArray CCD_Array)
 
 void Widget::UpdateCCD_00(QByteArray CCD_Array)
 {
+    QMutexLocker m_lock(&m_mutex); // _BSM 全局变量互锁
     CCD_Array.resize(3);
     switch (CCD_Array.at(0)) {
     case 0x00:
         ui->label1_19->setText("充电");
+        _BSM->Data[6] = 0xD0;
         break;
     case 0x01:
         ui->label1_19->setText("放电");
+        _BSM->Data[6] = 0xE0;
         break;
     default:
         ui->label1_19->setText("F");
@@ -537,6 +570,13 @@ void Widget::UpdateCMLP_CV(QByteArray CMLP_Array)
     ui->label1_29->setText(QString("%1A").arg(cvtemp));
 }
 
+void Widget::BST_Timeout()
+{
+    QEventLoop loop;
+    QTimer::singleShot(5000, &loop, SLOT(quit()));    // BST循环发送时长
+    loop.exec();
+    runStateMachine(Kill_Button);
+}
 
 void Widget::BMS_Ready()
 {
@@ -563,6 +603,13 @@ void Widget::runStateMachine(EventID evt)
         }
     pSM->state = pTrans->nextState; // 需要转化为下个状态变量, 必须需要pTrans这个中间变量
     emit EXE_Action(pTrans->action);
+    if (pSM->state == R0)
+    {
+        ui->pushButton1_2->setEnabled(true);
+    }
+    else {
+        ui->pushButton1_2->setEnabled(false);
+    }
     qDebug() << "Next State is : " << pSM->state << ", and Action code is " << pTrans->action;
 }
 
@@ -581,6 +628,7 @@ void Widget::CloseDev(unsigned Error)
 
 void Widget::on_pushButton1_1_clicked()
 {
+//    runStateMachine(BCP_ACK); // 此段用于代码调试或注释
     if (ui->lineEdit1_1->text().isEmpty() || ui->lineEdit1_2->text().isEmpty())
         {
         QMessageBox::information(this,"Warning","Please Input Demand Voltage and Current");
@@ -621,11 +669,51 @@ void Widget::on_pushButton1_1_clicked()
         output = ui->lineEdit1_5->text();
         _BCP[1].Data[5] = uchar(processVoltage(output,10).at(1));
         _BCP[1].Data[6] = uchar(processVoltage(output,10).at(0));
+//        _BCS[0].Data[1] = uchar(processVoltage(output,10).at(1));
+//        _BCS[0].Data[2] = uchar(processVoltage(output,10).at(0));   // BCS Voltage initialize
     }
     // set up BMS default ready time
     if (!ui->lineEdit1_7->text().isEmpty())
     {
         Ready_time_ms = ui->lineEdit1_7->text().toInt() * 1000;
+    }
+    // BCS parameter
+    if ((ui->lineEdit1_10->text().isEmpty()||ui->lineEdit1_12->text().isEmpty())||ui->lineEdit1_17->text().isEmpty()){}else {
+        _BCS[0].Data[6] = ui->lineEdit1_10->text().toInt()&0xFF;
+        _BCS[0].Data[5] = (ui->lineEdit1_10->text().toInt()/256)&0xFF;      // 单体最高最低电压
+        _BCS[0].Data[7] = uchar(ui->lineEdit1_17->text().toInt());          // SOC
+        _BCS[1].Data[2] = uchar(ui->lineEdit1_12->text().toInt()/256);
+        _BCS[1].Data[1] = uchar(ui->lineEdit1_12->text().toInt()%256);      // 剩余时间min
+    }
+    // BCP parameter
+    if (!ui->lineEdit1_15->text().isEmpty())
+    {if(ui->checkBox1_1->isChecked())
+        {
+            stateMachine.transform[1].action = Busleep;
+        }
+        else {
+            stateMachine.transform[1].action = BDC;
+        }
+        _BCP[0].Data[1] = ui->lineEdit1_15->text().toInt()&0xFF;
+        _BCP[0].Data[2] = (ui->lineEdit1_15->text().toInt()/256)&0xFF;
+
+    }
+    if (!ui->lineEdit1_14->text().isEmpty())
+    {
+        output = ui->lineEdit1_14->text();
+        _BCP[0].Data[3] = uchar(processCurrent(output,10).at(1));
+        _BCP[0].Data[4] = uchar(processCurrent(output,10).at(0));   // 最大允许充电电流
+    }
+    if (!ui->lineEdit1_16->text().isEmpty())
+    {
+        output = ui->lineEdit1_16->text();
+        _BCP[1].Data[2] = uchar(processTemprature(output).at(0));   // 单体温度上限
+    }
+    // BDC parameter
+    if (!ui->lineEdit1_11->text().isEmpty())
+    {
+        _BDC[3].Data[6] = ui->lineEdit1_11->text().toInt()*10&0xFF;
+        _BDC[3].Data[7] = (ui->lineEdit1_11->text().toInt()*10/256)&0xFF;      // 单体电压上限
     }
     // input Vin code in LineEdit
     if (ui->label1_17->text() == "17/17")
@@ -673,9 +761,9 @@ void Widget::on_pushButton1_1_clicked()
             _BDC[1].Data[5] = uchar(Vin_Code_Array.at(11));
             _BDC[1].Data[6] = uchar(Vin_Code_Array.at(12));
             _BDC[1].Data[7] = uchar(Vin_Code_Array.at(13));
-            _BRM[2].Data[1] = uchar(Vin_Code_Array.at(14));
-            _BRM[2].Data[2] = uchar(Vin_Code_Array.at(15));
-            _BRM[2].Data[3] = uchar(Vin_Code_Array.at(16));
+            _BDC[2].Data[1] = uchar(Vin_Code_Array.at(14));
+            _BDC[2].Data[2] = uchar(Vin_Code_Array.at(15));
+            _BDC[2].Data[3] = uchar(Vin_Code_Array.at(16));
         }
     }
 }
@@ -790,13 +878,19 @@ void Widget::on_lineEdit1_6_textChanged(const QString &arg1)    // Vin code Edit
     bool flag = 0;
     for (int j=0; j<hexbuff.length(); j++) {
         if (arg1[arg1.length()-1] == hexbuff[j])
-            flag = 1;
+            flag = 1;stateMachine.transform[2].action = Busleep;
     }
     if(flag)
     {
         flag = 0;
         if(arg1.length()<2){
-            ui->lineEdit1_6->setText(arg1.toUpper());
+            ui->lineEdit1_6->setText(arg1.toUpper());if(ui->checkBox1_1->isChecked())
+            {
+                stateMachine.transform[1].action = Busleep;
+            }
+            else {
+                stateMachine.transform[1].action = BDC;
+            }
             ui->label1_17->setText(QString::number(0)+QString::fromUtf8("/")+QString::number(Vin_code_num));
             return;
         }
@@ -811,7 +905,7 @@ void Widget::on_lineEdit1_6_textChanged(const QString &arg1)    // Vin code Edit
         }
         ui->label1_17->setText(QString::number(tempstring.length()/2)+QString::fromUtf8("/")+QString::number(Vin_code_num));
         texttemp = QString::fromStdString(tempstring);
-        short mod = (texttemp.length()/2);
+        int mod = (texttemp.length()/2);
         short res = (texttemp.length()%2);
         if(res)
         {
@@ -826,7 +920,13 @@ void Widget::on_lineEdit1_6_textChanged(const QString &arg1)    // Vin code Edit
         }
         ui->lineEdit1_6->setText(texttemp);
     }
-    else {
+    else {if(ui->checkBox1_1->isChecked())
+        {
+            stateMachine.transform[1].action = Busleep;
+        }
+        else {
+            stateMachine.transform[1].action = BDC;
+        }
         QString Delete_End_String = arg1.left(arg1.length()-1);
         ui->lineEdit1_6->setText(Delete_End_String);
     }
@@ -890,4 +990,109 @@ void Widget::on_pushButton1_3_clicked()
         qDebug() << "BMS had been setup to V2G Mode";
     }
     runStateMachine(Start_Button);
+}
+
+void Widget::on_checkBox1_3_stateChanged(int arg1)
+{
+    if(ui->checkBox1_3->isChecked())
+    {
+        stateMachine.transform[1].action = Busleep;     // BDC报文超时故障注入
+    }
+    else {
+        stateMachine.transform[1].action = BDC;
+    }
+}
+
+void Widget::on_checkBox1_5_stateChanged(int arg1)
+{
+    if(ui->checkBox1_5->isChecked())
+    {
+        stateMachine.transform[2].action = Busleep;     // BHM报文超时故障注入
+    }
+    else {
+        stateMachine.transform[2].action = BHM;
+    }
+}
+
+void Widget::on_checkBox1_4_stateChanged(int arg1)
+{
+    if(ui->checkBox1_4->isChecked())
+    {
+        stateMachine.transform[11].action = Busleep;    // BRM报文超时故障注入
+    }
+    else {
+        stateMachine.transform[11].action = BRM;
+    }
+}
+
+void Widget::on_checkBox1_6_stateChanged(int arg1)
+{
+    if(ui->checkBox1_6->isChecked())
+    {
+        stateMachine.transform[13].action = Busleep;    // BCP报文超时故障注入
+    }
+    else {
+        stateMachine.transform[13].action = BCP;
+    }
+}
+
+void Widget::on_checkBox1_7_stateChanged(int arg1)
+{
+    if(ui->checkBox1_7->isChecked())
+    {
+        stateMachine.transform[14].action = Busleep;    // BR0_00报文超时故障注入
+    }
+    else {
+        stateMachine.transform[14].action = BRO_00;
+    }
+}
+
+void Widget::on_checkBox1_8_stateChanged(int arg1)
+{
+    if(ui->checkBox1_8->isChecked())
+    {
+        stateMachine.transform[15].action = Busleep;    // BRO_AA报文超时故障注入
+    }
+    else {
+        stateMachine.transform[15].action = BRO_AA;
+    }
+}
+
+void Widget::on_checkBox1_9_stateChanged(int arg1)
+{
+    if(ui->checkBox1_9->isChecked())
+    {
+        stateMachine.transform[19].action = Busleep;    // BCS报文超时故障注入
+        stateMachine.transform[25].action = Busleep;
+    }
+    else {
+        stateMachine.transform[19].action = BCS;
+        stateMachine.transform[25].action = BCS;
+    }
+}
+
+void Widget::on_checkBox1_10_stateChanged(int arg1)
+{
+    if(ui->checkBox1_10->isChecked())
+    {
+        _BCL->ID= 0x00000000;    // BCL报文超时故障注入(修复帧ID)
+        _BCLP->ID= 0x00000000;
+    }
+    else {
+        _BCL->ID= 0x181056F4;
+        _BCLP->ID= 0x181056F4;
+    }
+}
+
+void Widget::on_checkBox1_11_stateChanged(int arg1)
+{
+    if(ui->checkBox1_11->isChecked())
+    {
+        stateMachine.transform[23].action = Busleep;    // BST报文超时故障注入
+        stateMachine.transform[29].action = Busleep;
+    }
+    else {
+        stateMachine.transform[23].action = BST;
+        stateMachine.transform[29].action = BST;
+    }
 }

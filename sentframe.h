@@ -28,6 +28,7 @@ public:
 signals:
     void Shoot_Error(unsigned);
     void feedbackBRO_00();
+    void feedbackBST();
     void finished();
 
 public slots:
@@ -38,11 +39,9 @@ public slots:
     void tx_frame(CAN_Messages);
     void Auto_transmit(VCI_CAN_OBJ *);
 private:
-    QMap<QString, CAN_Messages> translist;
-    QMutex m_mutex;
     uint err = 0;
     CAN_Messages MSG_BHM, MSG_BRM_init, MSG_BRM, MSG_BCP_init, MSG_BCP, MSG_BRO_00, MSG_BRO_AA, MSG_BCL, MSG_BCS_init, MSG_BCS, MSG_BSM,
-                 MSG_BDC_init, MSG_BDC, MSG_BCPP, MSG_BCSP, MSG_BCLP;
+                 MSG_BDC_init, MSG_BDC, MSG_BCPP, MSG_BCSP, MSG_BCLP, MSG_BST;
     QTimer *_BaseTimer;
     QTimer *_AnBaseTimer;
 };

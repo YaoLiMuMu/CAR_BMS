@@ -36,6 +36,7 @@ typedef struct{
 } StateMachine;                    // 状态机结构体
 extern StateMachine stateMachine;
 extern StateTransform stateTran[]; // 柔性数组必须使用extern
+extern QMutex m_mutex;
 
 namespace Ui {
 class Widget;
@@ -59,6 +60,7 @@ public:
     static VCI_CAN_OBJ _BDC[4];                 // BDC Frame Data
     static VCI_CAN_OBJ _BCPP[1];                // BCPP Frame Data
     static VCI_CAN_OBJ _BCSP[1];                // BCSP Frame Data
+    static VCI_CAN_OBJ _BST[1];                 // BST Frame Data
     static int Ready_time_ms;
     static bool transFree;                      // CAN transmit Bus free
 
@@ -79,6 +81,7 @@ private slots:
     void UpdateCML_CV(QByteArray);
     void UpdateCMLP_CV(QByteArray);
     void BMS_Ready();
+    void BST_Timeout();
     void Changer_Vision(QByteArray);            // show Agreement Vision V1.10/V1.12
     void on_lineEdit1_6_textChanged(const QString &arg1);  // VIN Code Edit
     void Parser(EventID, QByteArray);           // analyze can data
@@ -89,6 +92,24 @@ private slots:
     void on_checkBox1_1_stateChanged();
 
     void on_pushButton1_3_clicked();
+
+    void on_checkBox1_3_stateChanged(int arg1);
+
+    void on_checkBox1_5_stateChanged(int arg1);
+
+    void on_checkBox1_4_stateChanged(int arg1);
+
+    void on_checkBox1_6_stateChanged(int arg1);
+
+    void on_checkBox1_7_stateChanged(int arg1);
+
+    void on_checkBox1_8_stateChanged(int arg1);
+
+    void on_checkBox1_9_stateChanged(int arg1);
+
+    void on_checkBox1_10_stateChanged(int arg1);
+
+    void on_checkBox1_11_stateChanged(int arg1);
 
 private:
     Ui::Widget *ui;
