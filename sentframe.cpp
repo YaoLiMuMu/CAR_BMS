@@ -153,6 +153,11 @@ sentframe::sentframe(QObject *parent) : QObject(parent)
     MSG_BSM.Long_sign = 0;
     MSG_BSM.cycle_time = 250;
     MSG_BSM.len = 1;
+    // BSD frame
+    MSG_BSD.car_frame = & Widget::_BSD[0];
+    MSG_BSD.Long_sign = 0;
+    MSG_BSD.cycle_time = 250;
+    MSG_BSD.len = 1;
 }
 
 void sentframe::Initalize()
@@ -190,8 +195,11 @@ void sentframe::tx_thread(Action eve_act)
         break;
     case BCP_INIT:
         tx_frame(MSG_BCPP);
-        msleep(10);
-        tx_frame(MSG_BCP_init);                 // BCP and BCPP message transmit together
+        if (Widget::V2G_Mode_Flag)
+        {
+            msleep(10);
+            tx_frame(MSG_BCP_init);                 // BCP and BCPP message transmit together
+        }
         _BaseTimer->start(MSG_BCPP.cycle_time);
         break;
     case BCP:
@@ -202,9 +210,14 @@ void sentframe::tx_thread(Action eve_act)
         emit feedbackBRO_00();
         _BaseTimer->start(MSG_BRO_00.cycle_time);
         break;
+    case BSD:
+        tx_frame(MSG_BSD);
+        emit feedbackBST_BSD();
+        _BaseTimer->start(MSG_BSD.cycle_time);
+        break;
     case BST:
         tx_frame(MSG_BST);
-        emit feedbackBST();
+        emit feedbackBST_BSD();
         _BaseTimer->start(MSG_BST.cycle_time);
         break;
     case BRO_AA:
@@ -215,8 +228,11 @@ void sentframe::tx_thread(Action eve_act)
         tx_frame(MSG_BCL);
         _BaseTimer->start(MSG_BCL.cycle_time);
         tx_frame(MSG_BSM);
-        msleep(10);
-        tx_frame(MSG_BCSP);
+        if (Widget::V2G_Mode_Flag)
+        {
+            msleep(10);
+            tx_frame(MSG_BCSP);
+        }
         tx_frame(MSG_BCS_init);
         _AnBaseTimer->start(MSG_BSM.cycle_time);
         break;
@@ -224,8 +240,11 @@ void sentframe::tx_thread(Action eve_act)
         tx_frame(MSG_BCLP);
         _BaseTimer->start(MSG_BCLP.cycle_time);
         tx_frame(MSG_BSM);
-        msleep(10);
-        tx_frame(MSG_BCSP);
+        if (Widget::V2G_Mode_Flag)
+        {
+            msleep(10);
+            tx_frame(MSG_BCSP);
+        }
         tx_frame(MSG_BCS_init);
         _AnBaseTimer->start(MSG_BSM.cycle_time);
         break;
@@ -264,8 +283,11 @@ void sentframe::Loop_Send_Msg()// Priodic message
         break;
     case C1:
         tx_frame(MSG_BCPP);     // BCP and BCPP message transmit together
-        msleep(10);
-        tx_frame(MSG_BCP_init);
+        if (Widget::V2G_Mode_Flag)
+        {
+            msleep(10);
+            tx_frame(MSG_BCP_init);
+        }
         break;
     case P1:
         tx_frame(MSG_BCL);
@@ -284,6 +306,9 @@ void sentframe::Loop_Send_Msg()// Priodic message
         break;
     case E1:
         tx_frame(MSG_BST);
+        break;
+    case S1:
+        tx_frame(MSG_BSD);
         break;
     default:
         break;

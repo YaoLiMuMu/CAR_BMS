@@ -28,7 +28,7 @@ public:
 signals:
     void Shoot_Error(unsigned);
     void feedbackBRO_00();
-    void feedbackBST();
+    void feedbackBST_BSD();
     void finished();
 
 public slots:
@@ -41,7 +41,7 @@ public slots:
 private:
     uint err = 0;
     CAN_Messages MSG_BHM, MSG_BRM_init, MSG_BRM, MSG_BCP_init, MSG_BCP, MSG_BRO_00, MSG_BRO_AA, MSG_BCL, MSG_BCS_init, MSG_BCS, MSG_BSM,
-                 MSG_BDC_init, MSG_BDC, MSG_BCPP, MSG_BCSP, MSG_BCLP, MSG_BST;
+                 MSG_BDC_init, MSG_BDC, MSG_BCPP, MSG_BCSP, MSG_BCLP, MSG_BST, MSG_BSD;
     QTimer *_BaseTimer;
     QTimer *_AnBaseTimer;
 };

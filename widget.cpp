@@ -61,8 +61,10 @@ VCI_CAN_OBJ Widget::_BDC[4];
 VCI_CAN_OBJ Widget::_BCPP[1];
 VCI_CAN_OBJ Widget::_BCSP[1];
 VCI_CAN_OBJ Widget::_BST[1];
+VCI_CAN_OBJ Widget::_BSD[1];
 int Widget::Ready_time_ms;
 bool Widget::transFree;
+bool Widget::V2G_Mode_Flag;
 QByteArray Widget::Test_Array = QByteArray::fromHex("010102");//6810D80E01 420V Voltage and 1A Current
 
 Widget::Widget(QWidget *parent) :
@@ -86,6 +88,8 @@ Widget::Widget(QWidget *parent) :
     pSM = & stateMachine;
     Ready_time_ms = 30000; // BMS准备就绪30s
     transFree = false;
+    V2G_Mode_Flag = true;
+    BST_BSD_time_ms = 5000;
     Vin_code_num = 17;
     Vin_Code_Array.resize(Vin_code_num);
     // Fill the event ParseTable
@@ -401,6 +405,21 @@ Widget::Widget(QWidget *parent) :
             _BCSP->Data[7] = 0xFF;
             _BCSP->ID= 0x1C3456F4;  // BCSP PGN = 0x34
         }
+        // _BSD Frame Data
+        {
+            _BSD->SendType = gTxType;
+            _BSD->RemoteFlag = 0;
+            _BSD->ExternFlag = 1;
+            _BSD->DataLen = 7;
+            _BSD->Data[0] = _BCS[0].Data[7];    // 中止SOC
+            _BSD->Data[1] = 0x60;
+            _BSD->Data[2] = 0x09;   // 最高单体电压24V
+            _BSD->Data[3] = 0xC8;
+            _BSD->Data[4] = 0x00;   // 最低单体电压2V
+            _BSD->Data[5] = 0x64;   // 最高单体温度50℃
+            _BSD->Data[6] = 0x32;   // 最低单体温度0℃
+            _BSD->ID = 0x181C56F4;
+        }
     }
     qDebug() << "Mainthread ID: " << QThread::currentThreadId();
     // Open usbCAN Device
@@ -441,7 +460,7 @@ Widget::Widget(QWidget *parent) :
     connect(pframe,SIGNAL(Send2Main(EventID)), this, SLOT(runStateMachine(EventID)));
     connect(this,SIGNAL(EXE_Action(Action)), sframe, SLOT(tx_thread(Action)));
     connect(sframe,SIGNAL(feedbackBRO_00()), this, SLOT(BMS_Ready()));
-    connect(sframe,SIGNAL(feedbackBST()), this, SLOT(BMS_Ready()));
+    connect(sframe,SIGNAL(feedbackBST_BSD()), this, SLOT(BMS_Ready()));
     Tthread->start();
     Rthread->start();
     msleep(1000);
@@ -573,7 +592,7 @@ void Widget::UpdateCMLP_CV(QByteArray CMLP_Array)
 void Widget::BST_Timeout()
 {
     QEventLoop loop;
-    QTimer::singleShot(5000, &loop, SLOT(quit()));    // BST循环发送时长
+    QTimer::singleShot(BST_BSD_time_ms, &loop, SLOT(quit()));    // BST循环发送时长
     loop.exec();
     runStateMachine(Kill_Button);
 }
@@ -679,24 +698,17 @@ void Widget::on_pushButton1_1_clicked()
     }
     // BCS parameter
     if ((ui->lineEdit1_10->text().isEmpty()||ui->lineEdit1_12->text().isEmpty())||ui->lineEdit1_17->text().isEmpty()){}else {
-        _BCS[0].Data[6] = ui->lineEdit1_10->text().toInt()&0xFF;
-        _BCS[0].Data[5] = (ui->lineEdit1_10->text().toInt()/256)&0xFF;      // 单体最高最低电压
+        _BCS[0].Data[5] = ui->lineEdit1_10->text().toInt()&0xFF;
+        _BCS[0].Data[6] = (ui->lineEdit1_10->text().toInt()/256)&0xFF;      // 单体最高/最低电压
         _BCS[0].Data[7] = uchar(ui->lineEdit1_17->text().toInt());          // SOC
         _BCS[1].Data[2] = uchar(ui->lineEdit1_12->text().toInt()/256);
         _BCS[1].Data[1] = uchar(ui->lineEdit1_12->text().toInt()%256);      // 剩余时间min
     }
     // BCP parameter
     if (!ui->lineEdit1_15->text().isEmpty())
-    {if(ui->checkBox1_1->isChecked())
-        {
-            stateMachine.transform[1].action = Busleep;
-        }
-        else {
-            stateMachine.transform[1].action = BDC;
-        }
+    {
         _BCP[0].Data[1] = ui->lineEdit1_15->text().toInt()&0xFF;
         _BCP[0].Data[2] = (ui->lineEdit1_15->text().toInt()/256)&0xFF;
-
     }
     if (!ui->lineEdit1_14->text().isEmpty())
     {
@@ -713,7 +725,28 @@ void Widget::on_pushButton1_1_clicked()
     if (!ui->lineEdit1_11->text().isEmpty())
     {
         _BDC[3].Data[6] = ui->lineEdit1_11->text().toInt()*10&0xFF;
-        _BDC[3].Data[7] = (ui->lineEdit1_11->text().toInt()*10/256)&0xFF;      // 单体电压上限
+        _BDC[3].Data[7] = (ui->lineEdit1_11->text().toInt()*10/256)&0xFF;      // 续航里程
+    }
+    // BSD parameter
+    if (!ui->lineEdit1_18->text().isEmpty())
+    {
+        _BSD->Data[1] = ui->lineEdit1_18->text().toInt()&0xFF;
+        _BSD->Data[2] = (ui->lineEdit1_18->text().toInt()/256)&0xFF;    // BSD 统计单体最高电压
+    }
+    if (!ui->lineEdit1_19->text().isEmpty())
+    {
+        _BSD->Data[3] = ui->lineEdit1_19->text().toInt()&0xFF;
+        _BSD->Data[4] = (ui->lineEdit1_19->text().toInt()/256)&0xFF;    // BSD 统计单体最低电压
+    }
+    if (!ui->lineEdit1_20->text().isEmpty())
+    {
+        output = ui->lineEdit1_20->text();
+        _BSD->Data[5] = uchar(processTemprature(output).at(0));         // BSD 统计单体最高温度
+    }
+    if (!ui->lineEdit1_21->text().isEmpty())
+    {
+        output = ui->lineEdit1_21->text();
+        _BSD->Data[6] = uchar(processTemprature(output).at(0));         // BSD 统计单体最低温度
     }
     // input Vin code in LineEdit
     if (ui->label1_17->text() == "17/17")
@@ -884,13 +917,7 @@ void Widget::on_lineEdit1_6_textChanged(const QString &arg1)    // Vin code Edit
     {
         flag = 0;
         if(arg1.length()<2){
-            ui->lineEdit1_6->setText(arg1.toUpper());if(ui->checkBox1_1->isChecked())
-            {
-                stateMachine.transform[1].action = Busleep;
-            }
-            else {
-                stateMachine.transform[1].action = BDC;
-            }
+            ui->lineEdit1_6->setText(arg1.toUpper());
             ui->label1_17->setText(QString::number(0)+QString::fromUtf8("/")+QString::number(Vin_code_num));
             return;
         }
@@ -920,13 +947,7 @@ void Widget::on_lineEdit1_6_textChanged(const QString &arg1)    // Vin code Edit
         }
         ui->lineEdit1_6->setText(texttemp);
     }
-    else {if(ui->checkBox1_1->isChecked())
-        {
-            stateMachine.transform[1].action = Busleep;
-        }
-        else {
-            stateMachine.transform[1].action = BDC;
-        }
+    else {
         QString Delete_End_String = arg1.left(arg1.length()-1);
         ui->lineEdit1_6->setText(Delete_End_String);
     }
@@ -979,12 +1000,14 @@ void Widget::on_pushButton1_3_clicked()
     if(ui->checkBox1_2->isChecked())
     {
         stateMachine.state = H1; // 常规模式
+        V2G_Mode_Flag = false;
         stateMachine.transform[16].action = BCL;
         stateMachine.transform[16].nextState = P1;
         qDebug() << "BMS had been setup to Normal Mode";
     }
     else {
         stateMachine.state = V1; // V2G模式
+        V2G_Mode_Flag = true;
         stateMachine.transform[16].action = N_A;
         stateMachine.transform[16].nextState = R2;
         qDebug() << "BMS had been setup to V2G Mode";
@@ -1094,5 +1117,16 @@ void Widget::on_checkBox1_11_stateChanged(int arg1)
     else {
         stateMachine.transform[23].action = BST;
         stateMachine.transform[29].action = BST;
+    }
+}
+
+void Widget::on_checkBox1_12_stateChanged(int arg1)
+{
+    if(ui->checkBox1_12->isChecked())
+    {
+        stateMachine.transform[37].action = Busleep;    // BSD报文超时故障注入
+    }
+    else {
+        stateMachine.transform[37].action = BSD;
     }
 }

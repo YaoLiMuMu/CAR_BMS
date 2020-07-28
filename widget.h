@@ -61,8 +61,10 @@ public:
     static VCI_CAN_OBJ _BCPP[1];                // BCPP Frame Data
     static VCI_CAN_OBJ _BCSP[1];                // BCSP Frame Data
     static VCI_CAN_OBJ _BST[1];                 // BST Frame Data
+    static VCI_CAN_OBJ _BSD[1];                 // BSD Frame Data
     static int Ready_time_ms;
     static bool transFree;                      // CAN transmit Bus free
+    static bool V2G_Mode_Flag;                  // V2G mode : flag = true
 
 signals:
     void EXE_Action(Action);                    // send transmit signal
@@ -111,6 +113,8 @@ private slots:
 
     void on_checkBox1_11_stateChanged(int arg1);
 
+    void on_checkBox1_12_stateChanged(int arg1);
+
 private:
     Ui::Widget *ui;
     QThread * Tthread;
@@ -118,6 +122,7 @@ private:
     proceesframe * pframe;
     sentframe * sframe;
     StateMachine * pSM;
+    int BST_BSD_time_ms;
     int Vin_code_num;                           // Vin字节数目
     QByteArray Vin_Code_Array;                  // Vin码储存数组
     typedef void (Widget:: *func)(QByteArray);  // CAN解析函数指针, Qmap插入成员函数指针
