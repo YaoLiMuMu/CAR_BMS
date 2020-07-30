@@ -115,6 +115,20 @@ private slots:
 
     void on_checkBox1_12_stateChanged(int arg1);
 
+    void on_comboBox1_1_currentIndexChanged(const QString &arg1);
+
+    void on_comboBox1_2_currentIndexChanged(const QString &arg1);
+
+    void on_comboBox1_3_currentIndexChanged(const QString &arg1);
+
+    void on_checkBox1_13_stateChanged(int arg1);
+
+    void on_checkBox1_14_stateChanged(int arg1);
+
+    void on_checkBox1_16_stateChanged(int arg1);
+
+    void on_checkBox1_15_stateChanged(int arg1);
+
 private:
     Ui::Widget *ui;
     QThread * Tthread;
@@ -127,7 +141,9 @@ private:
     QByteArray Vin_Code_Array;                  // Vin码储存数组
     typedef void (Widget:: *func)(QByteArray);  // CAN解析函数指针, Qmap插入成员函数指针
     QMap<EventID,func> ParseTable;              // Map 函数指针映射表
-
+    QMap<QString, uchar> Battery_Type;          // 电池类型
+    QMap<QString, uchar> BMS_Version_Set;       // BMS协议版本
+    QMap<QString, uchar> BCL_Mode_Flag;         // BCL 充电标识
 };
 
 #endif // WIDGET_H

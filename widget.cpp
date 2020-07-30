@@ -92,6 +92,30 @@ Widget::Widget(QWidget *parent) :
     BST_BSD_time_ms = 5000;
     Vin_code_num = 17;
     Vin_Code_Array.resize(Vin_code_num);
+    // 电池类型
+    {
+        Battery_Type.insert("01: 铅酸电池", 0x01);
+        Battery_Type.insert("02: 镍氢电池", 0x02);
+        Battery_Type.insert("03: 磷酸铁锂电池", 0x03);
+        Battery_Type.insert("04: 锰酸锂电池", 0x04);
+        Battery_Type.insert("05: 钴酸锂电池", 0x05);
+        Battery_Type.insert("06: 三元材料电池", 0x06);
+        Battery_Type.insert("07: 聚合物锂离子电池", 0x07);
+        Battery_Type.insert("08: 钛酸锂电池", 0x08);
+        Battery_Type.insert("FF: 其他电池", 0xFF);
+    }
+    // 协议版本
+    {
+        BMS_Version_Set.insert("1.10 2015国标", 0x01);
+        BMS_Version_Set.insert("1.00 2010旧标", 0x02);
+        BMS_Version_Set.insert("1.12 2019试行", 0x03);
+    }
+    // BCL 充电标识
+    {
+        BCL_Mode_Flag.insert("02 恒流充电", 0x02);
+        BCL_Mode_Flag.insert("01 恒压充电", 0x01);
+        BCL_Mode_Flag.insert("03 恒流放电", 0x03);
+    }
     // Fill the event ParseTable
     {
         Widget::ParseTable.insert(CDC, & Widget::Changer_Vision);
@@ -236,7 +260,7 @@ Widget::Widget(QWidget *parent) :
             _BRM[0].Data[3] = 0x00;
             _BRM[0].Data[4] = 0x01;
             _BRM[0].Data[5] = 0x88;
-            _BRM[0].Data[6] = 0x13;
+            _BRM[0].Data[6] = 0x13;     // 系统额定容量 500Ah
             _BRM[0].Data[7] = 0x4C;
             _BRM[0].ID = 0x1CEB56F4;
             _BRM[0].ExternFlag = 1;
@@ -244,7 +268,7 @@ Widget::Widget(QWidget *parent) :
             _BRM[1].RemoteFlag = 0;
             _BRM[1].DataLen = 8;
             _BRM[1].Data[0] = 0x02;
-            _BRM[1].Data[1] = 0x1D;
+            _BRM[1].Data[1] = 0x1D;     // 系统额定总电压 750V
             _BRM[1].Data[2] = 0x4E;
             _BRM[1].Data[3] = 0x53;
             _BRM[1].Data[4] = 0x49;
@@ -647,7 +671,7 @@ void Widget::CloseDev(unsigned Error)
 
 void Widget::on_pushButton1_1_clicked()
 {
-//    runStateMachine(BCP_ACK); // 此段用于代码调试或注释
+//    runStateMachine(BCS_ACK); // 此段用于代码调试或注释
     if (ui->lineEdit1_1->text().isEmpty() || ui->lineEdit1_2->text().isEmpty())
         {
         QMessageBox::information(this,"Warning","Please Input Demand Voltage and Current");
@@ -667,11 +691,15 @@ void Widget::on_pushButton1_1_clicked()
     _BCLP->Data[2] = uchar(processCurrentBCLP(output,10).at(1));
     _BCLP->Data[3] = uchar(processCurrentBCLP(output,10).at(0));
     qDebug() << "BMS Demand Voltage and Current set to " + ui->lineEdit1_2->text() + " V " + ui->lineEdit1_1->text() + " A";
-    // 设置电池单体最高温度
+    // BSM 设置电池单体最高温度
     if (!ui->label1_3->text().isEmpty())
     {
         output = ui->lineEdit1_3->text();
         _BSM->Data[1] = uchar(processTemprature(output).at(0));
+    }
+    if (!ui->lineEdit1_28->text().isEmpty())
+    {
+        _BSM->Data[2] = uchar(ui->lineEdit1_28->text().toInt());
     }
     // 设置电池最高电压(用于绝缘检测电压)
     if (!ui->lineEdit1_4->text().isEmpty())
@@ -704,6 +732,10 @@ void Widget::on_pushButton1_1_clicked()
         _BCS[1].Data[2] = uchar(ui->lineEdit1_12->text().toInt()/256);
         _BCS[1].Data[1] = uchar(ui->lineEdit1_12->text().toInt()%256);      // 剩余时间min
     }
+    if (!ui->lineEdit1_22->text().isEmpty())
+    {
+        _BCS[0].Data[6] = (ui->lineEdit1_22->text().toInt()*16&0xFF)^_BCS[0].Data[6];
+    }
     // BCP parameter
     if (!ui->lineEdit1_15->text().isEmpty())
     {
@@ -721,11 +753,26 @@ void Widget::on_pushButton1_1_clicked()
         output = ui->lineEdit1_16->text();
         _BCP[1].Data[2] = uchar(processTemprature(output).at(0));   // 单体温度上限
     }
+    if (!ui->lineEdit1_25->text().isEmpty())
+    {
+        _BCP[0].Data[5] = (ui->lineEdit1_25->text().toInt()*10)&0xFF;
+        _BCP[0].Data[6] = (ui->lineEdit1_25->text().toInt()*10/256)&0xFF;
+    }
     // BDC parameter
     if (!ui->lineEdit1_11->text().isEmpty())
     {
         _BDC[3].Data[6] = ui->lineEdit1_11->text().toInt()*10&0xFF;
         _BDC[3].Data[7] = (ui->lineEdit1_11->text().toInt()*10/256)&0xFF;      // 续航里程
+    }
+    if (!ui->lineEdit1_26->text().isEmpty())
+    {
+        _BDC[3].Data[2] = ui->lineEdit1_26->text().toInt()*10&0xFF;
+        _BDC[3].Data[3] = (ui->lineEdit1_26->text().toInt()*10/256)&0xFF;       // 参与V2G次数
+    }
+    if (!ui->lineEdit1_27->text().isEmpty())
+    {
+        _BDC[3].Data[4] = ui->lineEdit1_27->text().toInt()*10&0xFF;
+        _BDC[3].Data[5] = (ui->lineEdit1_27->text().toInt()*10/256)&0xFF;       // 参与V2G次数
     }
     // BSD parameter
     if (!ui->lineEdit1_18->text().isEmpty())
@@ -747,6 +794,28 @@ void Widget::on_pushButton1_1_clicked()
     {
         output = ui->lineEdit1_21->text();
         _BSD->Data[6] = uchar(processTemprature(output).at(0));         // BSD 统计单体最低温度
+    }
+    // BRM parameter
+    if (!ui->lineEdit1_23->text().isEmpty())
+    {
+        _BRM[0].Data[5] = (ui->lineEdit1_23->text().toInt()*10)&0xFF;
+        _BRM[0].Data[6] = (ui->lineEdit1_23->text().toInt()*10/256)&0xFF;
+    }
+    if (!ui->lineEdit1_24->text().isEmpty())
+    {
+        _BRM[0].Data[7] = (ui->lineEdit1_24->text().toInt()*10)&0xFF;
+        _BRM[1].Data[1] = (ui->lineEdit1_24->text().toInt()*10/256)&0xFF;
+    }
+    // BCSP parameter
+    if (!ui->lineEdit1_30->text().isEmpty())
+    {
+        _BCSP->Data[2] = (ui->lineEdit1_30->text().toInt()*10)&0xFF;
+        _BCSP->Data[3] = (ui->lineEdit1_30->text().toInt()*10/256)&0xFF;
+    }
+    if (!ui->lineEdit1_29->text().isEmpty())
+    {
+        _BCSP->Data[0] = (ui->lineEdit1_29->text().toInt())&0xFF;
+        _BCSP->Data[1] = (ui->lineEdit1_29->text().toInt()/256)&0xFF;
     }
     // input Vin code in LineEdit
     if (ui->label1_17->text() == "17/17")
@@ -911,7 +980,7 @@ void Widget::on_lineEdit1_6_textChanged(const QString &arg1)    // Vin code Edit
     bool flag = 0;
     for (int j=0; j<hexbuff.length(); j++) {
         if (arg1[arg1.length()-1] == hexbuff[j])
-            flag = 1;stateMachine.transform[2].action = Busleep;
+            flag = 1;
     }
     if(flag)
     {
@@ -1129,4 +1198,89 @@ void Widget::on_checkBox1_12_stateChanged(int arg1)
     else {
         stateMachine.transform[37].action = BSD;
     }
+}
+
+void Widget::on_comboBox1_1_currentIndexChanged(const QString &arg1)
+{
+   _BRM[0].Data[4] = Battery_Type.value(arg1);
+   qDebug() << "Set Battery_Type" << arg1 << _BRM[0].Data[4];
+}
+
+void Widget::on_comboBox1_2_currentIndexChanged(const QString &arg1)
+{
+    switch (BMS_Version_Set.value(arg1)) {
+    case 0x01:
+        _BRM[0].Data[2] = 0x01;
+        _BRM[0].Data[3] = 0x00;
+        break;
+    case 0x02:
+        _BRM[0].Data[2] = 0x00;
+        _BRM[0].Data[3] = 0x00;
+        break;
+    case 0x03:
+        _BRM[0].Data[2] = 0x01;
+        _BRM[0].Data[3] = 0x02;
+        break;
+    default:
+        break;
+    }
+    qDebug() << "BMS Version: " << _BRM[0].Data[2] << _BRM[0].Data[3];
+}
+
+void Widget::on_comboBox1_3_currentIndexChanged(const QString &arg1)
+{
+    _BCL->Data[4] = BCL_Mode_Flag.value(arg1);
+    qDebug() << "Set BCL Mode" << _BCL->Data[4];
+}
+
+void Widget::on_checkBox1_13_stateChanged(int arg1)
+{
+    if (arg1==0x02)
+    {
+        _BSM->Data[6] = _BSM->Data[6] ^ 0x04;
+    }
+    else {
+        _BSM->Data[6] = _BSM->Data[6] ^ 0x04;
+    }
+    qDebug() << _BSM->Data[6];
+}
+
+void Widget::on_checkBox1_14_stateChanged(int arg1)
+{
+    if (arg1==0x02)
+    {
+        _BSM->Data[6] = _BSM->Data[6] ^ 0x01;
+    }
+    else {
+        _BSM->Data[6] = _BSM->Data[6] ^ 0x01;
+    }
+    qDebug() << _BSM->Data[6];
+}
+
+void Widget::on_checkBox1_16_stateChanged(int arg1)
+{
+    if (arg1==0x02)
+    {
+        _BSM->Data[5] = _BSM->Data[5] ^ 0x04;
+        ui->checkBox1_15->setEnabled(false);
+    }
+    else {
+        _BSM->Data[5] = _BSM->Data[5] ^ 0x04;
+        ui->checkBox1_15->setEnabled(true);
+    }
+    qDebug() << _BSM->Data[5];
+}
+
+void Widget::on_checkBox1_15_stateChanged(int arg1)
+{
+    if (arg1==0x02)
+    {
+        _BSM->Data[5] = _BSM->Data[5] ^ 0x08;
+        ui->checkBox1_16->setEnabled(false);
+    }
+    else {
+        _BSM->Data[5] = _BSM->Data[5] ^ 0x08;
+        ui->checkBox1_16->setEnabled(true);
+    }
+    qDebug() << _BSM->Data[5];
 }

@@ -194,11 +194,11 @@ void sentframe::tx_thread(Action eve_act)
         tx_frame(MSG_BRM);
         break;
     case BCP_INIT:
-        tx_frame(MSG_BCPP);
+        tx_frame(MSG_BCP_init);
         if (Widget::V2G_Mode_Flag)
         {
             msleep(10);
-            tx_frame(MSG_BCP_init);                 // BCP and BCPP message transmit together
+            tx_frame(MSG_BCPP);                 // BCP and BCPP message transmit together
         }
         _BaseTimer->start(MSG_BCPP.cycle_time);
         break;
@@ -282,11 +282,11 @@ void sentframe::Loop_Send_Msg()// Priodic message
         tx_frame(MSG_BRM_init);
         break;
     case C1:
-        tx_frame(MSG_BCPP);     // BCP and BCPP message transmit together
+        tx_frame(MSG_BCP_init);     // BCP and BCPP message transmit together
         if (Widget::V2G_Mode_Flag)
         {
             msleep(10);
-            tx_frame(MSG_BCP_init);
+            tx_frame(MSG_BCPP);
         }
         break;
     case P1:
