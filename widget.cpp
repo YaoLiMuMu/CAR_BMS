@@ -208,7 +208,7 @@ Widget::Widget(QWidget *parent) :
             _BCS[0].Data[4] = 0x0F;
             _BCS[0].Data[5] = 0x98;
             _BCS[0].Data[6] = 0x08;
-            _BCS[0].Data[7] = 0x32;
+            _BCS[0].Data[7] = 0x32;                 // 实时SOC=50%
             _BCS[0].ID = 0x1CEB56F4;
             _BCS[1].SendType = gTxType;
             _BCS[1].RemoteFlag = 0;
@@ -725,12 +725,19 @@ void Widget::on_pushButton1_1_clicked()
         Ready_time_ms = ui->lineEdit1_7->text().toInt() * 1000;
     }
     // BCS parameter
-    if ((ui->lineEdit1_10->text().isEmpty()||ui->lineEdit1_12->text().isEmpty())||ui->lineEdit1_17->text().isEmpty()){}else {
+    if (!ui->lineEdit1_10->text().isEmpty())
+    {
         _BCS[0].Data[5] = ui->lineEdit1_10->text().toInt()&0xFF;
         _BCS[0].Data[6] = (ui->lineEdit1_10->text().toInt()/256)&0xFF;      // 单体最高/最低电压
-        _BCS[0].Data[7] = uchar(ui->lineEdit1_17->text().toInt());          // SOC
+    }
+    if (!ui->lineEdit1_12->text().isEmpty())
+    {
         _BCS[1].Data[2] = uchar(ui->lineEdit1_12->text().toInt()/256);
         _BCS[1].Data[1] = uchar(ui->lineEdit1_12->text().toInt()%256);      // 剩余时间min
+    }
+    if (!ui->lineEdit1_17->text().isEmpty())
+    {
+        _BCS[0].Data[7] = uchar(ui->lineEdit1_17->text().toInt());          // SOC
     }
     if (!ui->lineEdit1_22->text().isEmpty())
     {
