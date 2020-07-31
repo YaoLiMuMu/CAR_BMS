@@ -162,6 +162,9 @@
         <bold>false</bold>
        </font>
       </property>
+      <property name="styleSheet">
+       <string notr="true">QCheckBox#checkBox1_2 {color:red}</string>
+      </property>
       <property name="text">
        <string>常规模式</string>
       </property>
@@ -172,15 +175,15 @@
       <property name="font">
        <font>
         <pointsize>12</pointsize>
-        <weight>75</weight>
-        <bold>true</bold>
+        <weight>50</weight>
+        <bold>false</bold>
        </font>
       </property>
       <property name="styleSheet">
        <string notr="true">QLabel#label1_48 {color:blue}</string>
       </property>
       <property name="text">
-       <string>Version: v1.9</string>
+       <string>DIsconnnet</string>
       </property>
       <property name="buddy">
        <cstring>lineEdit2_1</cstring>
@@ -459,7 +462,7 @@
      <x>30</x>
      <y>60</y>
      <width>541</width>
-     <height>181</height>
+     <height>192</height>
     </rect>
    </property>
    <layout class="QHBoxLayout" name="horizontalLayout_2">
@@ -609,7 +612,7 @@
        <string>Default Setting</string>
       </property>
       <layout class="QFormLayout" name="formLayout_2">
-       <item row="0" column="0">
+       <item row="1" column="0">
         <widget class="QLabel" name="label1_55">
          <property name="font">
           <font>
@@ -626,7 +629,7 @@
          </property>
         </widget>
        </item>
-       <item row="0" column="1">
+       <item row="1" column="1">
         <widget class="QComboBox" name="comboBox1_3">
          <item>
           <property name="text">
@@ -645,7 +648,7 @@
          </item>
         </widget>
        </item>
-       <item row="3" column="0">
+       <item row="4" column="0">
         <widget class="QLabel" name="label1_14">
          <property name="font">
           <font>
@@ -662,7 +665,7 @@
          </property>
         </widget>
        </item>
-       <item row="3" column="1">
+       <item row="4" column="1">
         <widget class="QLineEdit" name="lineEdit1_7">
          <property name="maximumSize">
           <size>
@@ -672,7 +675,7 @@
          </property>
         </widget>
        </item>
-       <item row="4" column="0">
+       <item row="5" column="0">
         <widget class="QLabel" name="label1_10">
          <property name="font">
           <font>
@@ -692,7 +695,7 @@
          </property>
         </widget>
        </item>
-       <item row="4" column="1">
+       <item row="5" column="1">
         <widget class="QLineEdit" name="lineEdit1_4">
          <property name="maximumSize">
           <size>
@@ -700,6 +703,37 @@
            <height>16777215</height>
           </size>
          </property>
+        </widget>
+       </item>
+       <item row="0" column="0">
+        <widget class="QLabel" name="label1_61">
+         <property name="font">
+          <font>
+           <pointsize>12</pointsize>
+           <weight>50</weight>
+           <bold>false</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string>USBCAN通道</string>
+         </property>
+         <property name="buddy">
+          <cstring>lineEdit2_2</cstring>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QComboBox" name="comboBox1_4">
+         <item>
+          <property name="text">
+           <string>CAN2</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>CAN1</string>
+          </property>
+         </item>
         </widget>
        </item>
       </layout>
@@ -1918,14 +1952,23 @@
        </font>
       </property>
       <property name="text">
-       <string>请求暂停</string>
+       <string>允许放电</string>
+      </property>
+      <property name="checked">
+       <bool>false</bool>
       </property>
      </widget>
     </item>
     <item row="3" column="1">
      <widget class="QCheckBox" name="checkBox1_17">
+      <property name="styleSheet">
+       <string notr="true">QCheckBox#checkBox1_17 {color:red}</string>
+      </property>
       <property name="text">
        <string>允许充电</string>
+      </property>
+      <property name="checked">
+       <bool>false</bool>
       </property>
      </widget>
     </item>
@@ -1938,6 +1981,12 @@
     </item>
     <item row="4" column="1">
      <widget class="QCheckBox" name="checkBox1_15">
+      <property name="font">
+       <font>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
       <property name="text">
        <string>SOC过低</string>
       </property>
@@ -2123,6 +2172,32 @@
      </widget>
     </item>
    </layout>
+  </widget>
+  <widget class="QLabel" name="label1_62">
+   <property name="geometry">
+    <rect>
+     <x>1060</x>
+     <y>650</y>
+     <width>117</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>12</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QLabel#label1_48 {color:blue}</string>
+   </property>
+   <property name="text">
+    <string>Version: v2.0</string>
+   </property>
+   <property name="buddy">
+    <cstring>lineEdit2_1</cstring>
+   </property>
   </widget>
  </widget>
  <layoutdefault spacing="6" margin="11"/>

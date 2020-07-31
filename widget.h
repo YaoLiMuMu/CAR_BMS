@@ -87,11 +87,10 @@ private slots:
     void Changer_Vision(QByteArray);            // show Agreement Vision V1.10/V1.12
     void on_lineEdit1_6_textChanged(const QString &arg1);  // VIN Code Edit
     void Parser(EventID, QByteArray);           // analyze can data
+    void Charger_Info_init();                   // 充电机参数信息界面初始化
     void on_pushButton1_2_clicked();
 
     void on_checkBox1_2_stateChanged();
-
-    void on_checkBox1_1_stateChanged();
 
     void on_pushButton1_3_clicked();
 
@@ -129,6 +128,12 @@ private slots:
 
     void on_checkBox1_15_stateChanged(int arg1);
 
+    void on_checkBox1_17_stateChanged(int arg1);
+
+    void on_checkBox1_1_stateChanged(int arg1);
+
+    void on_comboBox1_4_currentIndexChanged(const QString &arg1);
+
 private:
     Ui::Widget *ui;
     QThread * Tthread;
@@ -144,6 +149,7 @@ private:
     QMap<QString, uchar> Battery_Type;          // 电池类型
     QMap<QString, uchar> BMS_Version_Set;       // BMS协议版本
     QMap<QString, uchar> BCL_Mode_Flag;         // BCL 充电标识
+    QMap<QString, uchar> USBCAN_ChFlag;         // usb_Can 通道标识
 };
 
 #endif // WIDGET_H

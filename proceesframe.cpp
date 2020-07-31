@@ -52,7 +52,7 @@ void proceesframe::rx_thread()
     RX_CTX * ctx = (RX_CTX *)malloc(sizeof(RX_CTX));    // 结构体指针必须初始化
     ctx->stop = 0;
     ctx->error = 0;
-    ctx->channel = work_Channel; // can channel 0 and 1
+    // ctx->channel = work_Channel; // can channel 0 and 1,work_Channel设置在这里是为了更新界面设置的通道(或者通过重新线程实现)
     ctx->total = 0;             // reset counter
     VCI_CAN_OBJ can[RX_BUFF_SIZE]; // rececive buffer
     uint cnt;                   // current received number
@@ -60,6 +60,7 @@ void proceesframe::rx_thread()
     unsigned check_point = 0;
     while (!ctx->stop)          // while (!ctx->stop && !ctx->error)
     {
+        ctx->channel = work_Channel; // can channel 0 and 1,work_Channel设置在这里是为了更新界面设置的通道(或者通过重新线程实现)
         cnt = VCI_Receive(gDevType, gDevIdx, ctx->channel, can, 1, RX_WAIT_TIME); // 返回实际读取到的帧数
         if (!cnt)
         {

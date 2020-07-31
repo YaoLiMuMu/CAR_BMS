@@ -9,7 +9,7 @@
 #define msleep(ms)  usleep((ms)*1000)
 
 typedef struct {
-    unsigned channel; // channel index, 0~3
+    unsigned channel; // channel index, 0~1
     unsigned stop; // stop RX-thread
     unsigned total; // total received
     unsigned error; // error(s) detected

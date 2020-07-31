@@ -49,6 +49,8 @@ StateTransform stateTran[] = {
         {R0, CST, E1, BST},
         {E1, Kill_Button, S1, Busleep}
     };// 该柔性数组不能在被调函数中声明赋值, 要不被调函数结束后会被回收, 则指向该数组的指针变为空指针
+unsigned gChMask = 0x03;
+unsigned work_Channel = 1;
 QMutex m_mutex;
 VCI_CAN_OBJ Widget::_BCL[1];
 VCI_CAN_OBJ Widget::_BCLP[1];
@@ -115,6 +117,11 @@ Widget::Widget(QWidget *parent) :
         BCL_Mode_Flag.insert("02 恒流充电", 0x02);
         BCL_Mode_Flag.insert("01 恒压充电", 0x01);
         BCL_Mode_Flag.insert("03 恒流放电", 0x03);
+    }
+    // USBCAN 通道标识
+    {
+        USBCAN_ChFlag.insert("CAN1", 0x00);
+        USBCAN_ChFlag.insert("CAN2", 0x01);
     }
     // Fill the event ParseTable
     {
@@ -236,7 +243,7 @@ Widget::Widget(QWidget *parent) :
             _BSM->Data[3] = 0x3A;
             _BSM->Data[4] = 0x01;
             _BSM->Data[5] = 0x00;
-            _BSM->Data[6] = 0xD0;
+            _BSM->Data[6] = 0xC0;   // 默认暂停充电
             _BSM->ID= 0x181356F4;
         }
         // _BHM Frame Data
@@ -297,35 +304,35 @@ Widget::Widget(QWidget *parent) :
             _BRM[3].Data[1] = 0x00;
             _BRM[3].Data[2] = 0x01;
             _BRM[3].Data[3] = 0xFF;
-            _BRM[3].Data[4] = 0x01;
-            _BRM[3].Data[5] = 0x02;
-            _BRM[3].Data[6] = 0x03;
-            _BRM[3].Data[7] = 0x04;
+            _BRM[3].Data[4] = 0x59; // Y
+            _BRM[3].Data[5] = 0x61; // a
+            _BRM[3].Data[6] = 0x6F; // o
+            _BRM[3].Data[7] = 0x4C; // L
             _BRM[3].ID = 0x1CEB56F4;
             _BRM[3].ExternFlag = 1;
             _BRM[4].SendType = gTxType;
             _BRM[4].RemoteFlag = 0;
             _BRM[4].DataLen = 8;
             _BRM[4].Data[0] = 0x05;
-            _BRM[4].Data[1] = 0x05;
-            _BRM[4].Data[2] = 0x06;
-            _BRM[4].Data[3] = 0x07;
-            _BRM[4].Data[4] = 0x08;
-            _BRM[4].Data[5] = 0x09;
-            _BRM[4].Data[6] = 0x0A;
-            _BRM[4].Data[7] = 0x0B;
+            _BRM[4].Data[1] = 0x69; // i
+            _BRM[4].Data[2] = 0x43; // C
+            _BRM[4].Data[3] = 0x6F; // o
+            _BRM[4].Data[4] = 0x64; // d
+            _BRM[4].Data[5] = 0x69; // i
+            _BRM[4].Data[6] = 0x6E; // n
+            _BRM[4].Data[7] = 0x67; // g
             _BRM[4].ID = 0x1CEB56F4;
             _BRM[4].ExternFlag = 1;
             _BRM[5].SendType = gTxType;
             _BRM[5].RemoteFlag = 0;
             _BRM[5].DataLen = 8;
             _BRM[5].Data[0] = 0x06;
-            _BRM[5].Data[1] = 0x0C;
-            _BRM[5].Data[2] = 0x0D;
-            _BRM[5].Data[3] = 0x0E;
-            _BRM[5].Data[4] = 0x0F;
-            _BRM[5].Data[5] = 0x10;
-            _BRM[5].Data[6] = 0x11;
+            _BRM[5].Data[1] = 0x4E; // N
+            _BRM[5].Data[2] = 0x65; // e
+            _BRM[5].Data[3] = 0x62; // b
+            _BRM[5].Data[4] = 0x75; // u
+            _BRM[5].Data[5] = 0x6c; // l
+            _BRM[5].Data[6] = 0x61; // a Vin code
             _BRM[5].Data[7] = 0xFF;
             _BRM[5].ID = 0x1CEB56F4;
             _BRM[5].ExternFlag = 1;
@@ -349,35 +356,35 @@ Widget::Widget(QWidget *parent) :
             _BDC[0].RemoteFlag = 0;
             _BDC[0].DataLen = 8;
             _BDC[0].Data[0] = 0x01;
-            _BDC[0].Data[1] = 0x01;
-            _BDC[0].Data[2] = 0x02;
-            _BDC[0].Data[3] = 0x03;
-            _BDC[0].Data[4] = 0x04;
-            _BDC[0].Data[5] = 0x05;
-            _BDC[0].Data[6] = 0x06;
-            _BDC[0].Data[7] = 0x07;
+            _BDC[0].Data[1] = 0x59; // Y
+            _BDC[0].Data[2] = 0x61; // a
+            _BDC[0].Data[3] = 0x6f; // o
+            _BDC[0].Data[4] = 0x4c; // L
+            _BDC[0].Data[5] = 0x69; // i
+            _BDC[0].Data[6] = 0x43; // C
+            _BDC[0].Data[7] = 0x6f; // o
             _BDC[0].ID = 0x1CEB56F4;
             _BDC[0].ExternFlag = 1;
             _BDC[1].SendType = gTxType;
             _BDC[1].RemoteFlag = 0;
             _BDC[1].DataLen = 8;
             _BDC[1].Data[0] = 0x02;
-            _BDC[1].Data[1] = 0x08;
-            _BDC[1].Data[2] = 0x09;
-            _BDC[1].Data[3] = 0x0A;
-            _BDC[1].Data[4] = 0x0B;
-            _BDC[1].Data[5] = 0x0C;
-            _BDC[1].Data[6] = 0x0D;
-            _BDC[1].Data[7] = 0x0E;
+            _BDC[1].Data[1] = 0x64; // d
+            _BDC[1].Data[2] = 0x69; // i
+            _BDC[1].Data[3] = 0x6E; // n
+            _BDC[1].Data[4] = 0x67; // g
+            _BDC[1].Data[5] = 0x4E; // N
+            _BDC[1].Data[6] = 0x65; // e
+            _BDC[1].Data[7] = 0x62; // b
             _BDC[1].ID = 0x1CEB56F4;
             _BDC[1].ExternFlag = 1;
             _BDC[2].SendType = gTxType;
             _BDC[2].RemoteFlag = 0;
             _BDC[2].DataLen = 8;
             _BDC[2].Data[0] = 0x03;
-            _BDC[2].Data[1] = 0x0F;
-            _BDC[2].Data[2] = 0x10;
-            _BDC[2].Data[3] = 0x11; // VIN Code
+            _BDC[2].Data[1] = 0x75; // u
+            _BDC[2].Data[2] = 0x6c; // l
+            _BDC[2].Data[3] = 0x61; // a VIN Code
             _BDC[2].Data[4] = 0x32; // SOC=50%
             _BDC[2].Data[5] = 0xE8;
             _BDC[2].Data[6] = 0x03; // Battery capacity = 100Ah
@@ -449,9 +456,11 @@ Widget::Widget(QWidget *parent) :
     // Open usbCAN Device
     if (!VCI_OpenDevice(gDevType, gDevIdx, 0)) {
         printf("VCI_OpenDevice failed\n");
+        ui->label1_48->setText("Disconnect");
         return;
     }
         printf("VCI_OpenDevice succeeded\n");
+        ui->label1_48->setText("Standby");
     // Initial configure Usb_Can
     VCI_INIT_CONFIG config;
     config.AccCode = 0;
@@ -653,6 +662,10 @@ void Widget::runStateMachine(EventID evt)
     else {
         ui->pushButton1_2->setEnabled(false);
     }
+    if ((pSM->state != S1 && pSM->state != V1)&&pSM->state!=H1)
+    {
+        ui->label1_48->setText("Working");
+    }
     qDebug() << "Next State is : " << pSM->state << ", and Action code is " << pTrans->action;
 }
 
@@ -674,7 +687,7 @@ void Widget::on_pushButton1_1_clicked()
 //    runStateMachine(BCS_ACK); // 此段用于代码调试或注释
     if (ui->lineEdit1_1->text().isEmpty() || ui->lineEdit1_2->text().isEmpty())
         {
-        QMessageBox::information(this,"Warning","Please Input Demand Voltage and Current");
+        QMessageBox::information(this,"Warning","Please Input Demand Voltage and Current\nEspecially the Red part");
         return;
     }
     // 设置电池需求电压, 需求电流
@@ -742,6 +755,7 @@ void Widget::on_pushButton1_1_clicked()
     if (!ui->lineEdit1_22->text().isEmpty())
     {
         _BCS[0].Data[6] = (ui->lineEdit1_22->text().toInt()*16&0xFF)^_BCS[0].Data[6];
+        qDebug() << _BCS[0].Data[6] << _BCS[0].Data[5];
     }
     // BCP parameter
     if (!ui->lineEdit1_15->text().isEmpty())
@@ -1044,6 +1058,7 @@ void Widget::on_checkBox1_2_stateChanged()  // Switch with Normal mode and V2G m
             stateMachine.state = H1; // 常规模式
             stateMachine.transform[16].action = BCL;
             stateMachine.transform[16].nextState = P1;
+            ui->checkBox1_1->setEnabled(false);
             qDebug() << "BMS had been setup to Normal Mode";
         }
     }
@@ -1053,21 +1068,9 @@ void Widget::on_checkBox1_2_stateChanged()  // Switch with Normal mode and V2G m
             stateMachine.state = V1; // V2G模式
             stateMachine.transform[16].action = N_A;
             stateMachine.transform[16].nextState = R2;
+            ui->checkBox1_1->setEnabled(true);
             qDebug() << "BMS had been setup to V2G Mode";
         }
-    }
-}
-
-void Widget::on_checkBox1_1_stateChanged()  // Switch with paues charging and continue charging
-{
-    if(ui->checkBox1_1->isChecked())
-    {
-        _BSM->Data[6] = 0xC0; // 暂停
-        qDebug() << "BMS request a pause charging";
-    }
-    else {
-        _BSM->Data[6] = 0xD0; // 允许充电
-        qDebug() << "BSM allow continue charging";
     }
 }
 
@@ -1088,6 +1091,7 @@ void Widget::on_pushButton1_3_clicked()
         stateMachine.transform[16].nextState = R2;
         qDebug() << "BMS had been setup to V2G Mode";
     }
+    Charger_Info_init();
     runStateMachine(Start_Button);
 }
 
@@ -1290,4 +1294,60 @@ void Widget::on_checkBox1_15_stateChanged(int arg1)
         ui->checkBox1_16->setEnabled(true);
     }
     qDebug() << _BSM->Data[5];
+}
+
+void Widget::on_checkBox1_17_stateChanged(int arg1)
+{
+    if (arg1 == 0x02)
+    {
+        _BSM->Data[6] = _BSM->Data[6] ^ 0x10;
+        ui->checkBox1_1->setEnabled(false);
+        qDebug() << "BSM allow continue charging" << _BSM->Data[6];
+    }
+    else {
+        _BSM->Data[6] = _BSM->Data[6] ^ 0x10;
+        ui->checkBox1_1->setEnabled(true);
+        qDebug() << "BMS request a pause charging" << _BSM->Data[6] ;
+    }
+}
+
+void Widget::on_checkBox1_1_stateChanged(int arg1)
+{
+    if (arg1 == 0x02)
+    {
+        _BSM->Data[6] = _BSM->Data[6] ^ 0x20;
+        ui->checkBox1_17->setEnabled(false);
+        qDebug() << "BSM allow continue recharging" << _BSM->Data[6];
+    }
+    else {
+        _BSM->Data[6] = _BSM->Data[6] ^ 0x20;
+        ui->checkBox1_17->setEnabled(true);
+        qDebug() << "BMS request a pause charging" << _BSM->Data[6];
+    }
+}
+
+void Widget::Charger_Info_init()
+{
+    QString TempString = "F";
+    ui->label1_6->setText(TempString);
+    ui->label1_12->setText(TempString);
+    ui->label1_19->setText(TempString);
+    ui->label1_21->setText(TempString);
+    ui->label1_23->setText(TempString);
+    ui->label1_24->setText(TempString);
+    ui->label1_25->setText(TempString);
+    ui->label1_26->setText(TempString);
+    ui->label1_27->setText(TempString);
+    ui->label1_28->setText(TempString);
+    ui->label1_29->setText(TempString);
+    ui->lcdNumber1_1->display(0);
+    ui->lcdNumber1_2->display(0);
+    ui->label1_48->setText("Standby");
+}
+
+void Widget::on_comboBox1_4_currentIndexChanged(const QString &arg1)
+{
+    work_Channel = USBCAN_ChFlag.value(arg1); // work_Channel 作为接收通道0x00, 0x01
+    gChMask = work_Channel + 0x01;            // gChMask 初始0x03作为两通道初始化, 后面赋值变化作为发送通道0x01, 0x02;
+    qDebug() << "Now work work_Channel is " << work_Channel << "gChMask is" << gChMask;
 }
