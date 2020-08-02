@@ -58,7 +58,7 @@ sentframe::sentframe(QObject *parent) : QObject(parent)
     MSG_BHM.cycle_time = 250;
     MSG_BHM.len = 1;
     // BRO_00 frame
-    MSG_BRO_00.car_frame = (VCI_CAN_OBJ * ) malloc(sizeof (VCI_CAN_OBJ));
+    MSG_BRO_00.car_frame = (VCI_CAN_OBJ * ) malloc (sizeof (VCI_CAN_OBJ));
     MSG_BRO_00.car_frame->SendType = gTxType;
     MSG_BRO_00.car_frame->RemoteFlag = 0;
     MSG_BRO_00.car_frame->DataLen = 1;
