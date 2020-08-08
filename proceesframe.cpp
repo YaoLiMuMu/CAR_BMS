@@ -60,7 +60,7 @@ void proceesframe::rx_thread()
     unsigned check_point = 0;
     while (!ctx->stop)          // while (!ctx->stop && !ctx->error)
     {
-        ctx->channel = work_Channel; // can channel 0 and 1,work_Channel设置在这里是为了更新界面设置的通道(或者通过重新线程实现)
+        ctx->channel = work_Channel; // can channel 0 and 1,work_Channel设置在这里是为了更新界面设置的通道(或者通过重启线程实现)
         cnt = VCI_Receive(gDevType, gDevIdx, ctx->channel, can, 1, RX_WAIT_TIME); // 返回实际读取到的帧数
         if (!cnt)
         {
@@ -101,7 +101,7 @@ void proceesframe::rx_thread()
         }
         if (ctx->error > 256)
         {
-            printf("Warning!!!CAN%d: has %d frames verify failed, I.e.these frames don't meet protocol", ctx->channel, ctx->error);
+            printf("Warning!!!CAN%d: has %d frames verify failed, I.e.these frames don't meet protocol\n、", ctx->channel, ctx->error);
         }
         ctx->total += cnt;
     }

@@ -315,7 +315,7 @@ Widget::Widget(QWidget *parent) :
             _BRM[4].DataLen = 8;
             _BRM[4].Data[0] = 0x05;
             _BRM[4].Data[1] = 0x69; // i
-            _BRM[4].Data[2] = 0x43; // C
+            _BRM[4].Data[2] = 0x43; // Cif (Widget::V2G_Mode_Flag)
             _BRM[4].Data[3] = 0x6F; // o
             _BRM[4].Data[4] = 0x64; // d
             _BRM[4].Data[5] = 0x69; // i
@@ -369,7 +369,7 @@ Widget::Widget(QWidget *parent) :
             _BDC[1].RemoteFlag = 0;
             _BDC[1].DataLen = 8;
             _BDC[1].Data[0] = 0x02;
-            _BDC[1].Data[1] = 0x64; // d
+            _BDC[1].Data[1] = 0x64; // dif (Widget::V2G_Mode_Flag)
             _BDC[1].Data[2] = 0x69; // i
             _BDC[1].Data[3] = 0x6E; // n
             _BDC[1].Data[4] = 0x67; // g
@@ -393,7 +393,7 @@ Widget::Widget(QWidget *parent) :
             _BDC[2].ExternFlag = 1;
             _BDC[3].SendType = gTxType;
             _BDC[3].RemoteFlag = 0;
-            _BDC[3].DataLen = 8;
+            _BDC[3].DataLen = 8;if (Widget::V2G_Mode_Flag)
             _BDC[3].Data[0] = 0x04;
             _BDC[3].Data[1] = 0x03; // Battery capacity = 100Kwh
             _BDC[3].Data[2] = 0xE8;
@@ -504,6 +504,7 @@ Widget::Widget(QWidget *parent) :
     connect(Tthread,SIGNAL(finished()),Tthread,SLOT(deleteLater()));
     connect(pframe,SIGNAL(Send2UI(unsigned)),this,SLOT(CloseDev(unsigned)));      // CLOSE device for receive error
     connect(sframe,SIGNAL(Shoot_Error(unsigned)),this,SLOT(CloseDev(unsigned))); // ClOSE device for transmit error
+    Fault_State_AUncheck();
 }
 
 Widget::~Widget() // 析构函数
@@ -562,17 +563,20 @@ void Widget::UpdateCCD_01(QByteArray CCD_Array)
 {
     QMutexLocker m_lock(&m_mutex);
     CCD_Array.resize(3);
-    switch (CCD_Array.at(0)) {
-    case 0x00:
-        ui->label1_19->setText("充电");
-        _BSM->Data[6] = 0xD0;
-        break;
-    case 0x01:
-        ui->label1_19->setText("放电");
-        _BSM->Data[6] = 0xE0;
-        break;
-    default:
-        ui->label1_19->setText("F");
+    if (!ui->checkBox1_18->isChecked())
+    {
+        switch (CCD_Array.at(0)) {
+        case 0x00:
+            ui->label1_19->setText("充电");
+            _BSM->Data[6] = 0xD0;
+            break;
+        case 0x01:
+            ui->label1_19->setText("放电");
+           _BSM->Data[6] = 0xE0;
+            break;
+        default:
+            ui->label1_19->setText("F");
+        }
     }
 }
 
@@ -580,17 +584,20 @@ void Widget::UpdateCCD_00(QByteArray CCD_Array)
 {
     QMutexLocker m_lock(&m_mutex); // _BSM 全局变量互锁
     CCD_Array.resize(3);
-    switch (CCD_Array.at(0)) {
-    case 0x00:
-        ui->label1_19->setText("充电");
-        _BSM->Data[6] = 0xD0;
-        break;
-    case 0x01:
-        ui->label1_19->setText("放电");
-        _BSM->Data[6] = 0xE0;
-        break;
-    default:
-        ui->label1_19->setText("F");
+    if (!ui->checkBox1_18->isChecked())
+    {
+        switch (CCD_Array.at(0)) {
+        case 0x00:
+            ui->label1_19->setText("充电");
+            _BSM->Data[6] = 0xD0;
+            break;
+        case 0x01:
+            ui->label1_19->setText("放电");
+            _BSM->Data[6] = 0xE0;
+            break;
+        default:
+            ui->label1_19->setText("F");
+        }
     }
 }
 
@@ -684,7 +691,7 @@ void Widget::CloseDev(unsigned Error)
 
 void Widget::on_pushButton1_1_clicked()
 {
-//    runStateMachine(BCS_ACK); // 此段用于代码调试或注释
+    // runStateMachine(CCD_00); // 此段用于代码调试或注释
     if (ui->lineEdit1_1->text().isEmpty() || ui->lineEdit1_2->text().isEmpty())
         {
         QMessageBox::information(this,"Warning","Please Input Demand Voltage and Current\nEspecially the Red part");
@@ -705,14 +712,21 @@ void Widget::on_pushButton1_1_clicked()
     _BCLP->Data[3] = uchar(processCurrentBCLP(output,10).at(0));
     qDebug() << "BMS Demand Voltage and Current set to " + ui->lineEdit1_2->text() + " V " + ui->lineEdit1_1->text() + " A";
     // BSM 设置电池单体最高温度
-    if (!ui->label1_3->text().isEmpty())
+    if (!ui->lineEdit1_3->text().isEmpty())
     {
         output = ui->lineEdit1_3->text();
         _BSM->Data[1] = uchar(processTemprature(output).at(0));
+        qDebug() << "BSM highest Temprature is " << _BSM->Data[1];
     }
     if (!ui->lineEdit1_28->text().isEmpty())
     {
         _BSM->Data[2] = uchar(ui->lineEdit1_28->text().toInt());
+    }
+    if (!ui->lineEdit1_31->text().isEmpty())
+    {
+        output = ui->lineEdit1_31->text();
+        _BSM->Data[3] = uchar(processTemprature(output).at(0));
+        qDebug() << "BSM lowest Temprature is " << _BSM->Data[3];
     }
     // 设置电池最高电压(用于绝缘检测电压)
     if (!ui->lineEdit1_4->text().isEmpty())
@@ -1058,7 +1072,7 @@ void Widget::on_checkBox1_2_stateChanged()  // Switch with Normal mode and V2G m
             stateMachine.state = H1; // 常规模式
             stateMachine.transform[16].action = BCL;
             stateMachine.transform[16].nextState = P1;
-            ui->checkBox1_1->setEnabled(false);
+            _BSM->Data[6] = 0xD0;
             qDebug() << "BMS had been setup to Normal Mode";
         }
     }
@@ -1068,7 +1082,7 @@ void Widget::on_checkBox1_2_stateChanged()  // Switch with Normal mode and V2G m
             stateMachine.state = V1; // V2G模式
             stateMachine.transform[16].action = N_A;
             stateMachine.transform[16].nextState = R2;
-            ui->checkBox1_1->setEnabled(true);
+            _BSM->Data[6] = 0xC0;
             qDebug() << "BMS had been setup to V2G Mode";
         }
     }
@@ -1082,6 +1096,7 @@ void Widget::on_pushButton1_3_clicked()
         V2G_Mode_Flag = false;
         stateMachine.transform[16].action = BCL;
         stateMachine.transform[16].nextState = P1;
+        _BSM->Data[6] = _BSM->Data[6] & 0xD0;           // 常规模式BSM默认允许充电
         qDebug() << "BMS had been setup to Normal Mode";
     }
     else {
@@ -1089,6 +1104,7 @@ void Widget::on_pushButton1_3_clicked()
         V2G_Mode_Flag = true;
         stateMachine.transform[16].action = N_A;
         stateMachine.transform[16].nextState = R2;
+        _BSM->Data[6] = _BSM->Data[6] & 0xC0;           // V2G模式BSM默认暂停后做CCD跟随
         qDebug() << "BMS had been setup to V2G Mode";
     }
     Charger_Info_init();
@@ -1097,7 +1113,7 @@ void Widget::on_pushButton1_3_clicked()
 
 void Widget::on_checkBox1_3_stateChanged(int arg1)
 {
-    if(ui->checkBox1_3->isChecked())
+    if(arg1==0x02)
     {
         stateMachine.transform[1].action = Busleep;     // BDC报文超时故障注入
     }
@@ -1108,7 +1124,7 @@ void Widget::on_checkBox1_3_stateChanged(int arg1)
 
 void Widget::on_checkBox1_5_stateChanged(int arg1)
 {
-    if(ui->checkBox1_5->isChecked())
+    if(arg1==0x02)
     {
         stateMachine.transform[2].action = Busleep;     // BHM报文超时故障注入
     }
@@ -1119,7 +1135,7 @@ void Widget::on_checkBox1_5_stateChanged(int arg1)
 
 void Widget::on_checkBox1_4_stateChanged(int arg1)
 {
-    if(ui->checkBox1_4->isChecked())
+    if(arg1==0x02)
     {
         stateMachine.transform[11].action = Busleep;    // BRM报文超时故障注入
     }
@@ -1130,7 +1146,7 @@ void Widget::on_checkBox1_4_stateChanged(int arg1)
 
 void Widget::on_checkBox1_6_stateChanged(int arg1)
 {
-    if(ui->checkBox1_6->isChecked())
+    if(arg1==0x02)
     {
         stateMachine.transform[13].action = Busleep;    // BCP报文超时故障注入
     }
@@ -1141,7 +1157,7 @@ void Widget::on_checkBox1_6_stateChanged(int arg1)
 
 void Widget::on_checkBox1_7_stateChanged(int arg1)
 {
-    if(ui->checkBox1_7->isChecked())
+    if(arg1==0x02)
     {
         stateMachine.transform[14].action = Busleep;    // BR0_00报文超时故障注入
     }
@@ -1152,7 +1168,7 @@ void Widget::on_checkBox1_7_stateChanged(int arg1)
 
 void Widget::on_checkBox1_8_stateChanged(int arg1)
 {
-    if(ui->checkBox1_8->isChecked())
+    if(arg1==0x02)
     {
         stateMachine.transform[15].action = Busleep;    // BRO_AA报文超时故障注入
     }
@@ -1163,7 +1179,7 @@ void Widget::on_checkBox1_8_stateChanged(int arg1)
 
 void Widget::on_checkBox1_9_stateChanged(int arg1)
 {
-    if(ui->checkBox1_9->isChecked())
+    if(arg1==0x02)
     {
         stateMachine.transform[19].action = Busleep;    // BCS报文超时故障注入
         stateMachine.transform[25].action = Busleep;
@@ -1176,7 +1192,7 @@ void Widget::on_checkBox1_9_stateChanged(int arg1)
 
 void Widget::on_checkBox1_10_stateChanged(int arg1)
 {
-    if(ui->checkBox1_10->isChecked())
+    if(arg1==0x02)
     {
         _BCL->ID= 0x00000000;    // BCL报文超时故障注入(修复帧ID)
         _BCLP->ID= 0x00000000;
@@ -1189,7 +1205,7 @@ void Widget::on_checkBox1_10_stateChanged(int arg1)
 
 void Widget::on_checkBox1_11_stateChanged(int arg1)
 {
-    if(ui->checkBox1_11->isChecked())
+    if(arg1==0x02)
     {
         stateMachine.transform[23].action = Busleep;    // BST报文超时故障注入
         stateMachine.transform[29].action = Busleep;
@@ -1202,7 +1218,7 @@ void Widget::on_checkBox1_11_stateChanged(int arg1)
 
 void Widget::on_checkBox1_12_stateChanged(int arg1)
 {
-    if(ui->checkBox1_12->isChecked())
+    if(arg1==0x02)
     {
         stateMachine.transform[37].action = Busleep;    // BSD报文超时故障注入
     }
@@ -1296,36 +1312,6 @@ void Widget::on_checkBox1_15_stateChanged(int arg1)
     qDebug() << _BSM->Data[5];
 }
 
-void Widget::on_checkBox1_17_stateChanged(int arg1)
-{
-    if (arg1 == 0x02)
-    {
-        _BSM->Data[6] = _BSM->Data[6] ^ 0x10;
-        ui->checkBox1_1->setEnabled(false);
-        qDebug() << "BSM allow continue charging" << _BSM->Data[6];
-    }
-    else {
-        _BSM->Data[6] = _BSM->Data[6] ^ 0x10;
-        ui->checkBox1_1->setEnabled(true);
-        qDebug() << "BMS request a pause charging" << _BSM->Data[6] ;
-    }
-}
-
-void Widget::on_checkBox1_1_stateChanged(int arg1)
-{
-    if (arg1 == 0x02)
-    {
-        _BSM->Data[6] = _BSM->Data[6] ^ 0x20;
-        ui->checkBox1_17->setEnabled(false);
-        qDebug() << "BSM allow continue recharging" << _BSM->Data[6];
-    }
-    else {
-        _BSM->Data[6] = _BSM->Data[6] ^ 0x20;
-        ui->checkBox1_17->setEnabled(true);
-        qDebug() << "BMS request a pause charging" << _BSM->Data[6];
-    }
-}
-
 void Widget::Charger_Info_init()
 {
     QString TempString = "F";
@@ -1350,4 +1336,97 @@ void Widget::on_comboBox1_4_currentIndexChanged(const QString &arg1)
     work_Channel = USBCAN_ChFlag.value(arg1); // work_Channel 作为接收通道0x00, 0x01
     gChMask = work_Channel + 0x01;            // gChMask 初始0x03作为两通道初始化, 后面赋值变化作为发送通道0x01, 0x02;
     qDebug() << "Now work work_Channel is " << work_Channel << "gChMask is" << gChMask;
+}
+
+void Widget::on_checkBox1_18_stateChanged(int arg1)
+{
+    if (arg1 == 0x02)
+    {
+        Fault_State_ACheck();
+        if (_BSM->Data[6] == 0xD0)
+        {
+            ui->checkBox1_17->setCheckState(Qt::Checked);
+        }
+        else if (_BSM->Data[6] == 0xE0) {
+            ui->checkBox1_1->setCheckState(Qt::Checked);
+        }
+    }
+    else {
+        if (ui->checkBox1_2->isChecked())
+        {
+            _BSM->Data[6] = 0xD0;   // 暂停状态恢复
+        }
+        else {
+            _BSM->Data[6] = 0xC0;   // 暂停状态恢复
+        }
+        ui->checkBox1_17->setCheckState(Qt::Unchecked);
+        ui->checkBox1_1->setCheckState(Qt::Unchecked);
+        Fault_State_AUncheck();
+    }
+}
+
+void Widget::on_checkBox1_17_clicked()
+{
+    if (ui->checkBox1_17->isChecked())
+    {
+        ui->checkBox1_1->setEnabled(false);
+    }
+    else {
+        ui->checkBox1_1->setEnabled(true);
+    }
+    _BSM->Data[6] = _BSM->Data[6] ^ 0x10;       // 循环异或产生位开关效果
+    qDebug() << "BMS request a charging state " << _BSM->Data[6] ;
+}
+
+void Widget::on_checkBox1_1_clicked()
+{
+    if (ui->checkBox1_1->isChecked())
+    {
+        ui->checkBox1_17->setEnabled(false);
+    }
+    else {
+        ui->checkBox1_17->setEnabled(true);
+    }
+    _BSM->Data[6] = _BSM->Data[6] ^ 0x20;       // 循环异或产生位开关效果
+    qDebug() << "BMS request a pause recharge state" << _BSM->Data[6];
+}
+
+void Widget::Fault_State_ACheck()
+{
+    ui->checkBox1_17->setEnabled(true);
+    ui->checkBox1_16->setEnabled(true);
+    ui->checkBox1_15->setEnabled(true);
+    ui->checkBox1_14->setEnabled(true);
+    ui->checkBox1_13->setEnabled(true);
+    ui->checkBox1_12->setEnabled(true);
+    ui->checkBox1_11->setEnabled(true);
+    ui->checkBox1_10->setEnabled(true);
+    ui->checkBox1_9->setEnabled(true);
+    ui->checkBox1_8->setEnabled(true);
+    ui->checkBox1_7->setEnabled(true);
+    ui->checkBox1_6->setEnabled(true);
+    ui->checkBox1_5->setEnabled(true);
+    ui->checkBox1_4->setEnabled(true);
+    ui->checkBox1_3->setEnabled(true);
+    ui->checkBox1_1->setEnabled(true);
+}
+
+void Widget::Fault_State_AUncheck()
+{
+    ui->checkBox1_17->setEnabled(false);
+    ui->checkBox1_16->setEnabled(false);
+    ui->checkBox1_15->setEnabled(false);
+    ui->checkBox1_14->setEnabled(false);
+    ui->checkBox1_13->setEnabled(false);
+    ui->checkBox1_12->setEnabled(false);
+    ui->checkBox1_11->setEnabled(false);
+    ui->checkBox1_10->setEnabled(false);
+    ui->checkBox1_9->setEnabled(false);
+    ui->checkBox1_8->setEnabled(false);
+    ui->checkBox1_7->setEnabled(false);
+    ui->checkBox1_6->setEnabled(false);
+    ui->checkBox1_5->setEnabled(false);
+    ui->checkBox1_4->setEnabled(false);
+    ui->checkBox1_3->setEnabled(false);
+    ui->checkBox1_1->setEnabled(false);
 }

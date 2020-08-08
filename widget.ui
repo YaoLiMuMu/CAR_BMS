@@ -714,6 +714,9 @@
            <bold>false</bold>
           </font>
          </property>
+         <property name="styleSheet">
+          <string notr="true">QLabel#label1_61 {color:red}</string>
+         </property>
          <property name="text">
           <string>USBCAN通道</string>
          </property>
@@ -1412,9 +1415,9 @@
    <property name="geometry">
     <rect>
      <x>890</x>
-     <y>430</y>
-     <width>186</width>
-     <height>195</height>
+     <y>460</y>
+     <width>271</width>
+     <height>211</height>
     </rect>
    </property>
    <property name="font">
@@ -1428,20 +1431,6 @@
     <string>Fault Injection</string>
    </property>
    <layout class="QGridLayout" name="gridLayout_2">
-    <item row="0" column="0">
-     <widget class="QCheckBox" name="checkBox1_3">
-      <property name="text">
-       <string>BDC</string>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="1">
-     <widget class="QCheckBox" name="checkBox1_7">
-      <property name="text">
-       <string>BRO(00)</string>
-      </property>
-     </widget>
-    </item>
     <item row="1" column="0">
      <widget class="QCheckBox" name="checkBox1_5">
       <property name="text">
@@ -1456,6 +1445,13 @@
       </property>
      </widget>
     </item>
+    <item row="1" column="2">
+     <widget class="QCheckBox" name="checkBox1_9">
+      <property name="text">
+       <string>BCS</string>
+      </property>
+     </widget>
+    </item>
     <item row="2" column="0">
      <widget class="QCheckBox" name="checkBox1_4">
       <property name="text">
@@ -1464,9 +1460,16 @@
      </widget>
     </item>
     <item row="2" column="1">
-     <widget class="QCheckBox" name="checkBox1_9">
+     <widget class="QCheckBox" name="checkBox1_7">
       <property name="text">
-       <string>BCS</string>
+       <string>BRO(00)</string>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="2">
+     <widget class="QCheckBox" name="checkBox1_3">
+      <property name="text">
+       <string>BDC</string>
       </property>
      </widget>
     </item>
@@ -1495,6 +1498,16 @@
      <widget class="QCheckBox" name="checkBox1_12">
       <property name="text">
        <string>BSD</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="0" colspan="2">
+     <widget class="QCheckBox" name="checkBox1_18">
+      <property name="styleSheet">
+       <string notr="true">QCheckBox#checkBox1_18 {color:red}</string>
+      </property>
+      <property name="text">
+       <string>Fault Activation</string>
       </property>
      </widget>
     </item>
@@ -1861,7 +1874,7 @@
      <x>890</x>
      <y>200</y>
      <width>273</width>
-     <height>214</height>
+     <height>247</height>
     </rect>
    </property>
    <property name="font">
@@ -1930,20 +1943,47 @@
      </widget>
     </item>
     <item row="2" column="0">
+     <widget class="QLabel" name="label1_63">
+      <property name="font">
+       <font>
+        <pointsize>12</pointsize>
+        <weight>50</weight>
+        <bold>false</bold>
+       </font>
+      </property>
+      <property name="text">
+       <string>单体最低温度/℃</string>
+      </property>
+      <property name="buddy">
+       <cstring>lineEdit2_1</cstring>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="1">
+     <widget class="QLineEdit" name="lineEdit1_31">
+      <property name="maximumSize">
+       <size>
+        <width>100</width>
+        <height>16777215</height>
+       </size>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="0">
      <widget class="QCheckBox" name="checkBox1_13">
       <property name="text">
        <string>连接器异常</string>
       </property>
      </widget>
     </item>
-    <item row="2" column="1">
+    <item row="3" column="1">
      <widget class="QCheckBox" name="checkBox1_14">
       <property name="text">
        <string>绝缘异常</string>
       </property>
      </widget>
     </item>
-    <item row="3" column="0">
+    <item row="4" column="0">
      <widget class="QCheckBox" name="checkBox1_1">
       <property name="font">
        <font>
@@ -1954,32 +1994,44 @@
       <property name="text">
        <string>允许放电</string>
       </property>
+      <property name="checkable">
+       <bool>true</bool>
+      </property>
       <property name="checked">
        <bool>false</bool>
       </property>
      </widget>
     </item>
-    <item row="3" column="1">
+    <item row="4" column="1">
      <widget class="QCheckBox" name="checkBox1_17">
+      <property name="font">
+       <font>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
       <property name="styleSheet">
-       <string notr="true">QCheckBox#checkBox1_17 {color:red}</string>
+       <string notr="true"/>
       </property>
       <property name="text">
        <string>允许充电</string>
       </property>
+      <property name="checkable">
+       <bool>true</bool>
+      </property>
       <property name="checked">
        <bool>false</bool>
       </property>
      </widget>
     </item>
-    <item row="4" column="0">
+    <item row="5" column="0">
      <widget class="QCheckBox" name="checkBox1_16">
       <property name="text">
        <string>SOC过高</string>
       </property>
      </widget>
     </item>
-    <item row="4" column="1">
+    <item row="5" column="1">
      <widget class="QCheckBox" name="checkBox1_15">
       <property name="font">
        <font>
@@ -2176,10 +2228,10 @@
   <widget class="QLabel" name="label1_62">
    <property name="geometry">
     <rect>
-     <x>1060</x>
-     <y>650</y>
-     <width>117</width>
-     <height>22</height>
+     <x>30</x>
+     <y>0</y>
+     <width>101</width>
+     <height>25</height>
     </rect>
    </property>
    <property name="font">
@@ -2193,7 +2245,7 @@
     <string notr="true">QLabel#label1_48 {color:blue}</string>
    </property>
    <property name="text">
-    <string>Version: v2.0</string>
+    <string>Version: v2.1</string>
    </property>
    <property name="buddy">
     <cstring>lineEdit2_1</cstring>

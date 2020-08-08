@@ -88,6 +88,8 @@ private slots:
     void on_lineEdit1_6_textChanged(const QString &arg1);  // VIN Code Edit
     void Parser(EventID, QByteArray);           // analyze can data
     void Charger_Info_init();                   // 充电机参数信息界面初始化
+    void Fault_State_ACheck();                    // 故障注入所有点初始禁用
+    void Fault_State_AUncheck();                  // 故障注入所有电初始使能
     void on_pushButton1_2_clicked();
 
     void on_checkBox1_2_stateChanged();
@@ -128,11 +130,13 @@ private slots:
 
     void on_checkBox1_15_stateChanged(int arg1);
 
-    void on_checkBox1_17_stateChanged(int arg1);
-
-    void on_checkBox1_1_stateChanged(int arg1);
-
     void on_comboBox1_4_currentIndexChanged(const QString &arg1);
+
+    void on_checkBox1_18_stateChanged(int arg1);
+
+    void on_checkBox1_17_clicked();
+
+    void on_checkBox1_1_clicked();
 
 private:
     Ui::Widget *ui;
