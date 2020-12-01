@@ -64,6 +64,7 @@ VCI_CAN_OBJ Widget::_BCPP[1];
 VCI_CAN_OBJ Widget::_BCSP[1];
 VCI_CAN_OBJ Widget::_BST[1];
 VCI_CAN_OBJ Widget::_BSD[1];
+VCI_CAN_OBJ Widget::_BEM[1];
 int Widget::Ready_time_ms;
 bool Widget::transFree;
 bool Widget::V2G_Mode_Flag;
@@ -450,6 +451,18 @@ Widget::Widget(QWidget *parent) :
             _BSD->Data[5] = 0x64;   // 最高单体温度50℃
             _BSD->Data[6] = 0x32;   // 最低单体温度0℃
             _BSD->ID = 0x181C56F4;
+        }
+        // _BEM Frame Data initialization
+        {
+            _BEM->SendType = gTxType;
+            _BEM->RemoteFlag = 0;
+            _BEM->ExternFlag = 1;
+            _BEM->DataLen = 4;
+            _BEM->Data[0] = 0xF0;
+            _BEM->Data[1] = 0xF0;
+            _BEM->Data[2] = 0xF0;
+            _BEM->Data[3] = 0x00;
+            _BEM->ID = 0x081E56F4;
         }
     }
     qDebug() << "Mainthread ID: " << QThread::currentThreadId();
@@ -1181,12 +1194,14 @@ void Widget::on_checkBox1_9_stateChanged(int arg1)
 {
     if(arg1==0x02)
     {
-        stateMachine.transform[19].action = Busleep;    // BCS报文超时故障注入
-        stateMachine.transform[25].action = Busleep;
+        _BCS->ID = 0x00000000;
+//        stateMachine.transform[19].action = Busleep;    // BCS报文超时故障注入
+//        stateMachine.transform[25].action = Busleep;
     }
     else {
-        stateMachine.transform[19].action = BCS;
-        stateMachine.transform[25].action = BCS;
+        _BCS->ID =0x1CEB56F4;
+//        stateMachine.transform[19].action = BCS;
+//        stateMachine.transform[25].action = BCS;
     }
 }
 
@@ -1429,4 +1444,246 @@ void Widget::Fault_State_AUncheck()
     ui->checkBox1_4->setEnabled(false);
     ui->checkBox1_3->setEnabled(false);
     ui->checkBox1_1->setEnabled(false);
+}
+
+void Widget::on_pushButton2_1_clicked()
+{
+    // SOC达到设置值
+    if (ui->checkBox2_1->isChecked())
+    {
+        _BST->Data[0] |= 0x01;
+    }
+    else {
+        _BST->Data[0] &= (~0x01);
+    }
+    // 总电压达到设置值
+    if (ui->checkBox2_2->isChecked())
+    {
+        _BST->Data[0] |= (0x01<<2);
+    }
+    else {
+        _BST->Data[0] &= (~(0x01<<2));
+    }
+    // 单体电压达到设置值
+    if (ui->checkBox2_3->isChecked())
+    {
+        _BST->Data[0] |= (0x01<<4);
+    }
+    else {
+        _BST->Data[0] &= (~(0x01<<4));
+    }
+    // 充电机主动中止设置
+    if (ui->checkBox2_4->isChecked())
+    {
+        _BST->Data[0] |= (0x01<<6);
+    }
+    else {
+        _BST->Data[0] &= (~(0x01<<6));
+    }
+    // 绝缘故障
+    if (ui->checkBox2_5->isChecked())
+    {
+        _BST->Data[1] |= 0x01;
+    }
+    else {
+        _BST->Data[1] &= (~0x01);
+    }
+    // 连接器过温故障
+    if (ui->checkBox2_6->isChecked())
+    {
+        _BST->Data[1] |= (0x01<<2);
+    }
+    else {
+        _BST->Data[1] &= (~(0x01<<2));
+    }
+    // BMS元件过温
+    if (ui->checkBox2_7->isChecked())
+    {
+        _BST->Data[1] |= (0x01<<4);
+    }
+    else {
+        _BST->Data[1] &= (~(0x01<<4));
+    }
+    // 连接器故障
+    if (ui->checkBox2_8->isChecked())
+    {
+        _BST->Data[1] |= (0x01<<6);
+    }
+    else {
+        _BST->Data[1] &= (~(0x01<<6));
+    }
+    // 电池组过温故障
+    if (ui->checkBox2_9->isChecked())
+    {
+        _BST->Data[2] |= 0x01;
+    }
+    else {
+        _BST->Data[2] &= (~0x01);
+    }
+    // 高压继电器故障
+    if (ui->checkBox2_10->isChecked())
+    {
+        _BST->Data[2] |= (0x01<<2);
+    }
+    else {
+        _BST->Data[2] &= (~(0x01<<2));
+    }
+    // 检测点2电压异常
+    if (ui->checkBox2_11->isChecked())
+    {
+        _BST->Data[2] |= (0x01<<4);
+    }
+    else {
+        _BST->Data[2] &= (~(0x01<<4));
+    }
+    // 其他故障
+    if (ui->checkBox2_12->isChecked())
+    {
+        _BST->Data[2] |= (0x01<<6);
+    }
+    else {
+        _BST->Data[2] &= (~(0x01<<6));
+    }
+    // 电流过大
+    if (ui->checkBox2_13->isChecked())
+    {
+        _BST->Data[3] |= 0x01;
+    }
+    else {
+        _BST->Data[3] &= (~0x01);
+    }
+    // 电压异常
+    if (ui->checkBox2_14->isChecked())
+    {
+        _BST->Data[3] |= (0x01<<2);
+    }
+    else {
+        _BST->Data[3] &= (~(0x01<<2));
+    }
+    qDebug() << "Set finish charge BST" << _BST->Data[3];
+    runStateMachine(Kill_Button);
+}
+
+void Widget::on_pushButton2_2_clicked()
+{
+    // CRM00 报文超时
+    if (ui->checkBox2_21->isChecked())
+    {
+        _BEM->Data[0] |= 0x01;
+    }
+    else {
+        _BEM->Data[0] &= (~0x01);
+    }
+    // CRMAA 报文超时
+    if (ui->checkBox2_22->isChecked())
+    {
+        _BEM->Data[0] |= (0x01<<2);
+    }
+    else {
+        _BEM->Data[0] &= (~(0x01<<2));
+    }
+    // CML超时
+    if (ui->checkBox2_23->isChecked())
+    {
+        _BEM->Data[1] |= 0x01;
+    }
+    else {
+        _BEM->Data[1] &= (~0x01);
+    }
+    // CRO超时
+    if (ui->checkBox2_24->isChecked())
+    {
+        _BEM->Data[1] |= (0x01<<2);
+    }
+    else {
+        _BEM->Data[1] &= (~(0x01<<2));
+    }
+    // CCS超时
+    if (ui->checkBox2_25->isChecked())
+    {
+        _BEM->Data[2] |= 0x01;
+    }
+    else {
+        _BEM->Data[2] &= (~0x01);
+    }
+    // CST超时
+
+}
+
+void Widget::on_checkBox2_15_clicked()
+{
+    if (ui->checkBox2_15->isChecked())
+    {
+        ui->checkBox2_16->setEnabled(false);
+    }
+    else {
+        ui->checkBox2_16->setEnabled(true);
+    }
+    _BSM->Data[5] ^= 0x01;       // 循环异或产生位开关效果
+    qDebug() << "Set BSM" << _BSM->Data[5];
+}
+
+void Widget::on_checkBox2_16_clicked()
+{
+    if (ui->checkBox2_16->isChecked())
+    {
+        ui->checkBox2_15->setEnabled(false);
+    }
+    else {
+        ui->checkBox2_15->setEnabled(true);
+    }
+    _BSM->Data[5] ^= 0x02;       // 循环异或产生位开关效果
+    qDebug() << "Set BSM" << _BSM->Data[5];
+}
+
+void Widget::on_checkBox2_17_clicked()
+{
+    if (ui->checkBox2_17->isChecked())
+    {
+        ui->checkBox2_18->setEnabled(false);
+    }
+    else {
+        ui->checkBox2_18->setEnabled(true);
+    }
+    _BSM->Data[5] ^= 0x10;       // 循环异或产生位开关效果
+    qDebug() << "Set BSM" << _BSM->Data[5];
+}
+
+void Widget::on_checkBox2_18_clicked()
+{
+    if (ui->checkBox2_18->isChecked())
+    {
+        ui->checkBox2_17->setEnabled(false);
+    }
+    else {
+        ui->checkBox2_17->setEnabled(true);
+    }
+    _BSM->Data[5] ^= 0x20;       // 循环异或产生位开关效果
+    qDebug() << "Set BSM" << _BSM->Data[5];
+}
+
+void Widget::on_checkBox2_19_clicked()
+{
+    if (ui->checkBox2_19->isChecked())
+    {
+        ui->checkBox2_20->setEnabled(false);
+    }
+    else {
+        ui->checkBox2_20->setEnabled(true);
+    }
+    _BSM->Data[5] ^= 0x40;       // 循环异或产生位开关效果
+    qDebug() << "Set BSM" << _BSM->Data[5];
+}
+
+void Widget::on_checkBox2_20_clicked()
+{
+    if (ui->checkBox2_20->isChecked())
+    {
+        ui->checkBox2_19->setEnabled(false);
+    }
+    else {
+        ui->checkBox2_19->setEnabled(true);
+    }
+    _BSM->Data[5] ^= 0x80;       // 循环异或产生位开关效果
+    qDebug() << "Set BSM" << _BSM->Data[5];
 }

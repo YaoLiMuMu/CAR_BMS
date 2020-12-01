@@ -44,7 +44,7 @@ void proceesframe::rx_thread()
         {0x1812F456, CCS, 0xff, nullptr, 1},
         {0x101AF456, CST, 0xff, nullptr, 1},
         {0x181DF456, CSD, 0xff, nullptr, 1},
-        {0x011FF456, CEM, 0xff, nullptr, 1},
+        {0x081FF456, CEM, 0xff, nullptr, 1},
     };
     int rece_Tab_num = 23;
     qDebug() << "RX_thread ID: " << QThread::currentThreadId();

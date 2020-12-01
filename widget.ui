@@ -7,1666 +7,84 @@
     <x>0</x>
     <y>0</y>
     <width>1220</width>
-    <height>690</height>
+    <height>699</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Widget</string>
   </property>
-  <widget class="QGroupBox" name="groupBox1_3">
+  <widget class="QTabWidget" name="tabWidget">
    <property name="geometry">
     <rect>
-     <x>29</x>
-     <y>416</y>
-     <width>141</width>
-     <height>151</height>
+     <x>0</x>
+     <y>0</y>
+     <width>1221</width>
+     <height>741</height>
     </rect>
    </property>
-   <property name="font">
-    <font>
-     <weight>75</weight>
-     <bold>true</bold>
-    </font>
+   <property name="toolTip">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
-   <property name="title">
-    <string>V2G Information</string>
+   <property name="currentIndex">
+    <number>1</number>
    </property>
-   <layout class="QGridLayout" name="gridLayout">
-    <item row="2" column="0">
-     <widget class="QLabel" name="label1_18">
-      <property name="font">
-       <font>
-        <pointsize>12</pointsize>
-        <weight>50</weight>
-        <bold>false</bold>
-       </font>
-      </property>
-      <property name="text">
-       <string>CCD方向</string>
-      </property>
-      <property name="buddy">
-       <cstring>lineEdit2_2</cstring>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="1">
-     <widget class="QLabel" name="label1_19">
-      <property name="font">
-       <font>
-        <pointsize>12</pointsize>
-        <weight>50</weight>
-        <bold>false</bold>
-       </font>
-      </property>
-      <property name="text">
-       <string>F</string>
-      </property>
-      <property name="buddy">
-       <cstring>lineEdit2_2</cstring>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="1">
-     <widget class="QLabel" name="label1_6">
-      <property name="font">
-       <font>
-        <weight>75</weight>
-        <bold>true</bold>
-       </font>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">QLabel#label1_6 {color:blue}</string>
-      </property>
-      <property name="text">
-       <string>F</string>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="0">
-     <widget class="QLabel" name="label1_3">
-      <property name="font">
-       <font>
-        <weight>75</weight>
-        <bold>true</bold>
-        <underline>false</underline>
-       </font>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">QLabel#label1_3 {color:blue}</string>
-      </property>
-      <property name="text">
-       <string>版本信息</string>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="0">
-     <widget class="QLabel" name="label1_5">
-      <property name="font">
-       <font>
-        <pointsize>12</pointsize>
-        <weight>50</weight>
-        <bold>false</bold>
-       </font>
-      </property>
-      <property name="text">
-       <string>CCS方向</string>
-      </property>
-      <property name="buddy">
-       <cstring>lineEdit2_2</cstring>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="1">
-     <widget class="QLabel" name="label1_12">
-      <property name="font">
-       <font>
-        <pointsize>12</pointsize>
-        <weight>50</weight>
-        <bold>false</bold>
-       </font>
-      </property>
-      <property name="text">
-       <string>F</string>
-      </property>
-      <property name="buddy">
-       <cstring>lineEdit2_2</cstring>
-      </property>
-     </widget>
-    </item>
-   </layout>
-  </widget>
-  <widget class="QGroupBox" name="groupBox1_4">
-   <property name="geometry">
-    <rect>
-     <x>30</x>
-     <y>570</y>
-     <width>141</width>
-     <height>101</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <weight>75</weight>
-     <bold>true</bold>
-    </font>
-   </property>
-   <property name="title">
-    <string>Mode Switch</string>
-   </property>
-   <layout class="QVBoxLayout" name="verticalLayout">
-    <item>
-     <widget class="QCheckBox" name="checkBox1_2">
-      <property name="font">
-       <font>
-        <weight>50</weight>
-        <bold>false</bold>
-       </font>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">QCheckBox#checkBox1_2 {color:red}</string>
-      </property>
-      <property name="text">
-       <string>常规模式</string>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <widget class="QLabel" name="label1_48">
-      <property name="font">
-       <font>
-        <pointsize>12</pointsize>
-        <weight>50</weight>
-        <bold>false</bold>
-       </font>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">QLabel#label1_48 {color:blue}</string>
-      </property>
-      <property name="text">
-       <string>DIsconnnet</string>
-      </property>
-      <property name="buddy">
-       <cstring>lineEdit2_1</cstring>
-      </property>
-     </widget>
-    </item>
-   </layout>
-  </widget>
-  <widget class="QGroupBox" name="groupBox">
-   <property name="geometry">
-    <rect>
-     <x>390</x>
-     <y>430</y>
-     <width>181</width>
-     <height>121</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>14</pointsize>
-     <weight>75</weight>
-     <bold>true</bold>
-    </font>
-   </property>
-   <property name="title">
-    <string>Current/A(CCS)</string>
-   </property>
-   <layout class="QVBoxLayout" name="verticalLayout_3">
-    <item>
-     <widget class="QLCDNumber" name="lcdNumber1_1">
-      <property name="styleSheet">
-       <string notr="true">background-color: rgb(211, 215, 207);</string>
-      </property>
-      <property name="digitCount">
-       <number>5</number>
-      </property>
-     </widget>
-    </item>
-   </layout>
-  </widget>
-  <widget class="QGroupBox" name="groupBox_2">
-   <property name="geometry">
-    <rect>
-     <x>390</x>
-     <y>560</y>
-     <width>181</width>
-     <height>121</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>14</pointsize>
-     <weight>75</weight>
-     <bold>true</bold>
-    </font>
-   </property>
-   <property name="title">
-    <string>Voltage/V(CCS)</string>
-   </property>
-   <layout class="QVBoxLayout" name="verticalLayout_5">
-    <item>
-     <widget class="QLCDNumber" name="lcdNumber1_2">
-      <property name="styleSheet">
-       <string notr="true">background-color: rgb(211, 215, 207);</string>
-      </property>
-      <property name="digitCount">
-       <number>5</number>
-      </property>
-     </widget>
-    </item>
-   </layout>
-  </widget>
-  <widget class="QWidget" name="layoutWidget">
-   <property name="geometry">
-    <rect>
-     <x>30</x>
-     <y>260</y>
-     <width>541</width>
-     <height>27</height>
-    </rect>
-   </property>
-   <layout class="QHBoxLayout" name="horizontalLayout">
-    <item>
-     <widget class="QLabel" name="label1_13">
-      <property name="font">
-       <font>
-        <weight>75</weight>
-        <bold>true</bold>
-       </font>
-      </property>
-      <property name="text">
-       <string>VIN Code</string>
-      </property>
-      <property name="buddy">
-       <cstring>lineEdit2_1</cstring>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <widget class="QLineEdit" name="lineEdit1_6">
-      <property name="text">
-       <string/>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <widget class="QLabel" name="label1_17">
-      <property name="font">
-       <font>
-        <weight>75</weight>
-        <bold>true</bold>
-       </font>
-      </property>
-      <property name="text">
-       <string>0/17</string>
-      </property>
-      <property name="buddy">
-       <cstring>lineEdit2_1</cstring>
-      </property>
-     </widget>
-    </item>
-   </layout>
-  </widget>
-  <widget class="QWidget" name="layoutWidget">
-   <property name="geometry">
-    <rect>
-     <x>30</x>
-     <y>27</y>
-     <width>541</width>
-     <height>27</height>
-    </rect>
-   </property>
-   <layout class="QHBoxLayout" name="horizontalLayout_3">
-    <item>
-     <widget class="QLabel" name="label1_1">
-      <property name="font">
-       <font>
-        <pointsize>12</pointsize>
-        <weight>50</weight>
-        <bold>false</bold>
-       </font>
-      </property>
-      <property name="text">
-       <string>系统重启</string>
-      </property>
-      <property name="buddy">
-       <cstring>lineEdit2_2</cstring>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <widget class="QPushButton" name="pushButton1_3">
-      <property name="minimumSize">
-       <size>
-        <width>90</width>
-        <height>0</height>
-       </size>
-      </property>
-      <property name="font">
-       <font>
-        <weight>50</weight>
-        <bold>false</bold>
-       </font>
-      </property>
-      <property name="text">
-       <string>Restart</string>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <spacer name="horizontalSpacer_4">
-      <property name="orientation">
-       <enum>Qt::Horizontal</enum>
-      </property>
-      <property name="sizeHint" stdset="0">
-       <size>
-        <width>40</width>
-        <height>20</height>
-       </size>
-      </property>
-     </spacer>
-    </item>
-    <item>
-     <widget class="QLabel" name="label1_2">
-      <property name="font">
-       <font>
-        <pointsize>12</pointsize>
-        <weight>50</weight>
-        <bold>false</bold>
-       </font>
-      </property>
-      <property name="text">
-       <string>加载配置</string>
-      </property>
-      <property name="buddy">
-       <cstring>lineEdit2_2</cstring>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <widget class="QPushButton" name="pushButton1_1">
-      <property name="minimumSize">
-       <size>
-        <width>90</width>
-        <height>0</height>
-       </size>
-      </property>
-      <property name="font">
-       <font>
-        <weight>50</weight>
-        <bold>false</bold>
-       </font>
-      </property>
-      <property name="text">
-       <string>Load</string>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <spacer name="horizontalSpacer_5">
-      <property name="orientation">
-       <enum>Qt::Horizontal</enum>
-      </property>
-      <property name="sizeHint" stdset="0">
-       <size>
-        <width>40</width>
-        <height>20</height>
-       </size>
-      </property>
-     </spacer>
-    </item>
-    <item>
-     <widget class="QLabel" name="label1_4">
-      <property name="font">
-       <font>
-        <pointsize>12</pointsize>
-        <weight>50</weight>
-        <bold>false</bold>
-       </font>
-      </property>
-      <property name="text">
-       <string>准备就绪</string>
-      </property>
-      <property name="buddy">
-       <cstring>lineEdit2_2</cstring>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <widget class="QPushButton" name="pushButton1_2">
-      <property name="enabled">
-       <bool>false</bool>
-      </property>
-      <property name="minimumSize">
-       <size>
-        <width>90</width>
-        <height>0</height>
-       </size>
-      </property>
-      <property name="font">
-       <font>
-        <weight>50</weight>
-        <bold>false</bold>
-       </font>
-      </property>
-      <property name="text">
-       <string>Ready</string>
-      </property>
-     </widget>
-    </item>
-   </layout>
-  </widget>
-  <widget class="QWidget" name="layoutWidget">
-   <property name="geometry">
-    <rect>
-     <x>30</x>
-     <y>60</y>
-     <width>541</width>
-     <height>192</height>
-    </rect>
-   </property>
-   <layout class="QHBoxLayout" name="horizontalLayout_2">
-    <item>
-     <widget class="QGroupBox" name="groupBox1_1">
-      <property name="font">
-       <font>
-        <pointsize>12</pointsize>
-        <weight>75</weight>
-        <bold>true</bold>
-       </font>
-      </property>
-      <property name="title">
-       <string>BCL Message(正式充电阶段)</string>
-      </property>
-      <layout class="QFormLayout" name="formLayout">
-       <item row="0" column="0">
-        <widget class="QLabel" name="label1_8">
-         <property name="font">
-          <font>
-           <pointsize>12</pointsize>
-           <weight>50</weight>
-           <bold>false</bold>
-          </font>
-         </property>
-         <property name="styleSheet">
-          <string notr="true">QLabel#label1_8 {color:red}</string>
-         </property>
-         <property name="text">
-          <string>充电需求电流/A</string>
-         </property>
-         <property name="buddy">
-          <cstring>lineEdit2_2</cstring>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="1">
-        <widget class="QLineEdit" name="lineEdit1_1">
-         <property name="maximumSize">
-          <size>
-           <width>100</width>
-           <height>16777215</height>
-          </size>
-         </property>
-         <property name="text">
-          <string/>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="0">
-        <widget class="QLabel" name="label1_7">
-         <property name="font">
-          <font>
-           <pointsize>12</pointsize>
-           <weight>50</weight>
-           <bold>false</bold>
-          </font>
-         </property>
-         <property name="styleSheet">
-          <string notr="true">QLabel#label1_7 {color:red}</string>
-         </property>
-         <property name="text">
-          <string>充电需求电压/V</string>
-         </property>
-         <property name="buddy">
-          <cstring>lineEdit2_1</cstring>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="1">
-        <widget class="QLineEdit" name="lineEdit1_2">
-         <property name="maximumSize">
-          <size>
-           <width>100</width>
-           <height>16777215</height>
-          </size>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="0">
-        <widget class="QLabel" name="label1_15">
-         <property name="font">
-          <font>
-           <pointsize>12</pointsize>
-           <weight>50</weight>
-           <bold>false</bold>
-          </font>
-         </property>
-         <property name="text">
-          <string>放电允许电流/A</string>
-         </property>
-         <property name="buddy">
-          <cstring>lineEdit2_2</cstring>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="1">
-        <widget class="QLineEdit" name="lineEdit1_8">
-         <property name="maximumSize">
-          <size>
-           <width>100</width>
-           <height>16777215</height>
-          </size>
-         </property>
-        </widget>
-       </item>
-       <item row="3" column="0">
-        <widget class="QLabel" name="label1_16">
-         <property name="font">
-          <font>
-           <pointsize>12</pointsize>
-           <weight>50</weight>
-           <bold>false</bold>
-          </font>
-         </property>
-         <property name="text">
-          <string>放电允许电压/V</string>
-         </property>
-         <property name="buddy">
-          <cstring>lineEdit2_1</cstring>
-         </property>
-        </widget>
-       </item>
-       <item row="3" column="1">
-        <widget class="QLineEdit" name="lineEdit1_9">
-         <property name="maximumSize">
-          <size>
-           <width>100</width>
-           <height>16777215</height>
-          </size>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-    </item>
-    <item>
-     <widget class="QGroupBox" name="groupBox1_2">
-      <property name="font">
-       <font>
-        <pointsize>12</pointsize>
-        <weight>75</weight>
-        <bold>true</bold>
-       </font>
-      </property>
-      <property name="title">
-       <string>Default Setting</string>
-      </property>
-      <layout class="QFormLayout" name="formLayout_2">
-       <item row="1" column="0">
-        <widget class="QLabel" name="label1_55">
-         <property name="font">
-          <font>
-           <pointsize>12</pointsize>
-           <weight>50</weight>
-           <bold>false</bold>
-          </font>
-         </property>
-         <property name="text">
-          <string>BCL运行模式</string>
-         </property>
-         <property name="buddy">
-          <cstring>lineEdit2_1</cstring>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="1">
-        <widget class="QComboBox" name="comboBox1_3">
-         <item>
-          <property name="text">
-           <string>02 恒流充电</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>01 恒压充电</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>03 恒流放电</string>
-          </property>
-         </item>
-        </widget>
-       </item>
-       <item row="4" column="0">
-        <widget class="QLabel" name="label1_14">
-         <property name="font">
-          <font>
-           <pointsize>12</pointsize>
-           <weight>50</weight>
-           <bold>false</bold>
-          </font>
-         </property>
-         <property name="text">
-          <string>BRO准备时间 /S</string>
-         </property>
-         <property name="buddy">
-          <cstring>lineEdit2_2</cstring>
-         </property>
-        </widget>
-       </item>
-       <item row="4" column="1">
-        <widget class="QLineEdit" name="lineEdit1_7">
-         <property name="maximumSize">
-          <size>
-           <width>100</width>
-           <height>16777215</height>
-          </size>
-         </property>
-        </widget>
-       </item>
-       <item row="5" column="0">
-        <widget class="QLabel" name="label1_10">
-         <property name="font">
-          <font>
-           <pointsize>12</pointsize>
-           <weight>50</weight>
-           <bold>false</bold>
-          </font>
-         </property>
-         <property name="styleSheet">
-          <string notr="true">QLabel#label1_10 {color:red}</string>
-         </property>
-         <property name="text">
-          <string>BHM绝缘电压 /V</string>
-         </property>
-         <property name="buddy">
-          <cstring>lineEdit2_1</cstring>
-         </property>
-        </widget>
-       </item>
-       <item row="5" column="1">
-        <widget class="QLineEdit" name="lineEdit1_4">
-         <property name="maximumSize">
-          <size>
-           <width>100</width>
-           <height>16777215</height>
-          </size>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="0">
-        <widget class="QLabel" name="label1_61">
-         <property name="font">
-          <font>
-           <pointsize>12</pointsize>
-           <weight>50</weight>
-           <bold>false</bold>
-          </font>
-         </property>
-         <property name="styleSheet">
-          <string notr="true">QLabel#label1_61 {color:red}</string>
-         </property>
-         <property name="text">
-          <string>USBCAN通道</string>
-         </property>
-         <property name="buddy">
-          <cstring>lineEdit2_2</cstring>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="1">
-        <widget class="QComboBox" name="comboBox1_4">
-         <item>
-          <property name="text">
-           <string>CAN2</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>CAN1</string>
-          </property>
-         </item>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-    </item>
-   </layout>
-  </widget>
-  <widget class="QGroupBox" name="groupBox_3">
-   <property name="geometry">
-    <rect>
-     <x>190</x>
-     <y>417</y>
-     <width>191</width>
-     <height>261</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <weight>75</weight>
-     <bold>true</bold>
-    </font>
-   </property>
-   <property name="title">
-    <string>CML/CMLP</string>
-   </property>
-   <layout class="QFormLayout" name="formLayout_3">
-    <item row="0" column="0">
-     <widget class="QLabel" name="label1_20">
-      <property name="font">
-       <font>
-        <pointsize>12</pointsize>
-        <weight>50</weight>
-        <bold>false</bold>
-       </font>
-      </property>
-      <property name="text">
-       <string>最高充电电压</string>
-      </property>
-      <property name="buddy">
-       <cstring>lineEdit2_2</cstring>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="1">
-     <widget class="QLabel" name="label1_21">
-      <property name="font">
-       <font>
-        <pointsize>12</pointsize>
-        <weight>50</weight>
-        <bold>false</bold>
-       </font>
-      </property>
-      <property name="text">
-       <string>F</string>
-      </property>
-      <property name="buddy">
-       <cstring>lineEdit2_2</cstring>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="0">
-     <widget class="QLabel" name="label1_22">
-      <property name="font">
-       <font>
-        <pointsize>12</pointsize>
-        <weight>50</weight>
-        <bold>false</bold>
-       </font>
-      </property>
-      <property name="text">
-       <string>最低充电电压</string>
-      </property>
-      <property name="buddy">
-       <cstring>lineEdit2_2</cstring>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="1">
-     <widget class="QLabel" name="label1_23">
-      <property name="font">
-       <font>
-        <pointsize>12</pointsize>
-        <weight>50</weight>
-        <bold>false</bold>
-       </font>
-      </property>
-      <property name="text">
-       <string>F</string>
-      </property>
-      <property name="buddy">
-       <cstring>lineEdit2_2</cstring>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="1">
-     <widget class="QLabel" name="label1_24">
-      <property name="font">
-       <font>
-        <pointsize>12</pointsize>
-        <weight>50</weight>
-        <bold>false</bold>
-       </font>
-      </property>
-      <property name="text">
-       <string>F</string>
-      </property>
-      <property name="buddy">
-       <cstring>lineEdit2_2</cstring>
-      </property>
-     </widget>
-    </item>
-    <item row="3" column="1">
-     <widget class="QLabel" name="label1_25">
-      <property name="font">
-       <font>
-        <pointsize>12</pointsize>
-        <weight>50</weight>
-        <bold>false</bold>
-       </font>
-      </property>
-      <property name="text">
-       <string>F</string>
-      </property>
-      <property name="buddy">
-       <cstring>lineEdit2_2</cstring>
-      </property>
-     </widget>
-    </item>
-    <item row="4" column="1">
-     <widget class="QLabel" name="label1_26">
-      <property name="font">
-       <font>
-        <pointsize>12</pointsize>
-        <weight>50</weight>
-        <bold>false</bold>
-       </font>
-      </property>
-      <property name="text">
-       <string>F</string>
-      </property>
-      <property name="buddy">
-       <cstring>lineEdit2_2</cstring>
-      </property>
-     </widget>
-    </item>
-    <item row="5" column="1">
-     <widget class="QLabel" name="label1_27">
-      <property name="font">
-       <font>
-        <pointsize>12</pointsize>
-        <weight>50</weight>
-        <bold>false</bold>
-       </font>
-      </property>
-      <property name="text">
-       <string>F</string>
-      </property>
-      <property name="buddy">
-       <cstring>lineEdit2_2</cstring>
-      </property>
-     </widget>
-    </item>
-    <item row="6" column="1">
-     <widget class="QLabel" name="label1_28">
-      <property name="font">
-       <font>
-        <pointsize>12</pointsize>
-        <weight>50</weight>
-        <bold>false</bold>
-       </font>
-      </property>
-      <property name="text">
-       <string>F</string>
-      </property>
-      <property name="buddy">
-       <cstring>lineEdit2_2</cstring>
-      </property>
-     </widget>
-    </item>
-    <item row="7" column="1">
-     <widget class="QLabel" name="label1_29">
-      <property name="font">
-       <font>
-        <pointsize>12</pointsize>
-        <weight>50</weight>
-        <bold>false</bold>
-       </font>
-      </property>
-      <property name="text">
-       <string>F</string>
-      </property>
-      <property name="buddy">
-       <cstring>lineEdit2_2</cstring>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="0">
-     <widget class="QLabel" name="label1_30">
-      <property name="font">
-       <font>
-        <pointsize>12</pointsize>
-        <weight>50</weight>
-        <bold>false</bold>
-       </font>
-      </property>
-      <property name="text">
-       <string>最大充电电流</string>
-      </property>
-      <property name="buddy">
-       <cstring>lineEdit2_2</cstring>
-      </property>
-     </widget>
-    </item>
-    <item row="3" column="0">
-     <widget class="QLabel" name="label1_31">
-      <property name="font">
-       <font>
-        <pointsize>12</pointsize>
-        <weight>50</weight>
-        <bold>false</bold>
-       </font>
-      </property>
-      <property name="text">
-       <string>最小充电电流</string>
-      </property>
-      <property name="buddy">
-       <cstring>lineEdit2_2</cstring>
-      </property>
-     </widget>
-    </item>
-    <item row="4" column="0">
-     <widget class="QLabel" name="label1_32">
-      <property name="font">
-       <font>
-        <pointsize>12</pointsize>
-        <weight>50</weight>
-        <bold>false</bold>
-       </font>
-      </property>
-      <property name="text">
-       <string>最高放电电压</string>
-      </property>
-      <property name="buddy">
-       <cstring>lineEdit2_2</cstring>
-      </property>
-     </widget>
-    </item>
-    <item row="5" column="0">
-     <widget class="QLabel" name="label1_33">
-      <property name="font">
-       <font>
-        <pointsize>12</pointsize>
-        <weight>50</weight>
-        <bold>false</bold>
-       </font>
-      </property>
-      <property name="text">
-       <string>最低放电电压</string>
-      </property>
-      <property name="buddy">
-       <cstring>lineEdit2_2</cstring>
-      </property>
-     </widget>
-    </item>
-    <item row="6" column="0">
-     <widget class="QLabel" name="label1_34">
-      <property name="font">
-       <font>
-        <pointsize>12</pointsize>
-        <weight>50</weight>
-        <bold>false</bold>
-       </font>
-      </property>
-      <property name="text">
-       <string>最大放电电流</string>
-      </property>
-      <property name="buddy">
-       <cstring>lineEdit2_2</cstring>
-      </property>
-     </widget>
-    </item>
-    <item row="7" column="0">
-     <widget class="QLabel" name="label1_35">
-      <property name="font">
-       <font>
-        <pointsize>12</pointsize>
-        <weight>50</weight>
-        <bold>false</bold>
-       </font>
-      </property>
-      <property name="text">
-       <string>最小放电电流</string>
-      </property>
-      <property name="buddy">
-       <cstring>lineEdit2_2</cstring>
-      </property>
-     </widget>
-    </item>
-   </layout>
-  </widget>
-  <widget class="QGroupBox" name="groupBox_4">
-   <property name="geometry">
-    <rect>
-     <x>580</x>
-     <y>20</y>
-     <width>294</width>
-     <height>238</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>12</pointsize>
-     <weight>75</weight>
-     <bold>true</bold>
-    </font>
-   </property>
-   <property name="title">
-    <string>BCP Message(参数配置阶段)</string>
-   </property>
-   <layout class="QFormLayout" name="formLayout_4">
-    <item row="0" column="0">
-     <widget class="QLabel" name="label1_40">
-      <property name="font">
-       <font>
-        <pointsize>12</pointsize>
-        <weight>50</weight>
-        <bold>false</bold>
-       </font>
-      </property>
-      <property name="text">
-       <string>最高充电电压/V</string>
-      </property>
-      <property name="buddy">
-       <cstring>lineEdit2_1</cstring>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="1">
-     <widget class="QLineEdit" name="lineEdit1_13">
-      <property name="minimumSize">
-       <size>
-        <width>120</width>
-        <height>0</height>
-       </size>
-      </property>
-      <property name="maximumSize">
-       <size>
-        <width>100</width>
-        <height>16777215</height>
-       </size>
-      </property>
-      <property name="text">
-       <string>=BHM绝缘电压</string>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="0">
-     <widget class="QLabel" name="label1_41">
-      <property name="font">
-       <font>
-        <pointsize>12</pointsize>
-        <weight>50</weight>
-        <bold>false</bold>
-       </font>
-      </property>
-      <property name="text">
-       <string>最高充电电流/A</string>
-      </property>
-      <property name="buddy">
-       <cstring>lineEdit2_1</cstring>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="1">
-     <widget class="QLineEdit" name="lineEdit1_14">
-      <property name="minimumSize">
-       <size>
-        <width>120</width>
-        <height>0</height>
-       </size>
-      </property>
-      <property name="maximumSize">
-       <size>
-        <width>100</width>
-        <height>16777215</height>
-       </size>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="0">
-     <widget class="QLabel" name="label1_11">
-      <property name="font">
-       <font>
-        <pointsize>12</pointsize>
-        <weight>50</weight>
-        <bold>false</bold>
-       </font>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">QLabel#label1_11 {color:red}</string>
-      </property>
-      <property name="text">
-       <string>电池起始电压 /V</string>
-      </property>
-      <property name="scaledContents">
-       <bool>false</bool>
-      </property>
-      <property name="buddy">
-       <cstring>lineEdit2_1</cstring>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="1">
-     <widget class="QLineEdit" name="lineEdit1_5">
-      <property name="minimumSize">
-       <size>
-        <width>120</width>
-        <height>0</height>
-       </size>
-      </property>
-      <property name="maximumSize">
-       <size>
-        <width>100</width>
-        <height>16777215</height>
-       </size>
-      </property>
-      <property name="text">
-       <string/>
-      </property>
-     </widget>
-    </item>
-    <item row="3" column="0">
-     <widget class="QLabel" name="label1_42">
-      <property name="font">
-       <font>
-        <pointsize>12</pointsize>
-        <weight>50</weight>
-        <bold>false</bold>
-       </font>
-      </property>
-      <property name="text">
-       <string>单体电压上限/0.01V</string>
-      </property>
-      <property name="buddy">
-       <cstring>lineEdit2_1</cstring>
-      </property>
-     </widget>
-    </item>
-    <item row="3" column="1">
-     <widget class="QLineEdit" name="lineEdit1_15">
-      <property name="minimumSize">
-       <size>
-        <width>120</width>
-        <height>0</height>
-       </size>
-      </property>
-      <property name="maximumSize">
-       <size>
-        <width>100</width>
-        <height>16777215</height>
-       </size>
-      </property>
-      <property name="text">
-       <string/>
-      </property>
-     </widget>
-    </item>
-    <item row="4" column="0">
-     <widget class="QLabel" name="label1_43">
-      <property name="font">
-       <font>
-        <pointsize>12</pointsize>
-        <weight>50</weight>
-        <bold>false</bold>
-       </font>
-      </property>
-      <property name="text">
-       <string>单体温度上限/℃</string>
-      </property>
-      <property name="buddy">
-       <cstring>lineEdit2_1</cstring>
-      </property>
-     </widget>
-    </item>
-    <item row="4" column="1">
-     <widget class="QLineEdit" name="lineEdit1_16">
-      <property name="minimumSize">
-       <size>
-        <width>120</width>
-        <height>0</height>
-       </size>
-      </property>
-      <property name="maximumSize">
-       <size>
-        <width>100</width>
-        <height>16777215</height>
-       </size>
-      </property>
-      <property name="text">
-       <string/>
-      </property>
-     </widget>
-    </item>
-    <item row="5" column="0">
-     <widget class="QLabel" name="label1_54">
-      <property name="font">
-       <font>
-        <pointsize>12</pointsize>
-        <weight>50</weight>
-        <bold>false</bold>
-       </font>
-      </property>
-      <property name="text">
-       <string>标称总容量/kWh</string>
-      </property>
-      <property name="buddy">
-       <cstring>lineEdit2_1</cstring>
-      </property>
-     </widget>
-    </item>
-    <item row="5" column="1">
-     <widget class="QLineEdit" name="lineEdit1_25">
-      <property name="minimumSize">
-       <size>
-        <width>120</width>
-        <height>0</height>
-       </size>
-      </property>
-      <property name="maximumSize">
-       <size>
-        <width>100</width>
-        <height>16777215</height>
-       </size>
-      </property>
-      <property name="text">
-       <string/>
-      </property>
-     </widget>
-    </item>
-   </layout>
-  </widget>
-  <widget class="QGroupBox" name="groupBox_5">
-   <property name="geometry">
-    <rect>
-     <x>580</x>
-     <y>260</y>
-     <width>296</width>
-     <height>172</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>12</pointsize>
-     <weight>75</weight>
-     <bold>true</bold>
-    </font>
-   </property>
-   <property name="title">
-    <string>BCS Message(正式充电阶段)</string>
-   </property>
-   <layout class="QFormLayout" name="formLayout_5">
-    <item row="0" column="0">
-     <widget class="QLabel" name="label1_39">
-      <property name="font">
-       <font>
-        <pointsize>12</pointsize>
-        <weight>50</weight>
-        <bold>false</bold>
-       </font>
-      </property>
-      <property name="text">
-       <string>剩余充电时间/min</string>
-      </property>
-      <property name="buddy">
-       <cstring>lineEdit2_1</cstring>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="1">
-     <widget class="QLineEdit" name="lineEdit1_12">
-      <property name="maximumSize">
-       <size>
-        <width>100</width>
-        <height>16777215</height>
-       </size>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="0">
-     <widget class="QLabel" name="label1_36">
-      <property name="font">
-       <font>
-        <pointsize>12</pointsize>
-        <weight>50</weight>
-        <bold>false</bold>
-       </font>
-      </property>
-      <property name="text">
-       <string>单体最高/低电压/0.01V</string>
-      </property>
-      <property name="buddy">
-       <cstring>lineEdit2_1</cstring>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="1">
-     <widget class="QLineEdit" name="lineEdit1_10">
-      <property name="maximumSize">
-       <size>
-        <width>100</width>
-        <height>16777215</height>
-       </size>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="0">
-     <widget class="QLabel" name="label1_49">
-      <property name="font">
-       <font>
-        <pointsize>12</pointsize>
-        <weight>50</weight>
-        <bold>false</bold>
-       </font>
-      </property>
-      <property name="text">
-       <string>对应单体组号(≤15)</string>
-      </property>
-      <property name="buddy">
-       <cstring>lineEdit2_1</cstring>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="1">
-     <widget class="QLineEdit" name="lineEdit1_22">
-      <property name="maximumSize">
-       <size>
-        <width>100</width>
-        <height>16777215</height>
-       </size>
-      </property>
-     </widget>
-    </item>
-    <item row="3" column="0">
-     <widget class="QLabel" name="label1_37">
-      <property name="font">
-       <font>
-        <pointsize>12</pointsize>
-        <weight>50</weight>
-        <bold>false</bold>
-       </font>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">QLabel#label1_37 {color:red}</string>
-      </property>
-      <property name="text">
-       <string>荷电状态SOC/%</string>
-      </property>
-      <property name="buddy">
-       <cstring>lineEdit2_1</cstring>
-      </property>
-     </widget>
-    </item>
-    <item row="3" column="1">
-     <widget class="QLineEdit" name="lineEdit1_17">
-      <property name="maximumSize">
-       <size>
-        <width>100</width>
-        <height>16777215</height>
-       </size>
-      </property>
-     </widget>
-    </item>
-   </layout>
-  </widget>
-  <widget class="QGroupBox" name="groupBox_6">
-   <property name="geometry">
-    <rect>
-     <x>890</x>
-     <y>460</y>
-     <width>271</width>
-     <height>211</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>12</pointsize>
-     <weight>75</weight>
-     <bold>true</bold>
-    </font>
-   </property>
-   <property name="title">
-    <string>Fault Injection</string>
-   </property>
-   <layout class="QGridLayout" name="gridLayout_2">
-    <item row="1" column="0">
-     <widget class="QCheckBox" name="checkBox1_5">
-      <property name="text">
-       <string>BHM</string>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="1">
-     <widget class="QCheckBox" name="checkBox1_8">
-      <property name="text">
-       <string>BRO(AA)</string>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="2">
-     <widget class="QCheckBox" name="checkBox1_9">
-      <property name="text">
-       <string>BCS</string>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="0">
-     <widget class="QCheckBox" name="checkBox1_4">
-      <property name="text">
-       <string>BRM</string>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="1">
-     <widget class="QCheckBox" name="checkBox1_7">
-      <property name="text">
-       <string>BRO(00)</string>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="2">
-     <widget class="QCheckBox" name="checkBox1_3">
-      <property name="text">
-       <string>BDC</string>
-      </property>
-     </widget>
-    </item>
-    <item row="3" column="0">
-     <widget class="QCheckBox" name="checkBox1_6">
-      <property name="text">
-       <string>BCP</string>
-      </property>
-     </widget>
-    </item>
-    <item row="3" column="1">
-     <widget class="QCheckBox" name="checkBox1_10">
-      <property name="text">
-       <string>BCL</string>
-      </property>
-     </widget>
-    </item>
-    <item row="4" column="0">
-     <widget class="QCheckBox" name="checkBox1_11">
-      <property name="text">
-       <string>BST</string>
-      </property>
-     </widget>
-    </item>
-    <item row="4" column="1">
-     <widget class="QCheckBox" name="checkBox1_12">
-      <property name="text">
-       <string>BSD</string>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="0" colspan="2">
-     <widget class="QCheckBox" name="checkBox1_18">
-      <property name="styleSheet">
-       <string notr="true">QCheckBox#checkBox1_18 {color:red}</string>
-      </property>
-      <property name="text">
-       <string>Fault Activation</string>
-      </property>
-     </widget>
-    </item>
-   </layout>
-  </widget>
-  <widget class="QGroupBox" name="groupBox_7">
-   <property name="geometry">
-    <rect>
-     <x>890</x>
-     <y>20</y>
-     <width>274</width>
-     <height>172</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>12</pointsize>
-     <weight>75</weight>
-     <bold>true</bold>
-    </font>
-   </property>
-   <property name="title">
-    <string>BSD Message(结束阶段)</string>
-   </property>
-   <layout class="QFormLayout" name="formLayout_6">
-    <item row="0" column="0">
-     <widget class="QLabel" name="label1_44">
-      <property name="font">
-       <font>
-        <pointsize>12</pointsize>
-        <weight>50</weight>
-        <bold>false</bold>
-       </font>
-      </property>
-      <property name="text">
-       <string>单体最高电压/0.01V</string>
-      </property>
-      <property name="buddy">
-       <cstring>lineEdit2_1</cstring>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="1">
-     <widget class="QLineEdit" name="lineEdit1_18">
-      <property name="maximumSize">
-       <size>
-        <width>100</width>
-        <height>16777215</height>
-       </size>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="0">
-     <widget class="QLabel" name="label1_45">
-      <property name="font">
-       <font>
-        <pointsize>12</pointsize>
-        <weight>50</weight>
-        <bold>false</bold>
-       </font>
-      </property>
-      <property name="text">
-       <string>单体最低电压/0.01V</string>
-      </property>
-      <property name="buddy">
-       <cstring>lineEdit2_1</cstring>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="1">
-     <widget class="QLineEdit" name="lineEdit1_19">
-      <property name="maximumSize">
-       <size>
-        <width>100</width>
-        <height>16777215</height>
-       </size>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="0">
-     <widget class="QLabel" name="label1_46">
-      <property name="font">
-       <font>
-        <pointsize>12</pointsize>
-        <weight>50</weight>
-        <bold>false</bold>
-       </font>
-      </property>
-      <property name="text">
-       <string>单体最高温度/℃</string>
-      </property>
-      <property name="buddy">
-       <cstring>lineEdit2_1</cstring>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="1">
-     <widget class="QLineEdit" name="lineEdit1_20">
-      <property name="maximumSize">
-       <size>
-        <width>100</width>
-        <height>16777215</height>
-       </size>
-      </property>
-     </widget>
-    </item>
-    <item row="3" column="0">
-     <widget class="QLabel" name="label1_47">
-      <property name="font">
-       <font>
-        <pointsize>12</pointsize>
-        <weight>50</weight>
-        <bold>false</bold>
-       </font>
-      </property>
-      <property name="text">
-       <string>单体最低温度/℃</string>
-      </property>
-      <property name="buddy">
-       <cstring>lineEdit2_1</cstring>
-      </property>
-     </widget>
-    </item>
-    <item row="3" column="1">
-     <widget class="QLineEdit" name="lineEdit1_21">
-      <property name="maximumSize">
-       <size>
-        <width>100</width>
-        <height>16777215</height>
-       </size>
-      </property>
-     </widget>
-    </item>
-   </layout>
-  </widget>
-  <widget class="QGroupBox" name="groupBox_8">
-   <property name="geometry">
-    <rect>
-     <x>30</x>
-     <y>290</y>
-     <width>541</width>
-     <height>110</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>12</pointsize>
-     <weight>75</weight>
-     <bold>true</bold>
-    </font>
-   </property>
-   <property name="title">
-    <string>BRM Message(车辆辨识阶段)</string>
-   </property>
-   <layout class="QVBoxLayout" name="verticalLayout_2">
-    <item>
-     <layout class="QHBoxLayout" name="horizontalLayout_4">
+   <widget class="QWidget" name="tab">
+    <attribute name="title">
+     <string>Version:2.2</string>
+    </attribute>
+    <widget class="QGroupBox" name="groupBox_2">
+     <property name="geometry">
+      <rect>
+       <x>370</x>
+       <y>540</y>
+       <width>181</width>
+       <height>121</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>14</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="title">
+      <string>Voltage/V(CCS)</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_5">
       <item>
-       <widget class="QLabel" name="label1_50">
+       <widget class="QLCDNumber" name="lcdNumber1_2">
+        <property name="styleSheet">
+         <string notr="true">background-color: rgb(211, 215, 207);</string>
+        </property>
+        <property name="digitCount">
+         <number>5</number>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+    <widget class="QGroupBox" name="groupBox1_3">
+     <property name="geometry">
+      <rect>
+       <x>9</x>
+       <y>396</y>
+       <width>141</width>
+       <height>151</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="title">
+      <string>V2G Information</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout">
+      <item row="2" column="0">
+       <widget class="QLabel" name="label1_18">
         <property name="font">
          <font>
           <pointsize>12</pointsize>
@@ -1675,130 +93,65 @@
          </font>
         </property>
         <property name="text">
-         <string>电池类型</string>
+         <string>CCD方向</string>
         </property>
         <property name="buddy">
-         <cstring>lineEdit2_1</cstring>
+         <cstring>lineEdit2_2</cstring>
         </property>
        </widget>
       </item>
-      <item>
-       <spacer name="horizontalSpacer_3">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item>
-       <widget class="QComboBox" name="comboBox1_1">
-        <item>
-         <property name="text">
-          <string>01: 铅酸电池</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>02: 镍氢电池</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>03: 磷酸铁锂电池</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>04: 锰酸锂电池</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>05: 钴酸锂电池</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>06: 三元材料电池</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>07: 聚合物锂离子电池</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>08: 钛酸锂电池</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>FF: 其他电池</string>
-         </property>
-        </item>
-       </widget>
-      </item>
-      <item>
-       <spacer name="horizontalSpacer_2">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item>
-       <widget class="QLabel" name="label1_51">
+      <item row="2" column="1">
+       <widget class="QLabel" name="label1_19">
         <property name="font">
          <font>
           <pointsize>12</pointsize>
           <weight>50</weight>
           <bold>false</bold>
          </font>
+        </property>
+        <property name="text">
+         <string>F</string>
+        </property>
+        <property name="buddy">
+         <cstring>lineEdit2_2</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QLabel" name="label1_6">
+        <property name="font">
+         <font>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QLabel#label1_6 {color:blue}</string>
+        </property>
+        <property name="text">
+         <string>F</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="label1_3">
+        <property name="font">
+         <font>
+          <weight>75</weight>
+          <bold>true</bold>
+          <underline>false</underline>
+         </font>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QLabel#label1_3 {color:blue}</string>
         </property>
         <property name="text">
          <string>版本信息</string>
         </property>
-        <property name="buddy">
-         <cstring>lineEdit2_1</cstring>
-        </property>
        </widget>
       </item>
-      <item>
-       <widget class="QComboBox" name="comboBox1_2">
-        <item>
-         <property name="text">
-          <string>1.10 2015国标</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>1.00 2010旧标</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>1.12 2019试行</string>
-         </property>
-        </item>
-       </widget>
-      </item>
-     </layout>
-    </item>
-    <item>
-     <layout class="QHBoxLayout" name="horizontalLayout_5">
-      <item>
-       <widget class="QLabel" name="label1_52">
+      <item row="1" column="0">
+       <widget class="QLabel" name="label1_5">
         <property name="font">
          <font>
           <pointsize>12</pointsize>
@@ -1807,15 +160,71 @@
          </font>
         </property>
         <property name="text">
-         <string>额定容量/Ah</string>
+         <string>CCS方向</string>
+        </property>
+        <property name="buddy">
+         <cstring>lineEdit2_2</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QLabel" name="label1_12">
+        <property name="font">
+         <font>
+          <pointsize>12</pointsize>
+          <weight>50</weight>
+          <bold>false</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>F</string>
+        </property>
+        <property name="buddy">
+         <cstring>lineEdit2_2</cstring>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+    <widget class="QGroupBox" name="groupBox_11">
+     <property name="geometry">
+      <rect>
+       <x>560</x>
+       <y>420</y>
+       <width>260</width>
+       <height>106</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>12</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="title">
+      <string>BCSP Message(放电模式)</string>
+     </property>
+     <layout class="QFormLayout" name="formLayout_7">
+      <item row="0" column="0">
+       <widget class="QLabel" name="label1_59">
+        <property name="font">
+         <font>
+          <pointsize>12</pointsize>
+          <weight>50</weight>
+          <bold>false</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>剩余放电时间/min</string>
         </property>
         <property name="buddy">
          <cstring>lineEdit2_1</cstring>
         </property>
        </widget>
       </item>
-      <item>
-       <widget class="QLineEdit" name="lineEdit1_23">
+      <item row="0" column="1">
+       <widget class="QLineEdit" name="lineEdit1_29">
         <property name="maximumSize">
          <size>
           <width>100</width>
@@ -1824,8 +233,803 @@
         </property>
        </widget>
       </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="label1_60">
+        <property name="font">
+         <font>
+          <pointsize>12</pointsize>
+          <weight>50</weight>
+          <bold>false</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>剩余续航里程/km</string>
+        </property>
+        <property name="buddy">
+         <cstring>lineEdit2_1</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QLineEdit" name="lineEdit1_30">
+        <property name="maximumSize">
+         <size>
+          <width>100</width>
+          <height>16777215</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+    <widget class="QGroupBox" name="groupBox_3">
+     <property name="geometry">
+      <rect>
+       <x>170</x>
+       <y>397</y>
+       <width>191</width>
+       <height>261</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="title">
+      <string>CML/CMLP</string>
+     </property>
+     <layout class="QFormLayout" name="formLayout_3">
+      <item row="0" column="0">
+       <widget class="QLabel" name="label1_20">
+        <property name="font">
+         <font>
+          <pointsize>12</pointsize>
+          <weight>50</weight>
+          <bold>false</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>最高充电电压</string>
+        </property>
+        <property name="buddy">
+         <cstring>lineEdit2_2</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QLabel" name="label1_21">
+        <property name="font">
+         <font>
+          <pointsize>12</pointsize>
+          <weight>50</weight>
+          <bold>false</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>F</string>
+        </property>
+        <property name="buddy">
+         <cstring>lineEdit2_2</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="label1_22">
+        <property name="font">
+         <font>
+          <pointsize>12</pointsize>
+          <weight>50</weight>
+          <bold>false</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>最低充电电压</string>
+        </property>
+        <property name="buddy">
+         <cstring>lineEdit2_2</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QLabel" name="label1_23">
+        <property name="font">
+         <font>
+          <pointsize>12</pointsize>
+          <weight>50</weight>
+          <bold>false</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>F</string>
+        </property>
+        <property name="buddy">
+         <cstring>lineEdit2_2</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QLabel" name="label1_24">
+        <property name="font">
+         <font>
+          <pointsize>12</pointsize>
+          <weight>50</weight>
+          <bold>false</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>F</string>
+        </property>
+        <property name="buddy">
+         <cstring>lineEdit2_2</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1">
+       <widget class="QLabel" name="label1_25">
+        <property name="font">
+         <font>
+          <pointsize>12</pointsize>
+          <weight>50</weight>
+          <bold>false</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>F</string>
+        </property>
+        <property name="buddy">
+         <cstring>lineEdit2_2</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="1">
+       <widget class="QLabel" name="label1_26">
+        <property name="font">
+         <font>
+          <pointsize>12</pointsize>
+          <weight>50</weight>
+          <bold>false</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>F</string>
+        </property>
+        <property name="buddy">
+         <cstring>lineEdit2_2</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="1">
+       <widget class="QLabel" name="label1_27">
+        <property name="font">
+         <font>
+          <pointsize>12</pointsize>
+          <weight>50</weight>
+          <bold>false</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>F</string>
+        </property>
+        <property name="buddy">
+         <cstring>lineEdit2_2</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="1">
+       <widget class="QLabel" name="label1_28">
+        <property name="font">
+         <font>
+          <pointsize>12</pointsize>
+          <weight>50</weight>
+          <bold>false</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>F</string>
+        </property>
+        <property name="buddy">
+         <cstring>lineEdit2_2</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="7" column="1">
+       <widget class="QLabel" name="label1_29">
+        <property name="font">
+         <font>
+          <pointsize>12</pointsize>
+          <weight>50</weight>
+          <bold>false</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>F</string>
+        </property>
+        <property name="buddy">
+         <cstring>lineEdit2_2</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="label1_30">
+        <property name="font">
+         <font>
+          <pointsize>12</pointsize>
+          <weight>50</weight>
+          <bold>false</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>最大充电电流</string>
+        </property>
+        <property name="buddy">
+         <cstring>lineEdit2_2</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="label1_31">
+        <property name="font">
+         <font>
+          <pointsize>12</pointsize>
+          <weight>50</weight>
+          <bold>false</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>最小充电电流</string>
+        </property>
+        <property name="buddy">
+         <cstring>lineEdit2_2</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="0">
+       <widget class="QLabel" name="label1_32">
+        <property name="font">
+         <font>
+          <pointsize>12</pointsize>
+          <weight>50</weight>
+          <bold>false</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>最高放电电压</string>
+        </property>
+        <property name="buddy">
+         <cstring>lineEdit2_2</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="0">
+       <widget class="QLabel" name="label1_33">
+        <property name="font">
+         <font>
+          <pointsize>12</pointsize>
+          <weight>50</weight>
+          <bold>false</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>最低放电电压</string>
+        </property>
+        <property name="buddy">
+         <cstring>lineEdit2_2</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="0">
+       <widget class="QLabel" name="label1_34">
+        <property name="font">
+         <font>
+          <pointsize>12</pointsize>
+          <weight>50</weight>
+          <bold>false</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>最大放电电流</string>
+        </property>
+        <property name="buddy">
+         <cstring>lineEdit2_2</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="7" column="0">
+       <widget class="QLabel" name="label1_35">
+        <property name="font">
+         <font>
+          <pointsize>12</pointsize>
+          <weight>50</weight>
+          <bold>false</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>最小放电电流</string>
+        </property>
+        <property name="buddy">
+         <cstring>lineEdit2_2</cstring>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+    <widget class="QWidget" name="layoutWidget">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>240</y>
+       <width>541</width>
+       <height>27</height>
+      </rect>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout">
       <item>
-       <spacer name="horizontalSpacer">
+       <widget class="QLabel" name="label1_13">
+        <property name="font">
+         <font>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>VIN Code</string>
+        </property>
+        <property name="buddy">
+         <cstring>lineEdit2_1</cstring>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="lineEdit1_6">
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label1_17">
+        <property name="font">
+         <font>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>0/17</string>
+        </property>
+        <property name="buddy">
+         <cstring>lineEdit2_1</cstring>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+    <widget class="QGroupBox" name="groupBox_10">
+     <property name="geometry">
+      <rect>
+       <x>560</x>
+       <y>520</y>
+       <width>257</width>
+       <height>136</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>12</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="title">
+      <string>BDC Message(车桩交互阶段)</string>
+     </property>
+     <layout class="QFormLayout" name="formLayout_9">
+      <item row="0" column="0">
+       <widget class="QLabel" name="label1_38">
+        <property name="font">
+         <font>
+          <pointsize>12</pointsize>
+          <weight>50</weight>
+          <bold>false</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>BDC续航里程/km</string>
+        </property>
+        <property name="buddy">
+         <cstring>lineEdit2_1</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QLineEdit" name="lineEdit1_11">
+        <property name="maximumSize">
+         <size>
+          <width>100</width>
+          <height>16777215</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="label1_56">
+        <property name="font">
+         <font>
+          <pointsize>12</pointsize>
+          <weight>50</weight>
+          <bold>false</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>参与V2G循环次数</string>
+        </property>
+        <property name="buddy">
+         <cstring>lineEdit2_1</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QLineEdit" name="lineEdit1_26">
+        <property name="maximumSize">
+         <size>
+          <width>100</width>
+          <height>16777215</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="label1_57">
+        <property name="font">
+         <font>
+          <pointsize>12</pointsize>
+          <weight>50</weight>
+          <bold>false</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>剩余V2G循环次数</string>
+        </property>
+        <property name="buddy">
+         <cstring>lineEdit2_1</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QLineEdit" name="lineEdit1_27">
+        <property name="maximumSize">
+         <size>
+          <width>100</width>
+          <height>16777215</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+    <widget class="QGroupBox" name="groupBox_4">
+     <property name="geometry">
+      <rect>
+       <x>560</x>
+       <y>0</y>
+       <width>294</width>
+       <height>238</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>12</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="title">
+      <string>BCP Message(参数配置阶段)</string>
+     </property>
+     <layout class="QFormLayout" name="formLayout_4">
+      <item row="0" column="0">
+       <widget class="QLabel" name="label1_40">
+        <property name="font">
+         <font>
+          <pointsize>12</pointsize>
+          <weight>50</weight>
+          <bold>false</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>最高充电电压/V</string>
+        </property>
+        <property name="buddy">
+         <cstring>lineEdit2_1</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QLineEdit" name="lineEdit1_13">
+        <property name="minimumSize">
+         <size>
+          <width>120</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>100</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>=BHM绝缘电压</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="label1_41">
+        <property name="font">
+         <font>
+          <pointsize>12</pointsize>
+          <weight>50</weight>
+          <bold>false</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>最高充电电流/A</string>
+        </property>
+        <property name="buddy">
+         <cstring>lineEdit2_1</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QLineEdit" name="lineEdit1_14">
+        <property name="minimumSize">
+         <size>
+          <width>120</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>100</width>
+          <height>16777215</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="label1_11">
+        <property name="font">
+         <font>
+          <pointsize>12</pointsize>
+          <weight>50</weight>
+          <bold>false</bold>
+         </font>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QLabel#label1_11 {color:red}</string>
+        </property>
+        <property name="text">
+         <string>电池起始电压 /V</string>
+        </property>
+        <property name="scaledContents">
+         <bool>false</bool>
+        </property>
+        <property name="buddy">
+         <cstring>lineEdit2_1</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QLineEdit" name="lineEdit1_5">
+        <property name="minimumSize">
+         <size>
+          <width>120</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>100</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="label1_42">
+        <property name="font">
+         <font>
+          <pointsize>12</pointsize>
+          <weight>50</weight>
+          <bold>false</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>单体电压上限/0.01V</string>
+        </property>
+        <property name="buddy">
+         <cstring>lineEdit2_1</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1">
+       <widget class="QLineEdit" name="lineEdit1_15">
+        <property name="minimumSize">
+         <size>
+          <width>120</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>100</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="0">
+       <widget class="QLabel" name="label1_43">
+        <property name="font">
+         <font>
+          <pointsize>12</pointsize>
+          <weight>50</weight>
+          <bold>false</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>单体温度上限/℃</string>
+        </property>
+        <property name="buddy">
+         <cstring>lineEdit2_1</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="1">
+       <widget class="QLineEdit" name="lineEdit1_16">
+        <property name="minimumSize">
+         <size>
+          <width>120</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>100</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="0">
+       <widget class="QLabel" name="label1_54">
+        <property name="font">
+         <font>
+          <pointsize>12</pointsize>
+          <weight>50</weight>
+          <bold>false</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>标称总容量/kWh</string>
+        </property>
+        <property name="buddy">
+         <cstring>lineEdit2_1</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="1">
+       <widget class="QLineEdit" name="lineEdit1_25">
+        <property name="minimumSize">
+         <size>
+          <width>120</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>100</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+    <widget class="QGroupBox" name="groupBox">
+     <property name="geometry">
+      <rect>
+       <x>370</x>
+       <y>410</y>
+       <width>181</width>
+       <height>121</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>14</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="title">
+      <string>Current/A(CCS)</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_3">
+      <item>
+       <widget class="QLCDNumber" name="lcdNumber1_1">
+        <property name="styleSheet">
+         <string notr="true">background-color: rgb(211, 215, 207);</string>
+        </property>
+        <property name="digitCount">
+         <number>5</number>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+    <widget class="QWidget" name="layoutWidget_2">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>7</y>
+       <width>541</width>
+       <height>27</height>
+      </rect>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout_3">
+      <item>
+       <widget class="QLabel" name="label1_1">
+        <property name="font">
+         <font>
+          <pointsize>12</pointsize>
+          <weight>50</weight>
+          <bold>false</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>系统重启</string>
+        </property>
+        <property name="buddy">
+         <cstring>lineEdit2_2</cstring>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="pushButton1_3">
+        <property name="minimumSize">
+         <size>
+          <width>90</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="font">
+         <font>
+          <weight>50</weight>
+          <bold>false</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>Restart</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer_4">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
@@ -1838,7 +1042,7 @@
        </spacer>
       </item>
       <item>
-       <widget class="QLabel" name="label1_53">
+       <widget class="QLabel" name="label1_2">
         <property name="font">
          <font>
           <pointsize>12</pointsize>
@@ -1847,15 +1051,878 @@
          </font>
         </property>
         <property name="text">
-         <string>额定总电压/V</string>
+         <string>加载配置</string>
+        </property>
+        <property name="buddy">
+         <cstring>lineEdit2_2</cstring>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="pushButton1_1">
+        <property name="minimumSize">
+         <size>
+          <width>90</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="font">
+         <font>
+          <weight>50</weight>
+          <bold>false</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>Load</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer_5">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QLabel" name="label1_4">
+        <property name="font">
+         <font>
+          <pointsize>12</pointsize>
+          <weight>50</weight>
+          <bold>false</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>准备就绪</string>
+        </property>
+        <property name="buddy">
+         <cstring>lineEdit2_2</cstring>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="pushButton1_2">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>90</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="font">
+         <font>
+          <weight>50</weight>
+          <bold>false</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>Ready</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+    <widget class="QGroupBox" name="groupBox_6">
+     <property name="geometry">
+      <rect>
+       <x>870</x>
+       <y>440</y>
+       <width>271</width>
+       <height>211</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>12</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="title">
+      <string>Fault Injection</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_2">
+      <item row="1" column="0">
+       <widget class="QCheckBox" name="checkBox1_5">
+        <property name="text">
+         <string>BHM</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QCheckBox" name="checkBox1_8">
+        <property name="text">
+         <string>BRO(AA)</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="2">
+       <widget class="QCheckBox" name="checkBox1_9">
+        <property name="text">
+         <string>BCS</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QCheckBox" name="checkBox1_4">
+        <property name="text">
+         <string>BRM</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QCheckBox" name="checkBox1_7">
+        <property name="text">
+         <string>BRO(00)</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="2">
+       <widget class="QCheckBox" name="checkBox1_3">
+        <property name="text">
+         <string>BDC</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0">
+       <widget class="QCheckBox" name="checkBox1_6">
+        <property name="text">
+         <string>BCP</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1">
+       <widget class="QCheckBox" name="checkBox1_10">
+        <property name="text">
+         <string>BCL</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="0">
+       <widget class="QCheckBox" name="checkBox1_11">
+        <property name="text">
+         <string>BST</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="1">
+       <widget class="QCheckBox" name="checkBox1_12">
+        <property name="text">
+         <string>BSD</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0" colspan="2">
+       <widget class="QCheckBox" name="checkBox1_18">
+        <property name="styleSheet">
+         <string notr="true">QCheckBox#checkBox1_18 {color:red}</string>
+        </property>
+        <property name="text">
+         <string>Fault Activation</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+    <widget class="QGroupBox" name="groupBox_8">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>270</y>
+       <width>541</width>
+       <height>110</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>12</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="title">
+      <string>BRM Message(车辆辨识阶段)</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_2">
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_4">
+        <item>
+         <widget class="QLabel" name="label1_50">
+          <property name="font">
+           <font>
+            <pointsize>12</pointsize>
+            <weight>50</weight>
+            <bold>false</bold>
+           </font>
+          </property>
+          <property name="text">
+           <string>电池类型</string>
+          </property>
+          <property name="buddy">
+           <cstring>lineEdit2_1</cstring>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="horizontalSpacer_3">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <widget class="QComboBox" name="comboBox1_1">
+          <item>
+           <property name="text">
+            <string>01: 铅酸电池</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>02: 镍氢电池</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>03: 磷酸铁锂电池</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>04: 锰酸锂电池</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>05: 钴酸锂电池</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>06: 三元材料电池</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>07: 聚合物锂离子电池</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>08: 钛酸锂电池</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>FF: 其他电池</string>
+           </property>
+          </item>
+         </widget>
+        </item>
+        <item>
+         <spacer name="horizontalSpacer_2">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <widget class="QLabel" name="label1_51">
+          <property name="font">
+           <font>
+            <pointsize>12</pointsize>
+            <weight>50</weight>
+            <bold>false</bold>
+           </font>
+          </property>
+          <property name="text">
+           <string>版本信息</string>
+          </property>
+          <property name="buddy">
+           <cstring>lineEdit2_1</cstring>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QComboBox" name="comboBox1_2">
+          <item>
+           <property name="text">
+            <string>1.10 2015国标</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>1.00 2010旧标</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>1.12 2019试行</string>
+           </property>
+          </item>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_5">
+        <item>
+         <widget class="QLabel" name="label1_52">
+          <property name="font">
+           <font>
+            <pointsize>12</pointsize>
+            <weight>50</weight>
+            <bold>false</bold>
+           </font>
+          </property>
+          <property name="text">
+           <string>额定容量/Ah</string>
+          </property>
+          <property name="buddy">
+           <cstring>lineEdit2_1</cstring>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="lineEdit1_23">
+          <property name="maximumSize">
+           <size>
+            <width>100</width>
+            <height>16777215</height>
+           </size>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="horizontalSpacer">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <widget class="QLabel" name="label1_53">
+          <property name="font">
+           <font>
+            <pointsize>12</pointsize>
+            <weight>50</weight>
+            <bold>false</bold>
+           </font>
+          </property>
+          <property name="text">
+           <string>额定总电压/V</string>
+          </property>
+          <property name="buddy">
+           <cstring>lineEdit2_1</cstring>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="lineEdit1_24">
+          <property name="maximumSize">
+           <size>
+            <width>100</width>
+            <height>16777215</height>
+           </size>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+    <widget class="QWidget" name="layoutWidget_3">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>40</y>
+       <width>541</width>
+       <height>192</height>
+      </rect>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout_2">
+      <item>
+       <widget class="QGroupBox" name="groupBox1_1">
+        <property name="font">
+         <font>
+          <pointsize>12</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="title">
+         <string>BCL Message(正式充电阶段)</string>
+        </property>
+        <layout class="QFormLayout" name="formLayout">
+         <item row="0" column="0">
+          <widget class="QLabel" name="label1_8">
+           <property name="font">
+            <font>
+             <pointsize>12</pointsize>
+             <weight>50</weight>
+             <bold>false</bold>
+            </font>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">QLabel#label1_8 {color:red}</string>
+           </property>
+           <property name="text">
+            <string>充电需求电流/A</string>
+           </property>
+           <property name="buddy">
+            <cstring>lineEdit2_2</cstring>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QLineEdit" name="lineEdit1_1">
+           <property name="maximumSize">
+            <size>
+             <width>100</width>
+             <height>16777215</height>
+            </size>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="label1_7">
+           <property name="font">
+            <font>
+             <pointsize>12</pointsize>
+             <weight>50</weight>
+             <bold>false</bold>
+            </font>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">QLabel#label1_7 {color:red}</string>
+           </property>
+           <property name="text">
+            <string>充电需求电压/V</string>
+           </property>
+           <property name="buddy">
+            <cstring>lineEdit2_1</cstring>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QLineEdit" name="lineEdit1_2">
+           <property name="maximumSize">
+            <size>
+             <width>100</width>
+             <height>16777215</height>
+            </size>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="0">
+          <widget class="QLabel" name="label1_15">
+           <property name="font">
+            <font>
+             <pointsize>12</pointsize>
+             <weight>50</weight>
+             <bold>false</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string>放电允许电流/A</string>
+           </property>
+           <property name="buddy">
+            <cstring>lineEdit2_2</cstring>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="1">
+          <widget class="QLineEdit" name="lineEdit1_8">
+           <property name="maximumSize">
+            <size>
+             <width>100</width>
+             <height>16777215</height>
+            </size>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="0">
+          <widget class="QLabel" name="label1_16">
+           <property name="font">
+            <font>
+             <pointsize>12</pointsize>
+             <weight>50</weight>
+             <bold>false</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string>放电允许电压/V</string>
+           </property>
+           <property name="buddy">
+            <cstring>lineEdit2_1</cstring>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="1">
+          <widget class="QLineEdit" name="lineEdit1_9">
+           <property name="maximumSize">
+            <size>
+             <width>100</width>
+             <height>16777215</height>
+            </size>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item>
+       <widget class="QGroupBox" name="groupBox1_2">
+        <property name="font">
+         <font>
+          <pointsize>12</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="title">
+         <string>Default Setting</string>
+        </property>
+        <layout class="QFormLayout" name="formLayout_2">
+         <item row="1" column="0">
+          <widget class="QLabel" name="label1_55">
+           <property name="font">
+            <font>
+             <pointsize>12</pointsize>
+             <weight>50</weight>
+             <bold>false</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string>BCL运行模式</string>
+           </property>
+           <property name="buddy">
+            <cstring>lineEdit2_1</cstring>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QComboBox" name="comboBox1_3">
+           <item>
+            <property name="text">
+             <string>02 恒流充电</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>01 恒压充电</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>03 恒流放电</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+         <item row="4" column="0">
+          <widget class="QLabel" name="label1_14">
+           <property name="font">
+            <font>
+             <pointsize>12</pointsize>
+             <weight>50</weight>
+             <bold>false</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string>BRO准备时间 /S</string>
+           </property>
+           <property name="buddy">
+            <cstring>lineEdit2_2</cstring>
+           </property>
+          </widget>
+         </item>
+         <item row="4" column="1">
+          <widget class="QLineEdit" name="lineEdit1_7">
+           <property name="maximumSize">
+            <size>
+             <width>100</width>
+             <height>16777215</height>
+            </size>
+           </property>
+          </widget>
+         </item>
+         <item row="5" column="0">
+          <widget class="QLabel" name="label1_10">
+           <property name="font">
+            <font>
+             <pointsize>12</pointsize>
+             <weight>50</weight>
+             <bold>false</bold>
+            </font>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">QLabel#label1_10 {color:red}</string>
+           </property>
+           <property name="text">
+            <string>BHM绝缘电压 /V</string>
+           </property>
+           <property name="buddy">
+            <cstring>lineEdit2_1</cstring>
+           </property>
+          </widget>
+         </item>
+         <item row="5" column="1">
+          <widget class="QLineEdit" name="lineEdit1_4">
+           <property name="maximumSize">
+            <size>
+             <width>100</width>
+             <height>16777215</height>
+            </size>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="0">
+          <widget class="QLabel" name="label1_61">
+           <property name="font">
+            <font>
+             <pointsize>12</pointsize>
+             <weight>50</weight>
+             <bold>false</bold>
+            </font>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">QLabel#label1_61 {color:red}</string>
+           </property>
+           <property name="text">
+            <string>USBCAN通道</string>
+           </property>
+           <property name="buddy">
+            <cstring>lineEdit2_2</cstring>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QComboBox" name="comboBox1_4">
+           <item>
+            <property name="text">
+             <string>CAN2</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>CAN1</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+    <widget class="QGroupBox" name="groupBox1_4">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>550</y>
+       <width>141</width>
+       <height>101</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="title">
+      <string>Mode Switch</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout">
+      <item>
+       <widget class="QCheckBox" name="checkBox1_2">
+        <property name="font">
+         <font>
+          <weight>50</weight>
+          <bold>false</bold>
+         </font>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QCheckBox#checkBox1_2 {color:red}</string>
+        </property>
+        <property name="text">
+         <string>常规模式</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label1_48">
+        <property name="font">
+         <font>
+          <pointsize>12</pointsize>
+          <weight>50</weight>
+          <bold>false</bold>
+         </font>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QLabel#label1_48 {color:blue}</string>
+        </property>
+        <property name="text">
+         <string>DIsconnnet</string>
         </property>
         <property name="buddy">
          <cstring>lineEdit2_1</cstring>
         </property>
        </widget>
       </item>
-      <item>
-       <widget class="QLineEdit" name="lineEdit1_24">
+     </layout>
+    </widget>
+    <widget class="QGroupBox" name="groupBox_7">
+     <property name="geometry">
+      <rect>
+       <x>870</x>
+       <y>0</y>
+       <width>274</width>
+       <height>172</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>12</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="title">
+      <string>BSD Message(结束阶段)</string>
+     </property>
+     <layout class="QFormLayout" name="formLayout_6">
+      <item row="0" column="0">
+       <widget class="QLabel" name="label1_44">
+        <property name="font">
+         <font>
+          <pointsize>12</pointsize>
+          <weight>50</weight>
+          <bold>false</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>单体最高电压/0.01V</string>
+        </property>
+        <property name="buddy">
+         <cstring>lineEdit2_1</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QLineEdit" name="lineEdit1_18">
+        <property name="maximumSize">
+         <size>
+          <width>100</width>
+          <height>16777215</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="label1_45">
+        <property name="font">
+         <font>
+          <pointsize>12</pointsize>
+          <weight>50</weight>
+          <bold>false</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>单体最低电压/0.01V</string>
+        </property>
+        <property name="buddy">
+         <cstring>lineEdit2_1</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QLineEdit" name="lineEdit1_19">
+        <property name="maximumSize">
+         <size>
+          <width>100</width>
+          <height>16777215</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="label1_46">
+        <property name="font">
+         <font>
+          <pointsize>12</pointsize>
+          <weight>50</weight>
+          <bold>false</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>单体最高温度/℃</string>
+        </property>
+        <property name="buddy">
+         <cstring>lineEdit2_1</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QLineEdit" name="lineEdit1_20">
+        <property name="maximumSize">
+         <size>
+          <width>100</width>
+          <height>16777215</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="label1_47">
+        <property name="font">
+         <font>
+          <pointsize>12</pointsize>
+          <weight>50</weight>
+          <bold>false</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>单体最低温度/℃</string>
+        </property>
+        <property name="buddy">
+         <cstring>lineEdit2_1</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1">
+       <widget class="QLineEdit" name="lineEdit1_21">
         <property name="maximumSize">
          <size>
           <width>100</width>
@@ -1865,391 +1932,591 @@
        </widget>
       </item>
      </layout>
-    </item>
-   </layout>
-  </widget>
-  <widget class="QGroupBox" name="groupBox_9">
-   <property name="geometry">
-    <rect>
-     <x>890</x>
-     <y>200</y>
-     <width>273</width>
-     <height>247</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>12</pointsize>
-     <weight>75</weight>
-     <bold>true</bold>
-    </font>
-   </property>
-   <property name="title">
-    <string>BSM Message(正式充电阶段)</string>
-   </property>
-   <layout class="QGridLayout" name="gridLayout_3">
-    <item row="0" column="0">
-     <widget class="QLabel" name="label1_9">
-      <property name="font">
-       <font>
-        <pointsize>12</pointsize>
-        <weight>50</weight>
-        <bold>false</bold>
-       </font>
-      </property>
-      <property name="text">
-       <string>单体最高温度/℃</string>
-      </property>
-      <property name="buddy">
-       <cstring>lineEdit2_1</cstring>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="1">
-     <widget class="QLineEdit" name="lineEdit1_3">
-      <property name="maximumSize">
-       <size>
-        <width>100</width>
-        <height>16777215</height>
-       </size>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="0">
-     <widget class="QLabel" name="label1_58">
-      <property name="font">
-       <font>
-        <pointsize>12</pointsize>
-        <weight>50</weight>
-        <bold>false</bold>
-       </font>
-      </property>
-      <property name="text">
-       <string>最高温度编号(≤128)</string>
-      </property>
-      <property name="buddy">
-       <cstring>lineEdit2_1</cstring>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="1">
-     <widget class="QLineEdit" name="lineEdit1_28">
-      <property name="maximumSize">
-       <size>
-        <width>100</width>
-        <height>16777215</height>
-       </size>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="0">
-     <widget class="QLabel" name="label1_63">
-      <property name="font">
-       <font>
-        <pointsize>12</pointsize>
-        <weight>50</weight>
-        <bold>false</bold>
-       </font>
-      </property>
-      <property name="text">
-       <string>单体最低温度/℃</string>
-      </property>
-      <property name="buddy">
-       <cstring>lineEdit2_1</cstring>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="1">
-     <widget class="QLineEdit" name="lineEdit1_31">
-      <property name="maximumSize">
-       <size>
-        <width>100</width>
-        <height>16777215</height>
-       </size>
-      </property>
-     </widget>
-    </item>
-    <item row="3" column="0">
-     <widget class="QCheckBox" name="checkBox1_13">
-      <property name="text">
-       <string>连接器异常</string>
-      </property>
-     </widget>
-    </item>
-    <item row="3" column="1">
-     <widget class="QCheckBox" name="checkBox1_14">
-      <property name="text">
-       <string>绝缘异常</string>
-      </property>
-     </widget>
-    </item>
-    <item row="4" column="0">
-     <widget class="QCheckBox" name="checkBox1_1">
-      <property name="font">
-       <font>
-        <weight>75</weight>
-        <bold>true</bold>
-       </font>
-      </property>
-      <property name="text">
-       <string>允许放电</string>
-      </property>
-      <property name="checkable">
-       <bool>true</bool>
-      </property>
-      <property name="checked">
-       <bool>false</bool>
-      </property>
-     </widget>
-    </item>
-    <item row="4" column="1">
-     <widget class="QCheckBox" name="checkBox1_17">
-      <property name="font">
-       <font>
-        <weight>75</weight>
-        <bold>true</bold>
-       </font>
-      </property>
-      <property name="styleSheet">
-       <string notr="true"/>
-      </property>
-      <property name="text">
-       <string>允许充电</string>
-      </property>
-      <property name="checkable">
-       <bool>true</bool>
-      </property>
-      <property name="checked">
-       <bool>false</bool>
-      </property>
-     </widget>
-    </item>
-    <item row="5" column="0">
-     <widget class="QCheckBox" name="checkBox1_16">
-      <property name="text">
-       <string>SOC过高</string>
-      </property>
-     </widget>
-    </item>
-    <item row="5" column="1">
-     <widget class="QCheckBox" name="checkBox1_15">
-      <property name="font">
-       <font>
-        <weight>75</weight>
-        <bold>true</bold>
-       </font>
-      </property>
-      <property name="text">
-       <string>SOC过低</string>
-      </property>
-     </widget>
-    </item>
-   </layout>
-  </widget>
-  <widget class="QGroupBox" name="groupBox_10">
-   <property name="geometry">
-    <rect>
-     <x>580</x>
-     <y>540</y>
-     <width>257</width>
-     <height>136</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>12</pointsize>
-     <weight>75</weight>
-     <bold>true</bold>
-    </font>
-   </property>
-   <property name="title">
-    <string>BDC Message(车桩交互阶段)</string>
-   </property>
-   <layout class="QFormLayout" name="formLayout_9">
-    <item row="0" column="0">
-     <widget class="QLabel" name="label1_38">
-      <property name="font">
-       <font>
-        <pointsize>12</pointsize>
-        <weight>50</weight>
-        <bold>false</bold>
-       </font>
-      </property>
-      <property name="text">
-       <string>BDC续航里程/km</string>
-      </property>
-      <property name="buddy">
-       <cstring>lineEdit2_1</cstring>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="1">
-     <widget class="QLineEdit" name="lineEdit1_11">
-      <property name="maximumSize">
-       <size>
-        <width>100</width>
-        <height>16777215</height>
-       </size>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="0">
-     <widget class="QLabel" name="label1_56">
-      <property name="font">
-       <font>
-        <pointsize>12</pointsize>
-        <weight>50</weight>
-        <bold>false</bold>
-       </font>
-      </property>
-      <property name="text">
-       <string>参与V2G循环次数</string>
-      </property>
-      <property name="buddy">
-       <cstring>lineEdit2_1</cstring>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="1">
-     <widget class="QLineEdit" name="lineEdit1_26">
-      <property name="maximumSize">
-       <size>
-        <width>100</width>
-        <height>16777215</height>
-       </size>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="0">
-     <widget class="QLabel" name="label1_57">
-      <property name="font">
-       <font>
-        <pointsize>12</pointsize>
-        <weight>50</weight>
-        <bold>false</bold>
-       </font>
-      </property>
-      <property name="text">
-       <string>剩余V2G循环次数</string>
-      </property>
-      <property name="buddy">
-       <cstring>lineEdit2_1</cstring>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="1">
-     <widget class="QLineEdit" name="lineEdit1_27">
-      <property name="maximumSize">
-       <size>
-        <width>100</width>
-        <height>16777215</height>
-       </size>
-      </property>
-     </widget>
-    </item>
-   </layout>
-  </widget>
-  <widget class="QGroupBox" name="groupBox_11">
-   <property name="geometry">
-    <rect>
-     <x>580</x>
-     <y>440</y>
-     <width>260</width>
-     <height>106</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>12</pointsize>
-     <weight>75</weight>
-     <bold>true</bold>
-    </font>
-   </property>
-   <property name="title">
-    <string>BCSP Message(放电模式)</string>
-   </property>
-   <layout class="QFormLayout" name="formLayout_7">
-    <item row="0" column="0">
-     <widget class="QLabel" name="label1_59">
-      <property name="font">
-       <font>
-        <pointsize>12</pointsize>
-        <weight>50</weight>
-        <bold>false</bold>
-       </font>
-      </property>
-      <property name="text">
-       <string>剩余放电时间/min</string>
-      </property>
-      <property name="buddy">
-       <cstring>lineEdit2_1</cstring>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="1">
-     <widget class="QLineEdit" name="lineEdit1_29">
-      <property name="maximumSize">
-       <size>
-        <width>100</width>
-        <height>16777215</height>
-       </size>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="0">
-     <widget class="QLabel" name="label1_60">
-      <property name="font">
-       <font>
-        <pointsize>12</pointsize>
-        <weight>50</weight>
-        <bold>false</bold>
-       </font>
-      </property>
-      <property name="text">
-       <string>剩余续航里程/km</string>
-      </property>
-      <property name="buddy">
-       <cstring>lineEdit2_1</cstring>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="1">
-     <widget class="QLineEdit" name="lineEdit1_30">
-      <property name="maximumSize">
-       <size>
-        <width>100</width>
-        <height>16777215</height>
-       </size>
-      </property>
-     </widget>
-    </item>
-   </layout>
-  </widget>
-  <widget class="QLabel" name="label1_62">
-   <property name="geometry">
-    <rect>
-     <x>30</x>
-     <y>0</y>
-     <width>101</width>
-     <height>25</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>12</pointsize>
-     <weight>75</weight>
-     <bold>true</bold>
-    </font>
-   </property>
-   <property name="styleSheet">
-    <string notr="true">QLabel#label1_48 {color:blue}</string>
-   </property>
-   <property name="text">
-    <string>Version: v2.1</string>
-   </property>
-   <property name="buddy">
-    <cstring>lineEdit2_1</cstring>
-   </property>
+    </widget>
+    <widget class="QGroupBox" name="groupBox_5">
+     <property name="geometry">
+      <rect>
+       <x>560</x>
+       <y>240</y>
+       <width>296</width>
+       <height>172</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>12</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="title">
+      <string>BCS Message(正式充电阶段)</string>
+     </property>
+     <layout class="QFormLayout" name="formLayout_5">
+      <item row="0" column="0">
+       <widget class="QLabel" name="label1_39">
+        <property name="font">
+         <font>
+          <pointsize>12</pointsize>
+          <weight>50</weight>
+          <bold>false</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>剩余充电时间/min</string>
+        </property>
+        <property name="buddy">
+         <cstring>lineEdit2_1</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QLineEdit" name="lineEdit1_12">
+        <property name="maximumSize">
+         <size>
+          <width>100</width>
+          <height>16777215</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="label1_36">
+        <property name="font">
+         <font>
+          <pointsize>12</pointsize>
+          <weight>50</weight>
+          <bold>false</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>单体最高/低电压/0.01V</string>
+        </property>
+        <property name="buddy">
+         <cstring>lineEdit2_1</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QLineEdit" name="lineEdit1_10">
+        <property name="maximumSize">
+         <size>
+          <width>100</width>
+          <height>16777215</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="label1_49">
+        <property name="font">
+         <font>
+          <pointsize>12</pointsize>
+          <weight>50</weight>
+          <bold>false</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>对应单体组号(≤15)</string>
+        </property>
+        <property name="buddy">
+         <cstring>lineEdit2_1</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QLineEdit" name="lineEdit1_22">
+        <property name="maximumSize">
+         <size>
+          <width>100</width>
+          <height>16777215</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="label1_37">
+        <property name="font">
+         <font>
+          <pointsize>12</pointsize>
+          <weight>50</weight>
+          <bold>false</bold>
+         </font>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QLabel#label1_37 {color:red}</string>
+        </property>
+        <property name="text">
+         <string>荷电状态SOC/%</string>
+        </property>
+        <property name="buddy">
+         <cstring>lineEdit2_1</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1">
+       <widget class="QLineEdit" name="lineEdit1_17">
+        <property name="maximumSize">
+         <size>
+          <width>100</width>
+          <height>16777215</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+    <widget class="QGroupBox" name="groupBox_9">
+     <property name="geometry">
+      <rect>
+       <x>870</x>
+       <y>180</y>
+       <width>273</width>
+       <height>247</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>12</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="title">
+      <string>BSM Message(正式充电阶段)</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_3">
+      <item row="0" column="0">
+       <widget class="QLabel" name="label1_9">
+        <property name="font">
+         <font>
+          <pointsize>12</pointsize>
+          <weight>50</weight>
+          <bold>false</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>单体最高温度/℃</string>
+        </property>
+        <property name="buddy">
+         <cstring>lineEdit2_1</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QLineEdit" name="lineEdit1_3">
+        <property name="maximumSize">
+         <size>
+          <width>100</width>
+          <height>16777215</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="label1_58">
+        <property name="font">
+         <font>
+          <pointsize>12</pointsize>
+          <weight>50</weight>
+          <bold>false</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>最高温度编号(≤128)</string>
+        </property>
+        <property name="buddy">
+         <cstring>lineEdit2_1</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QLineEdit" name="lineEdit1_28">
+        <property name="maximumSize">
+         <size>
+          <width>100</width>
+          <height>16777215</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="label1_63">
+        <property name="font">
+         <font>
+          <pointsize>12</pointsize>
+          <weight>50</weight>
+          <bold>false</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>单体最低温度/℃</string>
+        </property>
+        <property name="buddy">
+         <cstring>lineEdit2_1</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QLineEdit" name="lineEdit1_31">
+        <property name="maximumSize">
+         <size>
+          <width>100</width>
+          <height>16777215</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0">
+       <widget class="QCheckBox" name="checkBox1_13">
+        <property name="text">
+         <string>连接器异常</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1">
+       <widget class="QCheckBox" name="checkBox1_14">
+        <property name="text">
+         <string>绝缘异常</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="0">
+       <widget class="QCheckBox" name="checkBox1_1">
+        <property name="font">
+         <font>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>允许放电</string>
+        </property>
+        <property name="checkable">
+         <bool>true</bool>
+        </property>
+        <property name="checked">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="1">
+       <widget class="QCheckBox" name="checkBox1_17">
+        <property name="font">
+         <font>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="styleSheet">
+         <string notr="true"/>
+        </property>
+        <property name="text">
+         <string>允许充电</string>
+        </property>
+        <property name="checkable">
+         <bool>true</bool>
+        </property>
+        <property name="checked">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="0">
+       <widget class="QCheckBox" name="checkBox1_16">
+        <property name="text">
+         <string>SOC过高</string>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="1">
+       <widget class="QCheckBox" name="checkBox1_15">
+        <property name="font">
+         <font>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>SOC过低</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </widget>
+   <widget class="QWidget" name="tab_2">
+    <attribute name="title">
+     <string>Fault Injection</string>
+    </attribute>
+    <widget class="QGroupBox" name="groupBox_12">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>10</y>
+       <width>631</width>
+       <height>201</height>
+      </rect>
+     </property>
+     <property name="title">
+      <string>BST Message(结束阶段)</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_4">
+      <item row="1" column="0">
+       <widget class="QCheckBox" name="checkBox2_2">
+        <property name="text">
+         <string>总电压达设置值</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0">
+       <widget class="QCheckBox" name="checkBox2_4">
+        <property name="text">
+         <string>充电机主动中止</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QCheckBox" name="checkBox2_1">
+        <property name="text">
+         <string>SOC达目标值</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1">
+       <widget class="QCheckBox" name="checkBox2_8">
+        <property name="text">
+         <string>连接器故障</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QCheckBox" name="checkBox2_5">
+        <property name="text">
+         <string>绝缘故障</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="2">
+       <widget class="QCheckBox" name="checkBox2_9">
+        <property name="text">
+         <string>电池组过温</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QCheckBox" name="checkBox2_7">
+        <property name="text">
+         <string>BMS元件过温</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QCheckBox" name="checkBox2_6">
+        <property name="text">
+         <string>连接器过温故障</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QCheckBox" name="checkBox2_3">
+        <property name="text">
+         <string>单体电压达设置值</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="3">
+       <widget class="QCheckBox" name="checkBox2_13">
+        <property name="text">
+         <string>电流过大</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="2">
+       <widget class="QCheckBox" name="checkBox2_10">
+        <property name="text">
+         <string>高压继电器故障</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="2">
+       <widget class="QCheckBox" name="checkBox2_11">
+        <property name="text">
+         <string>检测点2电压异常</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="2">
+       <widget class="QCheckBox" name="checkBox2_12">
+        <property name="text">
+         <string>其他故障</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="3">
+       <widget class="QCheckBox" name="checkBox2_14">
+        <property name="text">
+         <string>电压异常</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="3">
+       <widget class="QPushButton" name="pushButton2_1">
+        <property name="font">
+         <font>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>请点击结束按钮</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+    <widget class="QGroupBox" name="groupBox_13">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>220</y>
+       <width>281</width>
+       <height>131</height>
+      </rect>
+     </property>
+     <property name="title">
+      <string>BSM Message(正式充电阶段)</string>
+     </property>
+     <layout class="QFormLayout" name="formLayout_8">
+      <item row="2" column="0">
+       <widget class="QCheckBox" name="checkBox2_17">
+        <property name="text">
+         <string>电流过流</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QCheckBox" name="checkBox2_15">
+        <property name="text">
+         <string>单体电压过高</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QCheckBox" name="checkBox2_16">
+        <property name="text">
+         <string>单体电压过低</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QCheckBox" name="checkBox2_18">
+        <property name="text">
+         <string>电流不可信</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0">
+       <widget class="QCheckBox" name="checkBox2_19">
+        <property name="text">
+         <string>电池温度过高</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1">
+       <widget class="QCheckBox" name="checkBox2_20">
+        <property name="text">
+         <string>电池温度不可信</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+    <widget class="QGroupBox" name="groupBox_14">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>360</y>
+       <width>261</width>
+       <height>211</height>
+      </rect>
+     </property>
+     <property name="title">
+      <string>BEM Message(超时重连过程)</string>
+     </property>
+     <layout class="QFormLayout" name="formLayout_10">
+      <item row="0" column="0">
+       <widget class="QCheckBox" name="checkBox2_21">
+        <property name="text">
+         <string>CRM(00)超时</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QCheckBox" name="checkBox2_22">
+        <property name="text">
+         <string>CRM(AA)超时</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QCheckBox" name="checkBox2_23">
+        <property name="text">
+         <string>CML超时</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QCheckBox" name="checkBox2_24">
+        <property name="text">
+         <string>CRO超时</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QCheckBox" name="checkBox2_25">
+        <property name="text">
+         <string>CCS超时</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QCheckBox" name="checkBox2_26">
+        <property name="text">
+         <string>CST超时</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0">
+       <widget class="QCheckBox" name="checkBox2_27">
+        <property name="text">
+         <string>CSD超时</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1">
+       <widget class="QCheckBox" name="checkBox2_28">
+        <property name="text">
+         <string>其他类超时</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="1">
+       <widget class="QPushButton" name="pushButton2_2">
+        <property name="font">
+         <font>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>请点击触发按钮</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </widget>
   </widget>
  </widget>
  <layoutdefault spacing="6" margin="11"/>

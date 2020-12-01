@@ -158,6 +158,11 @@ sentframe::sentframe(QObject *parent) : QObject(parent)
     MSG_BSD.Long_sign = 0;
     MSG_BSD.cycle_time = 250;
     MSG_BSD.len = 1;
+    // BEM frame
+    MSG_BEM.car_frame = & Widget::_BEM[0];
+    MSG_BEM.Long_sign = 0;
+    MSG_BEM.cycle_time = 250;
+    MSG_BEM.len = 1;
 }
 
 void sentframe::Initalize()
@@ -255,7 +260,7 @@ void sentframe::tx_thread(Action eve_act)
         tx_frame(MSG_BCS);
         break;
     case Busleep:
-        msleep(500);
+          // 总线休眠, 原先设置500ms会关闭总线, 与故障注入功能相关
         break;
     case BDC:
         tx_frame(MSG_BDC);

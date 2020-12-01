@@ -62,6 +62,7 @@ public:
     static VCI_CAN_OBJ _BCSP[1];                // BCSP Frame Data
     static VCI_CAN_OBJ _BST[1];                 // BST Frame Data
     static VCI_CAN_OBJ _BSD[1];                 // BSD Frame Data
+    static VCI_CAN_OBJ _BEM[1];                 // BEM Frame Data
     static int Ready_time_ms;
     static bool transFree;                      // CAN transmit Bus free
     static bool V2G_Mode_Flag;                  // V2G mode : flag = true
@@ -137,6 +138,22 @@ private slots:
     void on_checkBox1_17_clicked();
 
     void on_checkBox1_1_clicked();
+
+    void on_pushButton2_1_clicked();
+
+    void on_pushButton2_2_clicked();
+
+    void on_checkBox2_15_clicked();
+
+    void on_checkBox2_16_clicked();
+
+    void on_checkBox2_17_clicked();
+
+    void on_checkBox2_18_clicked();
+
+    void on_checkBox2_19_clicked();
+
+    void on_checkBox2_20_clicked();
 
 private:
     Ui::Widget *ui;
