@@ -1194,14 +1194,14 @@ void Widget::on_checkBox1_9_stateChanged(int arg1)
 {
     if(arg1==0x02)
     {
-        _BCS->ID = 0x00000000;
-//        stateMachine.transform[19].action = Busleep;    // BCS报文超时故障注入
-//        stateMachine.transform[25].action = Busleep;
+//        _BCS->ID = 0x00000000;
+        stateMachine.transform[19].action = N_A;    // BCS报文超时故障注入
+        stateMachine.transform[25].action = N_A;
     }
     else {
-        _BCS->ID =0x1CEB56F4;
-//        stateMachine.transform[19].action = BCS;
-//        stateMachine.transform[25].action = BCS;
+//        _BCS->ID =0x1CEB56F4;
+        stateMachine.transform[19].action = BCS;
+        stateMachine.transform[25].action = BCS;
     }
 }
 
@@ -1607,7 +1607,30 @@ void Widget::on_pushButton2_2_clicked()
         _BEM->Data[2] &= (~0x01);
     }
     // CST超时
-
+    if (ui->checkBox2_26->isChecked())
+    {
+        _BEM->Data[2] |= (0x01<<2);
+    }
+    else {
+        _BEM->Data[2] &= (~(0x01<<2));
+    }
+    // CSD超时
+    if (ui->checkBox2_27->isChecked())
+    {
+        _BEM->Data[3] |= 0x01;
+    }
+    else {
+        _BEM->Data[3] &= (~0x01);
+    }
+    // 其他超时
+    if (ui->checkBox2_28->isChecked())
+    {
+        _BEM->Data[3] |= (0x01<<2);
+    }
+    else {
+        _BEM->Data[3] &= (~(0x01<<2));
+    }
+    runStateMachine(Null_6);
 }
 
 void Widget::on_checkBox2_15_clicked()
