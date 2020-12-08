@@ -269,6 +269,10 @@ void sentframe::tx_thread(Action eve_act)
         tx_frame(MSG_BDC_init);
         _BaseTimer->start(MSG_BDC_init.cycle_time);
         break;
+    case BEM:
+        tx_frame(MSG_BEM);
+        _BaseTimer->start(MSG_BEM.cycle_time);
+        break;
     default:
         break;
     }
@@ -314,6 +318,15 @@ void sentframe::Loop_Send_Msg()// Priodic message
         break;
     case S1:
         tx_frame(MSG_BSD);
+        break;
+    case T1:
+        tx_frame(MSG_BEM);
+        break;
+    case T2:
+        tx_frame(MSG_BEM);
+        break;
+    case T3:
+        tx_frame(MSG_BEM);
         break;
     default:
         break;

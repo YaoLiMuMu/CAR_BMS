@@ -233,6 +233,7 @@ typedef enum{
     BEM_CCS = 24,
     Busleep = 25,
     N_A = 26,
+    BEM,
 } Action;
 
 typedef struct {

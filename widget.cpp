@@ -25,7 +25,7 @@ StateTransform stateTran[] = {
         {R2, CCD_00, P1, BCL},
         {P1, BCS_ACK, P1, BCS},
         {P1, CCD_01, P2, BCLP},
-        {P1, Null_6, T1, BEM_CCS},
+        {P1, Null_6, T1, BEM}, //BEM_CCS
         {P1, Null_7, T1, BEM_CCD},
         {P1, CST, E1, BST},
         {P1, Kill_Button, E1, BST},
