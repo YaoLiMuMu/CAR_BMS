@@ -46,7 +46,7 @@ void proceesframe::rx_thread()
         {0x181DF456, CSD, 0xff, nullptr, 1},
         {0x081FF456, CEM, 0xff, nullptr, 1},
     };
-    int rece_Tab_num = 23;
+    int rece_Tab_num = 24;
     qDebug() << "RX_thread ID: " << QThread::currentThreadId();
     VCI_ClearBuffer(gDevType, gDevIdx, work_Channel);
     RX_CTX * ctx = (RX_CTX *)malloc(sizeof(RX_CTX));    // 结构体指针必须初始化
@@ -97,7 +97,7 @@ void proceesframe::rx_thread()
                         break;
                     }
                 }
-                ctx->error = ctx->error + check_point;
+                // ctx->error = ctx->error + check_point;
         }
         if (ctx->error > 256)
         {

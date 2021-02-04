@@ -48,6 +48,7 @@ StateTransform stateTran[] = {
         {C1, CST, E1, BST},
         {R0, CST, E1, BST},
         {E1, Kill_Button, S1, Busleep}
+        //{C1, CEM, H1, N_A}
     };// 该柔性数组不能在被调函数中声明赋值, 要不被调函数结束后会被回收, 则指向该数组的指针变为空指针
 unsigned gChMask = 0x03;
 unsigned work_Channel = 1;
@@ -86,7 +87,7 @@ Widget::Widget(QWidget *parent) :
     // Initial pSM;
     pSM = new StateMachine;
     stateMachine.state = V1;
-    stateMachine.transNum = 44;
+    stateMachine.transNum = 44;//44
     stateMachine.transform = stateTran;
     pSM = & stateMachine;
     Ready_time_ms = 30000; // BMS准备就绪30s
@@ -668,6 +669,11 @@ void Widget::runStateMachine(EventID evt)
         break;
         }
     }
+    if (evt == CEM)
+    {
+        pSM->state = H1;    // 收到CEM报文进入重连
+        qDebug() << "BSM Is Reconnecting Now...";
+    }
     if (pTrans == nullptr)
         {
             printf( "Current_State= %u Do not process event: %u\r\n", pSM->state, evt);
@@ -800,6 +806,7 @@ void Widget::on_pushButton1_1_clicked()
     {
         output = ui->lineEdit1_16->text();
         _BCP[1].Data[2] = uchar(processTemprature(output).at(0));   // 单体温度上限
+        qDebug() << "BCP highest Temprature is " << _BCP[1].Data[2];
     }
     if (!ui->lineEdit1_25->text().isEmpty())
     {
@@ -1140,9 +1147,11 @@ void Widget::on_checkBox1_5_stateChanged(int arg1)
     if(arg1==0x02)
     {
         stateMachine.transform[2].action = Busleep;     // BHM报文超时故障注入
+        stateMachine.transform[5].action = Busleep;
     }
     else {
         stateMachine.transform[2].action = BHM;
+        stateMachine.transform[5].action = BHM;
     }
 }
 
