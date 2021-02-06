@@ -3,11 +3,14 @@
 #include <controlcan.h>
 #include <proceesframe.h>
 #include <sentframe.h>
+#include "helpform.h"
 #include <QWidget>
 #include <QDebug>
 #include <QThread>
 #include <QMessageBox>
 #include <QTimer>
+#include <QSettings>
+#include <QShortcut>
 //***
 #ifdef WIN32 // for windows
 #   include <windows.h>
@@ -76,7 +79,7 @@ private slots:
     void on_pushButton1_1_clicked();            // function for loading Demand Voltage/Current setting
     QByteArray processVoltage(QString, int);    // transfer Voltages String to BMS Demand Voltage
     QByteArray processCurrent(QString, int);    // transfer Current String to BMS Demand Current
-    QByteArray processCurrentBCLP(QString, int);    // transfer Current String to BMS R若echanger Current
+    QByteArray processCurrentBCLP(QString, int);// transfer Current String to BMS R若echanger Current
     QByteArray processTemprature(QString);      // trnasfer Temprature String to BMS Tcell
     void UpdateCCS_CV(QByteArray);                 // update CCS voltage and current
     void UpdateCCD_01(QByteArray);
@@ -85,6 +88,9 @@ private slots:
     void UpdateCMLP_CV(QByteArray);
     void BMS_Ready();
     void BST_Timeout();
+    void SaveSetting();                         // Save configure file
+    void ImportConf();                          // import configuration
+    void RebootCAN();                           // reboot can and initalize
     void Changer_Vision(QByteArray);            // show Agreement Vision V1.10/V1.12
     void on_lineEdit1_6_textChanged(const QString &arg1);  // VIN Code Edit
     void Parser(EventID, QByteArray);           // analyze can data
@@ -171,6 +177,8 @@ private:
     QMap<QString, uchar> BMS_Version_Set;       // BMS协议版本
     QMap<QString, uchar> BCL_Mode_Flag;         // BCL 充电标识
     QMap<QString, uchar> USBCAN_ChFlag;         // usb_Can 通道标识
+    QString fileName;                           // 保存文件名
+    VCI_INIT_CONFIG config;                     // vci_init_config 配置信息
 };
 
 #endif // WIDGET_H

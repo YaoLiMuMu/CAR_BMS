@@ -30,7 +30,7 @@
    </property>
    <widget class="QWidget" name="tab">
     <attribute name="title">
-     <string>Version:2.2</string>
+     <string>Version:2.3.0</string>
     </attribute>
     <widget class="QGroupBox" name="groupBox_2">
      <property name="geometry">

@@ -30,17 +30,20 @@ SOURCES += \
         main.cpp \
         widget.cpp \
     proceesframe.cpp \
-    sentframe.cpp
+    sentframe.cpp \
+    helpform.cpp
 
 HEADERS += \
         widget.h \
     controlcan.h \
     controlcan.h \
     proceesframe.h \
-    sentframe.h
+    sentframe.h \
+    helpform.h
 
 FORMS += \
-        widget.ui
+        widget.ui \
+    helpform.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

@@ -476,7 +476,6 @@ Widget::Widget(QWidget *parent) :
         printf("VCI_OpenDevice succeeded\n");
         ui->label1_48->setText("Standby");
     // Initial configure Usb_Can
-    VCI_INIT_CONFIG config;
     config.AccCode = 0;
     config.AccMask = 0xffffffff;
     config.Filter = 1;  // 单滤波
@@ -518,6 +517,18 @@ Widget::Widget(QWidget *parent) :
     connect(Tthread,SIGNAL(finished()),Tthread,SLOT(deleteLater()));
     connect(pframe,SIGNAL(Send2UI(unsigned)),this,SLOT(CloseDev(unsigned)));      // CLOSE device for receive error
     connect(sframe,SIGNAL(Shoot_Error(unsigned)),this,SLOT(CloseDev(unsigned))); // ClOSE device for transmit error
+    // keybinding singal&slot function
+    helpform * helpwindow = new helpform;
+    QShortcut * HotkeyF1 = new QShortcut(QKeySequence(Qt::Key_F1), this);
+    connect(HotkeyF1, SIGNAL(activated()), helpwindow, SLOT(exec()));
+    fileName = QCoreApplication::applicationDirPath();
+    fileName+="/SaveInfo/bms_list.conf";
+    QShortcut * HotkeyF11 = new QShortcut(QKeySequence(Qt::Key_F11), this);
+    connect(HotkeyF11, SIGNAL(activated()), this, SLOT(SaveSetting()));
+    QShortcut * HotkeyF12 = new QShortcut(QKeySequence(Qt::Key_F12), this);
+    connect(HotkeyF12, SIGNAL(activated()), this, SLOT(ImportConf()));
+    QShortcut * HotkeyF5 = new QShortcut(QKeySequence(Qt::Key_F5), this);
+    connect(HotkeyF5, SIGNAL(activated()), this, SLOT(RebootCAN()));
     Fault_State_AUncheck();
 }
 
@@ -570,6 +581,69 @@ void Widget::UpdateCCS_CV(QByteArray CCS_Array)
         break;
     default:
         ui->label1_12->setText("F");
+    }
+}
+
+void Widget::SaveSetting()
+{
+    // genrate application configure file
+    QSettings settings(fileName, QSettings::NativeFormat);
+    settings.setValue("BCL/charging voltage", ui->lineEdit1_2->text());
+    settings.setValue("BCL/charging current", ui->lineEdit1_1->text());
+    settings.setValue("BHM/max voltage", ui->lineEdit1_4->text());
+    settings.setValue("BCP/start voltage", ui->lineEdit1_5->text());
+    settings.setValue("BCS/SOC", ui->lineEdit1_17->text());
+    settings.setValue("workmode", ui->checkBox1_2->isChecked());
+    settings.setValue("USBCAN/channel", ui->comboBox1_4->currentIndex());
+    settings.setValue("BRM/vin code", ui->lineEdit1_6->text());
+    QMessageBox::information(this,"Warning","Save setting successfully");
+}
+
+void Widget::ImportConf()
+{
+    QSettings settings(fileName, QSettings::NativeFormat);
+    ui->lineEdit1_2->setText(settings.value("BCL/charging voltage").toString());
+    ui->lineEdit1_1->setText(settings.value("BCL/charging current").toString());
+    ui->lineEdit1_4->setText(settings.value("BHM/max voltage").toString());
+    ui->lineEdit1_5->setText(settings.value("BCP/start voltage").toString());
+    ui->lineEdit1_17->setText(settings.value("BCS/SOC").toString());
+    if (settings.value("workmode").toBool())
+    {
+        ui->checkBox1_2->setCheckState(Qt::Checked);
+    }
+    ui->comboBox1_4->setCurrentIndex(settings.value("USBCAN/channel").toInt());
+    ui->lineEdit1_6->setText(settings.value("BRM/vin code").toString());
+    QMessageBox::information(this,"Warning","Import configuration successfully");
+    on_pushButton1_1_clicked();             // Load configuration
+}
+
+void Widget::RebootCAN()
+{
+    VCI_CloseDevice(gDevType, gDevIdx);
+    if (!VCI_OpenDevice(gDevType, gDevIdx, 0)) {
+        printf("VCI_OpenDevice failed\n");
+        ui->label1_48->setText("Disconnect");
+        return;
+    }
+        printf("VCI_OpenDevice succeeded\n");
+        ui->label1_48->setText("Standby");
+    for (uint i = 0; i < MAX_CHANNELS; i++)
+    {
+        if ((gChMask & (1 << i)) == 0) continue;
+
+        if (!VCI_InitCAN(gDevType, gDevIdx, i, &config))
+        {
+            printf("VCI_InitCAN(%d) failed\n", i);
+            return;
+        }
+        printf("VCI_InitCAN(%d) succeeded\n", i);
+
+        if (!VCI_StartCAN(gDevType, gDevIdx, i))
+        {
+            printf("VCI_StartCAN(%d) failed\n", i);
+            return;
+        }
+        printf("VCI_StartCAN(%d) succeeded\n", i);
     }
 }
 
