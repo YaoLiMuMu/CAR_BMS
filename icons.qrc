@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file>windmill.png</file>
+    </qresource>
+    <qresource prefix="/n"/>
+</RCC>

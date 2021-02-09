@@ -97,6 +97,15 @@ private slots:
     void Charger_Info_init();                   // 充电机参数信息界面初始化
     void Fault_State_ACheck();                    // 故障注入所有点初始禁用
     void Fault_State_AUncheck();                  // 故障注入所有电初始使能
+    /*!***************************************************
+     * Description: BCS voltage & current initlize
+     * @param mode fault mode lock
+     * @return void
+     * @note when BMS reconnect and precharge
+     * @date 2021,02,06
+     * @author YaoLi
+     ****************************************************/
+    void BCS_CV_Init(bool mode);
     void on_pushButton1_2_clicked();
 
     void on_checkBox1_2_stateChanged();
@@ -160,6 +169,8 @@ private slots:
     void on_checkBox2_19_clicked();
 
     void on_checkBox2_20_clicked();
+
+    void on_checkBox1_19_stateChanged(int arg1);
 
 private:
     Ui::Widget *ui;

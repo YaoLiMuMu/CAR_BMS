@@ -54,3 +54,6 @@ INCLUDEPATH += /home/madhouse/Yaoli/QT/usb_can
 IBS += -L/home/madhouse/Yaoli/QT/usb_can -llibusbcan
 
 unix:!macx: LIBS += -lusbcan
+
+RESOURCES += \
+    icons.qrc

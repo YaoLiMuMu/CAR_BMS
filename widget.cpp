@@ -76,6 +76,8 @@ Widget::Widget(QWidget *parent) :
     ui(new Ui::Widget)
 {
     ui->setupUi(this);
+    setWindowTitle(QString::fromLocal8Bit("BMS Emulator, Clicking F1 for help"));
+    setWindowIcon(QIcon(":/windmill.png"));
     qRegisterMetaType<Action>("Action");
     qRegisterMetaType<EventID>("EventID");
     proceesframe * pframe = new proceesframe;
@@ -596,6 +598,9 @@ void Widget::SaveSetting()
     settings.setValue("workmode", ui->checkBox1_2->isChecked());
     settings.setValue("USBCAN/channel", ui->comboBox1_4->currentIndex());
     settings.setValue("BRM/vin code", ui->lineEdit1_6->text());
+    settings.setValue("BRO/ready time", ui->lineEdit1_7->text());
+    settings.setValue("faultact", ui->checkBox1_18->isChecked());
+    settings.setValue("BCP/max current", ui->lineEdit1_14->text());
     QMessageBox::information(this,"Warning","Save setting successfully");
 }
 
@@ -611,10 +616,33 @@ void Widget::ImportConf()
     {
         ui->checkBox1_2->setCheckState(Qt::Checked);
     }
+    else {
+        ui->checkBox1_2->setCheckState(Qt::Unchecked);
+    }
     ui->comboBox1_4->setCurrentIndex(settings.value("USBCAN/channel").toInt());
     ui->lineEdit1_6->setText(settings.value("BRM/vin code").toString());
+    ui->lineEdit1_7->setText(settings.value("BRO/ready time").toString());
+    if (settings.value("faultact").toBool())
+    {
+        ui->checkBox1_18->setCheckState(Qt::Checked);
+    }
+    else {
+        ui->checkBox1_18->setCheckState(Qt::Unchecked);
+    }
+    ui->lineEdit1_14->setText(settings.value("BCP/max current").toString());
     QMessageBox::information(this,"Warning","Import configuration successfully");
     on_pushButton1_1_clicked();             // Load configuration
+}
+
+void Widget::BCS_CV_Init(bool mode)
+{
+    if (!mode)
+    {
+        _BCS[0].Data[1] = _BCP[1].Data[5];
+        _BCS[0].Data[2] = _BCP[1].Data[6];      //BCS Voltage initialize
+        _BCS[0].Data[3] = 0xA0;
+        _BCS[0].Data[4] = 0x0F;                 //BCS current: 0A
+    }
 }
 
 void Widget::RebootCAN()
@@ -746,6 +774,7 @@ void Widget::runStateMachine(EventID evt)
     if (evt == CEM)
     {
         pSM->state = H1;    // 收到CEM报文进入重连
+        BCS_CV_Init(false);
         qDebug() << "BSM Is Reconnecting Now...";
     }
     if (pTrans == nullptr)
@@ -836,8 +865,6 @@ void Widget::on_pushButton1_1_clicked()
         output = ui->lineEdit1_5->text();
         _BCP[1].Data[5] = uchar(processVoltage(output,10).at(1));
         _BCP[1].Data[6] = uchar(processVoltage(output,10).at(0));
-//        _BCS[0].Data[1] = uchar(processVoltage(output,10).at(1));
-//        _BCS[0].Data[2] = uchar(processVoltage(output,10).at(0));   // BCS Voltage initialize
     }
     // set up BMS default ready time
     if (!ui->lineEdit1_7->text().isEmpty())
@@ -1507,6 +1534,7 @@ void Widget::Fault_State_ACheck()
     ui->checkBox1_4->setEnabled(true);
     ui->checkBox1_3->setEnabled(true);
     ui->checkBox1_1->setEnabled(true);
+    ui->checkBox1_19->setEnabled(true);
 }
 
 void Widget::Fault_State_AUncheck()
@@ -1527,10 +1555,19 @@ void Widget::Fault_State_AUncheck()
     ui->checkBox1_4->setEnabled(false);
     ui->checkBox1_3->setEnabled(false);
     ui->checkBox1_1->setEnabled(false);
+    ui->checkBox1_19->setEnabled(false);
 }
 
 void Widget::on_pushButton2_1_clicked()
 {
+    // 未知错误
+    if (ui->checkBox2_29->isChecked())
+    {
+        _BST->Data[0] = 0x00;
+    }
+    else {
+        _BST->Data[0] = 0x40;
+    }
     // SOC达到设置值
     if (ui->checkBox2_1->isChecked())
     {
@@ -1555,7 +1592,7 @@ void Widget::on_pushButton2_1_clicked()
     else {
         _BST->Data[0] &= (~(0x01<<4));
     }
-    // 充电机主动中止设置
+    // 充电机主动中止设置, 优先级高于未知错误(串行)
     if (ui->checkBox2_4->isChecked())
     {
         _BST->Data[0] |= (0x01<<6);
@@ -1643,7 +1680,7 @@ void Widget::on_pushButton2_1_clicked()
     else {
         _BST->Data[3] &= (~(0x01<<2));
     }
-    qDebug() << "Set finish charge BST" << _BST->Data[3];
+    qDebug() << "Set finish charge BST" << _BST->Data[0];
     runStateMachine(Kill_Button);
 }
 
@@ -1792,4 +1829,15 @@ void Widget::on_checkBox2_20_clicked()
     }
     _BSM->Data[5] ^= 0x80;       // 循环异或产生位开关效果
     qDebug() << "Set BSM" << _BSM->Data[5];
+}
+
+void Widget::on_checkBox1_19_stateChanged(int arg1)
+{
+    if(arg1==0x02)
+    {
+        _BSM->ID= 0x00000000;    // BSM报文超时故障注入(修复帧ID)
+    }
+    else {
+        _BSM->ID= 0x181356F4;
+    }
 }
