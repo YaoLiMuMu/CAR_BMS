@@ -82,6 +82,10 @@ void proceesframe::rx_thread()
                     CAN_Array.data()[j] = can[i].Data[j];
                     Redata = Redata + QString::asprintf("%02x", can[i].Data[j]);
                 }
+//                if (can[i].ID==0x1003e08a || can[i].ID==0x18208ae0 || can[i].ID==0x10228ae0 ||can[i].ID==0x10238ae0)
+//                {
+//                    qDebug() << QDateTime::currentDateTime().toString("hh:mm:ss.zzz ") + Redata;
+//                }
                 qDebug() << QDateTime::currentDateTime().toString("hh:mm:ss.zzz ") + Redata;
                 for (int j = 0; j < rece_Tab_num; j++) {
                     check_point = 1;

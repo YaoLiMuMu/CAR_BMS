@@ -69,6 +69,7 @@ VCI_CAN_OBJ Widget::_BEM[1];
 int Widget::Ready_time_ms;
 bool Widget::transFree;
 bool Widget::V2G_Mode_Flag;
+bool Widget::TimeoutBCL_Flag;
 QByteArray Widget::Test_Array = QByteArray::fromHex("010102");//6810D80E01 420V Voltage and 1A Current
 
 Widget::Widget(QWidget *parent) :
@@ -95,6 +96,7 @@ Widget::Widget(QWidget *parent) :
     Ready_time_ms = 30000; // BMS准备就绪30s
     transFree = false;
     V2G_Mode_Flag = true;
+    TimeoutBCL_Flag = false;
     BST_BSD_time_ms = 5000;
     Vin_code_num = 17;
     Vin_Code_Array.resize(Vin_code_num);
@@ -1321,10 +1323,12 @@ void Widget::on_checkBox1_10_stateChanged(int arg1)
     {
         _BCL->ID= 0x00000000;    // BCL报文超时故障注入(修复帧ID)
         _BCLP->ID= 0x00000000;
+        TimeoutBCL_Flag = true;
     }
     else {
         _BCL->ID= 0x181056F4;
         _BCLP->ID= 0x181056F4;
+       TimeoutBCL_Flag = false;
     }
 }
 

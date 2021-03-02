@@ -69,6 +69,7 @@ public:
     static int Ready_time_ms;
     static bool transFree;                      // CAN transmit Bus free
     static bool V2G_Mode_Flag;                  // V2G mode : flag = true
+    static bool TimeoutBCL_Flag;                // TimeoutBCL : flag = false
 
 signals:
     void EXE_Action(Action);                    // send transmit signal

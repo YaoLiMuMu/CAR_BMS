@@ -153,7 +153,7 @@ sentframe::sentframe(QObject *parent) : QObject(parent)
     MSG_BSM.Long_sign = 0;
     MSG_BSM.cycle_time = 250;
     MSG_BSM.len = 1;
-    // BSD frame
+    // BSD frameon_checkBox1_10_stateChanged
     MSG_BSD.car_frame = & Widget::_BSD[0];
     MSG_BSD.Long_sign = 0;
     MSG_BSD.cycle_time = 250;
@@ -299,7 +299,8 @@ void sentframe::Loop_Send_Msg()// Priodic message
         }
         break;
     case P1:
-        tx_frame(MSG_BCL);
+        if (Widget::TimeoutBCL_Flag)
+            tx_frame(MSG_BCL);
         break;
     case P2:
         tx_frame(MSG_BCLP);
